@@ -1,3 +1,4 @@
+import { motionTokens } from '../lib/motion'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { bindShortWords } from '../lib/typography'
@@ -59,7 +60,7 @@ export function ArrowIcon({ direction = 'right', decorative = false, className =
       <motion.g className="arrow-icon-glyph"
         animate={direction === 'up-right' ? { transform: active && !reducedMotion ? 'rotate(45deg)' : 'rotate(0deg)' } : undefined}
         style={direction === 'up-right' ? { transformBox: 'view-box', transformOrigin: 'center' } : undefined}
-        transition={{ duration: reducedMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}>
+        transition={{ duration: reducedMotion ? 0 : motionTokens.menu, ease: motionTokens.ease }}>
         <path
           d={direction === 'up-right' ? 'M4.5 19.5 19.5 4.5M8 4.5h11.5V16' : 'M3 12h18M14 5l7 7-7 7'}
           stroke="currentColor"

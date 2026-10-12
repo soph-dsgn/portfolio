@@ -1,3 +1,4 @@
+/* Vite rewrites these public URLs against base for production; preload uses %BASE_URL%. */
 @font-face {
   font-family: Onest;
   src: url('/fonts/onest-latin-variable.woff2') format('woff2');
@@ -14,7 +15,7 @@
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 html {
-  min-width: 320px;
+  min-width: 0;
   background: var(--color-page);
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
@@ -41,8 +42,11 @@ button,
 a,
 [role='button'] {
   touch-action: manipulation;
+}
+:where(a, button, input, select, textarea, summary, label, [role='button'], [role='tab'], [role='menuitem'], [role='switch'], [role='checkbox'], [role='radio'], [tabindex]) {
   -webkit-tap-highlight-color: transparent;
 }
+a[aria-disabled='true'] { cursor: default; }
 :focus-visible {
   outline: 2px solid var(--color-text);
   outline-offset: 4px;
@@ -2242,6 +2246,18 @@ time.chip {
   border-radius: 0;
   line-height: 0;
 }
+.case-media-assembly {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  pointer-events: none;
+}
+.case-media-assembly > span {
+  background: var(--scene-fill);
+  border-radius: var(--radius-scene);
+}
 .case-media-stage > :is(img, video) {
   display: block;
   width: 100%;
@@ -2720,13 +2736,11 @@ time.chip {
     border-radius: 10px;
     font-size: 16px;
     opacity: 0;
-    transform: translateY(6px);
-    transition: color 180ms ease, opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+    transition: color 180ms ease, opacity 180ms var(--ease-out);
   }
   .mobile-menu[data-open='true'] a {
     opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0ms, calc(var(--menu-order, 0) * 30ms), calc(var(--menu-order, 0) * 30ms);
+    transition-delay: 0ms, calc(var(--menu-order, 0) * 30ms);
   }
   .mobile-menu-label {
     display: block;

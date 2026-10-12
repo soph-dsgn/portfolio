@@ -1,5 +1,5 @@
-.language-selector { display: inline-flex; align-items: center; flex: none; gap: 2px; padding-inline: 8px; min-height: var(--action-height); border-radius: var(--radius-navigation); background: var(--color-white); color: var(--color-muted); font-size: 13px; }
-.language-selector button { min-height: 44px; padding: 8px 6px; border: 0; background: transparent; color: var(--color-muted); cursor: pointer; font-size: inherit; }
-.language-selector button[aria-pressed='true'] { color: var(--color-text); font-weight: 600; }
+.language-selector { display: inline-flex; align-items: center; flex: none; width: 96px; gap: 4px; padding-inline: 8px; min-height: var(--action-height); border-radius: var(--radius-navigation); background: var(--color-white); color: var(--color-action-pressed); font-size: 15px; line-height: var(--leading-body); }
+.language-selector button { flex: 1; min-width: 0; min-height: 44px; padding: 8px 2px; border: 0; background: transparent; color: var(--color-action-pressed); cursor: pointer; font-size: inherit; line-height: inherit; font-weight: var(--weight-regular); }
+.language-selector button[aria-pressed='true'] { color: var(--color-text); font-weight: var(--weight-medium); }
 .language-selector button:focus-visible { outline: 2px solid var(--color-text); outline-offset: -2px; border-radius: 12px; }
-@media (max-width: 1100px) { .mobile-menu .language-selector { justify-self: start; padding-inline: 10px; background: var(--color-surface); min-height: 44px; margin: 2px 0 10px; } }
+@media (max-width: 1100px) { .mobile-menu .language-selector { justify-self: start; width: 100px; padding-inline: 10px; background: var(--color-surface); min-height: 44px; margin: 2px 0 10px; } }

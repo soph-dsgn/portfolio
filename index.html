@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Disable late native restoration before the app bundle/layout is ready.
+      // The router restores same-document history entries explicitly.
+      history.scrollRestoration = 'manual';
+    </script>
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/favicon/Logo 64 — Light.svg" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/favicon/Logo 64 — Dark.svg" media="(prefers-color-scheme: dark)" />
     <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="%BASE_URL%icons/favicon/Logo 180 — Light — Idea.png" />
@@ -32,8 +37,8 @@
     <meta property="og:site_name" content="Софья Стрельченко — портфолио" />
     <meta property="og:title" content="Софья Стрельченко — UX/UI &amp; Product дизайнер" />
     <meta property="og:description" content="Финтех, цифровые экосистемы и B2B/B2C-продукты. Избранные кейсы, концепты и опыт работы" />
-    <meta property="og:url" content="https://designsofiastrelchenko.github.io/sophia-portfolio/" />
-    <meta property="og:image" content="https://designsofiastrelchenko.github.io/sophia-portfolio/social-preview.jpg" />
+    <meta property="og:url" content="https://soph-dsgn.github.io/portfolio/" />
+    <meta property="og:image" content="https://soph-dsgn.github.io/portfolio/social-preview.jpg" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1425" />
     <meta property="og:image:height" content="891" />
@@ -41,7 +46,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Софья Стрельченко — UX/UI &amp; Product дизайнер" />
     <meta name="twitter:description" content="Финтех, цифровые экосистемы и B2B/B2C-продукты. Избранные кейсы, концепты и опыт работы" />
-    <meta name="twitter:image" content="https://designsofiastrelchenko.github.io/sophia-portfolio/social-preview.jpg" />
+    <meta name="twitter:image" content="https://soph-dsgn.github.io/portfolio/social-preview.jpg" />
     <meta name="twitter:image:alt" content="Первый экран портфолио Софьи Стрельченко" />
   </head>
   <body>

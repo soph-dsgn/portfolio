@@ -8,22 +8,23 @@ export const profile = {
   location: 'Москва • GMT+3',
   email: 'mailto:sofia.ux.ui@icloud.com',
   telegram: 'https://t.me/wsslxq',
-  cv: 'https://example.com/resume',
-  hh: 'https://example.com/hh',
+  // No placeholder destinations: enable these actions when real URLs are available.
+  cv: undefined as string | undefined,
+  hh: undefined as string | undefined,
   linkedin: 'https://www.linkedin.com/in/sophie-dsgn',
   about:
     'Разбираюсь в сложных требованиях, нахожу слабые места в пользовательских сценариях и довожу решения до разработки. Для меня качество дизайна — это и сильный визуал, и результат: сможет ли человек разобраться в продукте, завершить задачу и захотеть вернуться',
 }
 
 export const aboutPresentation = {
-  background: 'В опыте — Юкки, Make Difference и SkyCapital Group: финтех, цифровые продукты, личные кабинеты и мобильные сценарии. Училась продуктовому и UX/UI-дизайну в FormFactor и Contented',
-  statement: 'От сложных требований — к понятным продуктовым решениям.',
-  emphasis: 'Разбираюсь в сценариях, нахожу слабые места и соединяю сильный визуал с логикой продукта и бизнес-результатом',
+  background: 'Работала в Юкки, Make Difference и SkyCapital Group над веб-сервисами и мобильными приложениями. Проектирую сценарии, создаю дизайн-системы и довожу решения до разработки. Училась продуктовому и UX/UI-дизайну в FormFactor и Contented',
+  statement: 'От идеи — к продукту, который решает задачи.',
+  emphasis: 'Соединяю потребности пользователей, цели бизнеса и сильный визуал, чтобы запускать новые сервисы и развивать существующие',
   principles: [
-    { title: 'UI и UX', description: 'Соединяю сильный визуал с понятными пользовательскими сценариями' },
-    { title: 'Фокус на результате', description: 'Важно, чтобы человек разобрался в продукте, завершил задачу и захотел вернуться' },
-    { title: 'От требований к разработке', description: 'Разбираюсь в сложных требованиях и довожу решения до разработки' },
-    { title: 'Эмпатия', description: 'Нахожу слабые места в сценариях, которые мешают человеку пользоваться продуктом' },
+    { title: '+14% к конверсии', description: 'В отправку заявки после редизайна лендинга и калькулятора' },
+    { title: '−30% времени', description: 'На прохождение ключевых сценариев в личном кабинете' },
+    { title: '−35% ошибок', description: 'При заполнении форм после переработки интерфейсов' },
+    { title: '−20% времени запуска', description: 'Новых продуктов благодаря переиспользуемым компонентам' },
   ],
 }
 
@@ -151,6 +152,7 @@ export type Project = {
   /** Homepage-only cover. Case study content must use the existing images/videos. */
   cover?: string
   coverDimensions?: { width: number; height: number }
+  coverSrcSet?: string
   images?: Partial<Record<'context' | 'structure' | 'concept' | 'system' | 'final', CaseImage[]>>
   videos?: CaseVideo[]
 }
@@ -167,12 +169,12 @@ export const projects: Project[] = [
     cover: '/cases/concept/Обложка.png?v=6bad2b766e49',
     coverDimensions: { width: 4584, height: 3438 },
     videos: [
-      { id: 'messenger', title: 'Концепт мобильного мессенджера', shortTitle: 'Мессенджер', src: '/cases/concept/1.mp4', poster: '/cases/concept/poster-1.webp', width: 2800, height: 2100 },
-      { id: 'weather', title: 'Концепт приложения с прогнозом погоды', shortTitle: 'Погода', src: '/cases/concept/2.mp4', poster: '/cases/concept/poster-2.webp', width: 2800, height: 2100 },
-      { id: 'crypto-wallet', title: 'Концепт мобильного криптокошелька', shortTitle: 'Криптокошелёк', src: '/cases/concept/3.mp4', poster: '/cases/concept/poster-3.webp', width: 2800, height: 2100 },
-      { id: 'sales-analytics', title: 'Концепт панели аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/cases/concept/poster-4.webp', width: 2800, height: 2100 },
-      { id: 'energy', title: 'Концепт приложения для отслеживания расхода энергии', shortTitle: 'Энергия', src: '/cases/concept/5.mp4', poster: '/cases/concept/poster-5.webp', width: 2800, height: 2100 },
-      { id: 'jobs', title: 'Концепт мобильного сервиса поиска работы', shortTitle: 'Поиск работы', src: '/cases/concept/6.mp4', poster: '/cases/concept/poster-6.webp', width: 2800, height: 2100 },
+      { id: 'messenger', title: 'Концепт мобильного мессенджера', shortTitle: 'Мессенджер', src: '/cases/concept/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 2800, height: 2100 },
+      { id: 'weather', title: 'Концепт приложения с прогнозом погоды', shortTitle: 'Погода', src: '/cases/concept/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 2800, height: 2100 },
+      { id: 'crypto-wallet', title: 'Концепт мобильного криптокошелька', shortTitle: 'Криптокошелёк', src: '/cases/concept/3.mp4', poster: '/optimized/concepts/poster-3.webp', width: 2800, height: 2100 },
+      { id: 'sales-analytics', title: 'Концепт панели аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 2800, height: 2100 },
+      { id: 'energy', title: 'Концепт приложения для отслеживания расхода энергии', shortTitle: 'Энергия', src: '/cases/concept/5.mp4', poster: '/optimized/concepts/poster-5.webp', width: 2800, height: 2100 },
+      { id: 'jobs', title: 'Концепт мобильного сервиса поиска работы', shortTitle: 'Поиск работы', src: '/cases/concept/6.mp4', poster: '/optimized/concepts/poster-6.webp', width: 2800, height: 2100 },
     ],
   },
   {
@@ -247,7 +249,8 @@ export const projects: Project[] = [
   },
 ].map((project) => ({
   ...project,
-  cover: project.cover ? publicAsset(project.cover) : undefined,
+  cover: project.cover ? publicAsset(`/optimized/home/${project.id === 'concepts' ? 'concept' : project.id}-1920.webp`) : undefined,
+  coverSrcSet: project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id === 'concepts' ? 'concept' : project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
   videos: project.videos?.map((video) => ({
     ...video,
     src: publicAsset(video.src),

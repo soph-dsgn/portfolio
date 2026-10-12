@@ -1,12 +1,12 @@
 import { useLocale } from '../i18n/locale'
 import { motion } from 'framer-motion'
-import { useAdaptivePress } from '../lib/useAdaptivePress'
+import { useMotionSystem } from '../lib/motion'
+import { NavigationLabel } from './NavigationLabel'
 export function LanguageSelector() {
   const { locale, setLocale } = useLocale()
-  const press = useAdaptivePress()
+  const { navInteraction: press } = useMotionSystem()
   return <div className="language-selector" role="group" aria-label="Выбор языка">
-    <motion.button {...press} type="button" lang="ru" aria-pressed={locale === 'ru'} onClick={() => setLocale('ru')}>RU</motion.button>
-    <span aria-hidden="true">/</span>
-    <motion.button {...press} type="button" lang="en" aria-pressed={locale === 'en'} onClick={() => setLocale('en')}>ENG</motion.button>
+    <motion.button {...press} type="button" lang="ru" aria-pressed={locale === 'ru'} onClick={() => setLocale('ru')}><NavigationLabel active={locale === 'ru'}>RU</NavigationLabel></motion.button>
+    <motion.button {...press} type="button" lang="en" aria-pressed={locale === 'en'} onClick={() => setLocale('en')}><NavigationLabel active={locale === 'en'}>ENG</NavigationLabel></motion.button>
   </div>
 }

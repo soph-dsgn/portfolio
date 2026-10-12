@@ -37,7 +37,7 @@ export function InitialLoader() {
   return <AnimatePresence>
     {loading && <motion.div className="initial-loader" key="initial-loader"
       role="status" aria-live="polite" initial={false} animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }} transition={{ duration: reduced ? .05 : .18, ease: motionTokens.ease }}>
+      exit={{ opacity: 0 }} transition={{ duration: reduced ? motionTokens.reduced : motionTokens.loaderExit, ease: motionTokens.ease }}>
       <p><span>Докручиваю детали и выравниваю сетку</span><span className="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
     </motion.div>}
   </AnimatePresence>

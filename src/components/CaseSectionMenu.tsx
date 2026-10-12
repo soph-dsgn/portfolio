@@ -43,7 +43,7 @@ export function CaseSectionMenu({ sections, active, onNavigate }: {
       >
       <span>{current?.label && bindShortWords(current.label)}</span>
       <motion.svg viewBox="0 0 20 20" fill="none" aria-hidden="true"
-        animate={{ transform: `rotate(${open ? 180 : 0}deg)` }} transition={{ duration: reduced ? 0 : .18 }}>
+        animate={{ transform: `rotate(${open ? 180 : 0}deg)` }} transition={{ duration: reduced ? 0 : motionTokens.navState }}>
         <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </motion.svg>
     </motion.button>
@@ -52,8 +52,8 @@ export function CaseSectionMenu({ sections, active, onNavigate }: {
         initial={{ opacity: 0, transform: reduced ? 'none' : 'translateY(-6px)' }}
         animate={{ opacity: 1, transform: 'translateY(0px)' }}
         exit={{ opacity: 0, transform: reduced ? 'none' : 'translateY(-4px)' }}
-        transition={{ duration: reduced ? .1 : .2, ease: motionTokens.ease }}>
-        {sections.map((section, index) => <motion.a whileTap={reduced ? undefined : { opacity: .85 }} initial="hidden" animate="visible" variants={variants('fade', index * .035)} key={section.id} href={`#${section.id}`}
+        transition={{ duration: reduced ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease }}>
+        {sections.map((section, index) => <motion.a whileTap={reduced ? undefined : { opacity: .85 }} initial="hidden" animate="visible" variants={variants('fade', index * motionTokens.staggerSmall)} key={section.id} href={`#${section.id}`}
           aria-current={active === section.id ? 'location' : undefined}
           onClick={event => {
             if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return

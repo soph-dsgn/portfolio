@@ -188,6 +188,6 @@ export function DiagramWires({ rootRef, edges, mode, visible, reduced }: {
       fill="none" stroke="currentColor" strokeWidth={geometry.stroke} strokeLinecap="round" strokeLinejoin="round"
       markerEnd={edge.arrow === false ? undefined : `url(#${markerId}${edge.vertical ? '-down' : ''})`} initial={false}
       animate={{ pathLength: reduced || visible ? 1 : 0, opacity: reduced || visible ? 1 : 0 }}
-      transition={{ duration: reduced ? 0 : .28, delay: visible && !reduced ? .1 + Math.min(index * .025, .12) : 0, ease: motionTokens.ease }} />)}
+      transition={{ duration: reduced ? 0 : motionTokens.diagram.wire, delay: visible && !reduced ? motionTokens.diagram.wireStart + Math.min(index * motionTokens.diagram.wireStagger, motionTokens.diagram.maxWireDelay) : 0, ease: motionTokens.ease }} />)}
   </svg>
 }

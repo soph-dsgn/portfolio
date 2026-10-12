@@ -11,7 +11,8 @@ assert.equal(new Set(russian).size, russian.length)
 assert.equal(Object.keys(english).length, russian.length)
 for (const source of russian) {
   assert.ok(english[source]?.trim(), `Missing translation: ${source}`)
-  assert.ok(!/[А-Яа-яЁё]/.test(english[source]), `Mixed language: ${source}`)
+  // Brand spelling explicitly retained in English portfolio copy.
+  assert.ok(!/[А-Яа-яЁё]/.test(english[source].replace(/Юкки/g, '')), `Mixed language: ${source}`)
   assert.deepEqual(numbers(english[source]), numbers(source), `Changed numbers: ${source}`)
 }
 const path = new URL('src/i18n/translate.ts', root)

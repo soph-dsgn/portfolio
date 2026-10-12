@@ -45,7 +45,7 @@ export function ScrollReveals() {
         animations.set(block, animate(block, {
           opacity: [0, 1], transform: [revealTransform(preset, adaptive ? 8 : 16), revealIdentity(preset)],
         }, { duration: adaptive ? motionTokens.adaptiveReveal : motionTokens.reveal,
-          delay: Math.min(delay / 1000, .24), ease: motionTokens.ease }))
+          delay: Math.min(delay / 1000, motionTokens.maxRevealDelay), ease: motionTokens.ease }))
       }
       targetsByBlock.get(block)?.forEach((target) => observer?.unobserve(target))
     }
@@ -94,16 +94,16 @@ export function ScrollReveals() {
           // A fast jump can expose the middle of an earlier card. Stagger it
           // when it is still visible; only a fully departed card is skipped.
           const rect = block.getBoundingClientRect()
-          show(block, rect.bottom <= 0 ? 0 : cardOrder++ * 100)
+          show(block, rect.bottom <= 0 ? 0 : cardOrder++ * motionTokens.groupDelay * 1000)
         })
 
         for (const block of entering) {
           if (block.dataset.revealState !== 'pending') continue
           const kind = revealKind(block)
-          const delay = kind === 'intro' ? orderOf(block) * 90
-            : kind === 'logo' ? orderOf(block) * 50
-              : ['accordion-row', 'case-intro', 'fact', 'result', 'case-cover'].includes(kind) ? orderOf(block) * 80
-                : kind === 'award-text' ? orderOf(block) * 90 : 0
+          const delay = kind === 'intro' ? orderOf(block) * motionTokens.metricStagger * 1000
+            : kind === 'logo' ? orderOf(block) * motionTokens.staggerSmall * 1000
+              : ['accordion-row', 'case-intro', 'fact', 'result', 'case-cover'].includes(kind) ? orderOf(block) * motionTokens.stagger * 1000
+                : kind === 'award-text' ? orderOf(block) * motionTokens.metricStagger * 1000 : 0
           show(block, delay)
         }
       }, { rootMargin: '0px 0px -12% 0px', threshold: 0 })

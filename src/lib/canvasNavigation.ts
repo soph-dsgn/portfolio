@@ -47,7 +47,7 @@ function scrollToPosition(top: number, behavior: ScrollBehavior) {
     if (cancelNavigation === interrupt) cancelNavigation = undefined
   }
   const animation = animate(window.scrollY, destination, {
-    duration: .65,
+    duration: motionTokens.scroll,
     ease: motionTokens.ease,
     onUpdate: value => window.scrollTo({ top: value, behavior: 'instant' }),
     onComplete: cleanup,

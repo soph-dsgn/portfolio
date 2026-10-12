@@ -39,7 +39,7 @@ function mobileGroups(visual: CaseVisualSpec, mode: DiagramMode): VisualItem[][]
 
 function VerticalConnector({ visible, reduced, delay }: { visible: boolean; reduced: boolean; delay: number }) {
   return <svg className="case-diagram-mobile-connector" width="16" height="28" viewBox="0 0 16 28" aria-hidden="true">
-    <motion.path initial={false} animate={{ pathLength: visible || reduced ? 1 : 0, opacity: visible || reduced ? 1 : 0 }} transition={{ duration: reduced ? .1 : .2, delay: reduced ? 0 : delay, ease: motionTokens.ease }} d="M8 2V24 M5 21L8 24L11 21" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <motion.path initial={false} animate={{ opacity: visible || reduced ? 1 : 0 }} transition={{ duration: reduced ? motionTokens.reduced : motionTokens.micro, delay: reduced ? 0 : delay, ease: motionTokens.ease }} d="M8 2V24 M5 21L8 24L11 21" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 }
 
@@ -48,8 +48,8 @@ export function MobileCaseDiagram({ visual, mode, visible }: { visual: CaseVisua
   const groups = mobileGroups(visual, mode).filter(group => group.length)
   return <div className="case-diagram-mobile">
     {groups.map((group, index) => <div className={`case-diagram-mobile-step${mode === 'status-pairs' && index === 2 ? ' case-diagram-mobile-step--separate' : ''}`} key={index}>
-      {index > 0 && !(mode === 'status-pairs' && index === 2) && <VerticalConnector visible={visible} reduced={reduced} delay={Math.min(index * .07, .28)} />}
-      <motion.div className="case-diagram-mobile-group" initial="hidden" animate={visible ? 'visible' : 'hidden'} variants={variants('soft', Math.min(index * .07 + .04, .32))}>
+      {index > 0 && !(mode === 'status-pairs' && index === 2) && <VerticalConnector visible={visible} reduced={reduced} delay={Math.min(index * motionTokens.diagram.mobileStagger, motionTokens.diagram.maxMobileWireDelay)} />}
+      <motion.div className="case-diagram-mobile-group" initial="hidden" animate={visible ? 'visible' : 'hidden'} variants={variants('soft', Math.min(index * motionTokens.diagram.mobileStagger + motionTokens.diagram.mobileDelay, motionTokens.diagram.maxMobileDelay))}>
         {group.map((item, itemIndex) => <div className="case-diagram-mobile-card" key={`${item.label}-${itemIndex}`}>
           <strong><InlineArrows text={withoutFinalPeriod(item.label)} /></strong>
           {item.detail && <p><InlineArrows text={withoutFinalPeriod(item.detail)} /></p>}

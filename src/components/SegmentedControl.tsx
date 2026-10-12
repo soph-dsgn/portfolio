@@ -24,7 +24,7 @@ export function SegmentedControl({
       aria-label={label}
     >
       {options.map((option) => (
-        <motion.button {...press} transition={{ duration: .14 }}
+        <motion.button {...press}
           key={option.value}
           type="button"
           aria-pressed={value === option.value}

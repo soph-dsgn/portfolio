@@ -1,3 +1,4 @@
+import { motionTokens } from '../lib/motion'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
 import { useEffect } from 'react'
@@ -155,9 +156,9 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
     <div className="case-image-gallery" aria-label="Экраны проекта">
       {images.map((image) => (
         <motion.figure className={`case-image-frame ${image.screenCount && image.screenCount >= 4 ? 'case-layout--full' : image.screenCount === 3 ? 'case-layout--wide' : 'case-layout--medium'}`} key={image.src}
-          initial={reduced ? false : { opacity: 0, transform: 'translateY(10px)' }}
-          whileInView={{ opacity: 1, transform: 'translateY(0px)' }} viewport={{ once: true, amount: .02 }}
-          transition={{ duration: .35, ease: [.22, 1, .36, 1] }}>
+          initial={reduced ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .02 }}
+          transition={{ duration: reduced ? motionTokens.reduced : motionTokens.adaptiveReveal, ease: motionTokens.ease }}>
           <a href={image.src} target="_blank" rel="noreferrer" aria-label={`Открыть изображение в полном размере: ${image.caption}`}>
             <CaseMediaStage
               heightFill={heightFill}

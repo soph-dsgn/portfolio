@@ -44,7 +44,7 @@ export function ProjectCover({ project, revealed, immediate, children }: {
   return <div className="project-cover" ref={rootRef} style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
     <motion.div className="project-caption" ref={captionRef} initial={false}
       animate={{ opacity: revealed ? 1 : 0, transform: `translateY(${revealed ? 0 : 8}px)` }}
-      transition={{ duration: immediate ? 0 : .22, ease: motionTokens.ease }}>
+      transition={{ duration: immediate ? 0 : motionTokens.hover, ease: motionTokens.ease }}>
       <div className="project-labels"><div className="project-tags">
         {tags.map(tag => <span className="chip" key={tag}>{tag}</span>)}
       </div></div>

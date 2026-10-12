@@ -209,6 +209,11 @@
   .home-canvas .contacts-section { column-gap: 12px; grid-template-columns: minmax(0, 1fr) 88px; }
 }
 
+/* Keep the signature on one line even when a 320px viewport reserves a scrollbar. */
+@media (max-width: 340px) {
+  .home-canvas .contact-signature { font-size: 32px; white-space: nowrap; }
+}
+
 @media (max-width: 1100px) and (hover: hover) {
   .mobile-menu a:hover, .case-section-panel a:hover { background: var(--color-surface); color: var(--color-text); }
 }
@@ -233,6 +238,11 @@
 
 .case-header-spacer { flex: 1; }
 @media (min-width: 1101px) {
+  .site-header--case .header-navigation {
+    flex: none;
+    width: max-content;
+    padding-inline: 12px;
+  }
   .case-header-controls {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);

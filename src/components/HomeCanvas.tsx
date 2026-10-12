@@ -19,25 +19,48 @@ export function HomeCanvas() {
   const { locale } = useLocale()
   const root = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)
-  const [horizontal, setHorizontal] = useState(false)
+  const [horizontal, setHorizontal] = useState(() => window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)').matches)
   const [height, setHeight] = useState<number>()
   const [activePanel, setActivePanel] = useState(0)
+  const activePanelIndex = useRef(0)
   const [panels, setPanels] = useState<CanvasPanel[]>([])
   const panelPositions = useRef<CanvasPanel[]>([])
   const reduced = useReducedMotion()
   const location = useLocation()
   const navigationType = useNavigationType()
   const positioned = useRef<string | null>(null)
-  const prepared = useRef(false)
+  const ready = useRef(false)
+  const keyboardNavigation = useRef(false)
   const mountPosition = useRef(savedPageScroll(location.key))
   const distance = useMotionValue(0)
   const start = useMotionValue(0)
   const { scrollY } = useScroll()
+  const offset = useMotionValue(0)
   // Pixel-for-pixel travel keeps native wheel, trackpad and keyboard scrolling.
-  const transform = useTransform(() => `translate3d(${-Math.max(0, Math.min(scrollY.get() - start.get(), distance.get()))}px, 0, 0)`)
-  useMotionValueEvent(scrollY, 'change', value => {
-    setActivePanel(nearestPanel(panelPositions.current, value - start.get()))
-  })
+  // Keep one MotionValue binding across breakpoints so an old horizontal
+  // subscription cannot overwrite the vertical layout's transform.
+  const transform = useTransform(offset, value => horizontal && !reduced ? `translate3d(${-value}px, 0, 0)` : 'none')
+  const updateActivePanel = (index: number) => {
+    if (activePanelIndex.current === index) return
+    activePanelIndex.current = index
+    setActivePanel(index)
+  }
+  const syncScroll = () => {
+    if (!ready.current) return
+    // Motion may deliver a queued pre-reset sample. The native position is authoritative.
+    const travel = Math.max(0, Math.min(window.scrollY - start.get(), distance.get()))
+    offset.set(travel)
+    updateActivePanel(nearestPanel(panelPositions.current, travel))
+  }
+  useMotionValueEvent(scrollY, 'change', syncScroll)
+
+  useLayoutEffect(() => {
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Tab') keyboardNavigation.current = true }
+    const onPointer = () => { keyboardNavigation.current = false }
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('pointerdown', onPointer, { passive: true })
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('pointerdown', onPointer) }
+  }, [])
 
   useLayoutEffect(() => {
     const media = window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)')
@@ -48,51 +71,19 @@ export function HomeCanvas() {
   }, [])
 
   useLayoutEffect(() => {
-    if (prepared.current) return
-    prepared.current = true
-    cancelSectionNavigation()
-    const origin = window.scrollY + (root.current?.getBoundingClientRect().top ?? 0)
-    window.scrollTo({ top: origin, behavior: 'instant' })
-    scrollY.set(window.scrollY)
-    start.set(origin)
-    distance.set(0)
-    setActivePanel(0)
-  }, [scrollY, start, distance])
-
-  useLayoutEffect(() => {
-    // On a fresh document the browser's native fragment scroll runs after the
-    // first layout effects. Resolve that fragment once, after native loading,
-    // using the canvas's actual coordinates instead of its vertical DOM order.
-    if (document.readyState === 'complete') return
-    let frame = 0
-    let interacted = false
-    const markInteraction = () => { interacted = true }
-    window.addEventListener('wheel', markInteraction, { passive: true })
-    window.addEventListener('touchstart', markInteraction, { passive: true })
-    window.addEventListener('keydown', markInteraction)
-    const finish = () => {
-      frame = requestAnimationFrame(() => {
-        if (positioned.current !== location.key || interacted) return
-        const target = location.hash ? document.getElementById(location.hash.slice(1)) : null
-        if (target) navigateToSection(target, 'instant')
-        else if (!location.hash && mountPosition.current === undefined)
-          window.scrollTo({ top: start.get(), behavior: 'instant' })
-        scrollY.set(window.scrollY)
-      })
-    }
-    window.addEventListener('load', finish, { once: true })
-    return () => {
-      window.removeEventListener('load', finish)
-      window.removeEventListener('wheel', markInteraction)
-      window.removeEventListener('touchstart', markInteraction)
-      window.removeEventListener('keydown', markInteraction)
-      cancelAnimationFrame(frame)
-    }
-  }, [location.key, location.hash, scrollY, start])
-
-  useLayoutEffect(() => {
     const element = track.current
     if (!element) return
+    let frame = 0
+    let confirmFrame = 0
+    let interacted = false
+    const needsPosition = positioned.current !== location.key
+    const first = positioned.current === null
+    // A fresh document has no saved entries. POP within this document still
+    // restores its exact reading position; a new/reloaded home always starts at 0.
+    const restored = navigationType === 'POP' && !location.hash
+      ? first ? mountPosition.current : savedPageScroll(location.key)
+      : undefined
+    const resetHome = needsPosition && !location.hash && restored === undefined
     const measure = () => {
       const travel = horizontal ? Math.max(0, element.scrollWidth - document.documentElement.clientWidth) : 0
       start.set(window.scrollY + (root.current?.getBoundingClientRect().top ?? 0))
@@ -102,50 +93,109 @@ export function HomeCanvas() {
         const label = panel.getAttribute('aria-label') ?? heading?.getAttribute('aria-label') ?? heading?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
         return { element: panel, label, offset: canvasPanelOffset(panel, element) }
       })
-      // Three compact destinations: start, middle and end of the canvas.
       const destinations = measured.filter((_, index) =>
         index === 0 || index === Math.floor((measured.length - 1) / 2) || index === measured.length - 1)
       panelPositions.current = destinations
       setPanels(destinations)
-      setActivePanel(nearestPanel(destinations, window.scrollY - start.get()))
       setHeight(horizontal ? travel + window.innerHeight : undefined)
     }
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(element)
-    window.addEventListener('resize', measure)
-    return () => { observer.disconnect(); window.removeEventListener('resize', measure) }
-  }, [horizontal, distance, start, locale])
-
-  useLayoutEffect(() => {
-    const expectedHorizontal = window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)').matches
-    if (horizontal !== expectedHorizontal || (horizontal && height === undefined)) return
-    if (positioned.current === location.key) return
-    const first = positioned.current === null
-    const restored = navigationType === 'POP' ? first ? mountPosition.current : savedPageScroll(location.key) : undefined
-    positioned.current = location.key
-    if (restored !== undefined) {
-      window.scrollTo({ top: restored, behavior: 'instant' })
-    } else if (location.hash) {
-      const target = document.getElementById(location.hash.slice(1))
-      if (target) navigateToSection(target, first || navigationType === 'POP' ? 'instant' : 'smooth')
-    } else {
-      window.scrollTo({ top: start.get(), behavior: 'instant' })
+    const sync = () => {
+      scrollY.set(window.scrollY)
+      if (!ready.current) return
+      const travel = Math.max(0, Math.min(window.scrollY - start.get(), distance.get()))
+      offset.set(travel)
+      updateActivePanel(nearestPanel(panelPositions.current, travel))
     }
-    scrollY.set(window.scrollY)
-    setActivePanel(nearestPanel(panelPositions.current, window.scrollY - start.get()))
-  }, [horizontal, height, location.hash, location.key, navigationType, scrollY, start])
+    const position = (behavior: ScrollBehavior) => {
+      if (restored !== undefined) window.scrollTo({ top: restored, behavior: 'instant' })
+      else if (location.hash) {
+        const target = document.getElementById(location.hash.slice(1))
+        if (target) navigateToSection(target, behavior)
+      } else window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+    let resizeFrame = 0
+    const onResize = () => {
+      if (!ready.current || resizeFrame) return
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0
+        if (!ready.current) return
+        measure()
+        sync()
+      })
+    }
+    const observer = new ResizeObserver(onResize)
+    observer.observe(element)
+    window.addEventListener('resize', onResize)
+    // Native fragment positioning may run after React's effects on a new document.
+    // Reconcile once after load, unless the reader has already taken control.
+    const markInteraction = () => { interacted = true }
+    const onLoad = () => {
+      confirmFrame = requestAnimationFrame(() => {
+        if (!ready.current || interacted || positioned.current !== location.key) return
+        position('instant')
+        sync()
+      })
+    }
+    if (needsPosition) {
+      ready.current = false
+      cancelSectionNavigation()
+      offset.set(0)
+      distance.set(0)
+      updateActivePanel(0)
+      if (resetHome) {
+        window.history.scrollRestoration = 'manual'
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      }
+      scrollY.set(window.scrollY)
+      // Confirm reset before measuring. Commit the real page height before any
+      // hash/restored position is applied, so the browser cannot clamp it early.
+      frame = requestAnimationFrame(() => {
+        if (resetHome) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+        measure()
+        frame = requestAnimationFrame(() => {
+          measure()
+          position(first || navigationType === 'POP' ? 'instant' : 'smooth')
+          positioned.current = location.key
+          ready.current = true
+          sync()
+        })
+      })
+      window.addEventListener('load', onLoad, { once: true })
+      window.addEventListener('wheel', markInteraction, { passive: true })
+      window.addEventListener('touchstart', markInteraction, { passive: true })
+      window.addEventListener('pointerdown', markInteraction, { passive: true })
+      window.addEventListener('keydown', markInteraction)
+    } else {
+      ready.current = true
+      // Locale and viewport changes remeasure without resetting the reader.
+      measure()
+      sync()
+    }
+    return () => {
+      cancelAnimationFrame(frame)
+      cancelAnimationFrame(confirmFrame)
+      cancelAnimationFrame(resizeFrame)
+      observer.disconnect()
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('load', onLoad)
+      window.removeEventListener('wheel', markInteraction)
+      window.removeEventListener('touchstart', markInteraction)
+      window.removeEventListener('pointerdown', markInteraction)
+      window.removeEventListener('keydown', markInteraction)
+      ready.current = false
+    }
+  }, [horizontal, location.hash, location.key, navigationType, distance, offset, scrollY, start, locale])
 
   return <main id="main-content" className="home-canvas" ref={root} tabIndex={-1}
     data-horizontal={horizontal} style={{ height }} onFocusCapture={event => {
-      if (horizontal && event.target instanceof Element && event.target.closest('[data-canvas-panel]'))
+      if (keyboardNavigation.current && ready.current && horizontal && event.target instanceof Element && event.target.closest('[data-canvas-panel]'))
         scrollToCanvasTarget(event.target)
     }}>
     <div className="canvas-viewport">
-      <motion.div className="canvas-track" ref={track} style={{ transform: horizontal && !reduced ? transform : 'none' }}>
+      <motion.div className="canvas-track" ref={track} style={{ transform }}>
         <ProfileHero />
         <Work />
-        <ProfileContact />
+        <ProfileContact homepage />
       </motion.div>
       {horizontal && <nav className="canvas-zone-indicator" aria-label="Экраны портфолио">
         {panels.map((panel, index) => <button key={index} type="button"

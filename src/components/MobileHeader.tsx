@@ -11,24 +11,24 @@ import { trackEvent } from '../lib/analytics'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
 import { scrollToCanvasTarget } from '../lib/canvasNavigation'
-import { useAdaptivePress } from '../lib/useAdaptivePress'
 import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
+import { NavigationLabel } from './NavigationLabel'
 
 const MotionLink = motion.create(Link)
 
 const homeLinks = [
-  { href: '/#work', label: 'Проекты' },
+  { href: '/#work', label: 'Кейсы' },
   { href: '/#about', label: 'Обо мне' },
 ]
 
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
-  const { variants, hoverLift, navHover } = useMotionSystem()
+  const { variants, navInteraction } = useMotionSystem()
   const { pathname, search } = useLocation()
   const [openFor, setOpenFor] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState('')
   const reducedMotion = useReducedMotion()
-  const press = useAdaptivePress()
+  const press = navInteraction
   const menuKey = pathname + search
   const open = openFor === menuKey
   const headerRef = useRef<HTMLElement>(null)
@@ -132,17 +132,17 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
   }
 
   return (
-    <motion.header initial="hidden" animate="visible" variants={variants('fade')} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : ''}`} ref={headerRef}>
+    <motion.header initial="hidden" animate="visible" variants={variants('fade')} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ' site-header--case' : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
         {showBack && <BackButton to={backTo} />}
         <nav className="header-navigation" aria-label="Главная навигация">
-          {homeLinks.map(link => <MotionLink style={{ transform: 'translateY(0px) scale(1)' }} whileHover={navHover} whileTap={hoverLift.whileTap} transition={hoverLift.transition} key={link.href} to={link.href}
+          {homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
             onClick={event => {
               if (link.href.includes('#') && pathname === '/' && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey)
                 setOpenFor(null)
             }}
-            aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}>{bindShortWords(link.label)}</MotionLink>)}
-          <motion.a whileTap={hoverLift.whileTap} transition={hoverLift.transition} href={profile.cv} target="_blank" rel="noreferrer" onClick={() => trackEvent('resume_click', { location: 'header' })}>CV</motion.a>
+            aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel></MotionLink>)}
+          <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a>
         </nav>
         <div className="header-actions">
           <TelegramLink location="header" label="TG" />
@@ -150,7 +150,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
         <LanguageSelector />
       </div>
       <AnimatePresence>{open && <motion.div className="mobile-menu-backdrop" data-open="true" aria-hidden="true"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .18 }} onClick={() => setOpenFor(null)} />}</AnimatePresence>
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, ease: motionTokens.ease }} onClick={() => setOpenFor(null)} />}</AnimatePresence>
       <div className={`mobile-header-inner${isCase ? ' mobile-header-inner--case' : ' mobile-header-inner--home'}${showBack ? ' mobile-header-inner--back' : ''}`}>
         {showBack ? <><BackButton to={backTo} /><div className="mobile-header-spacer" /></> : <Link
           className="mobile-brand"
@@ -183,44 +183,42 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
         inert={!open}
         initial={false}
         animate={{ opacity: open ? 1 : 0, transform: reducedMotion ? 'none' : open ? 'translateY(0px)' : 'translateY(-6px)' }}
-        transition={{ duration: reducedMotion ? .1 : motionTokens.menu, ease: motionTokens.ease }}
+        transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease }}
       >
         <LanguageSelector />
         {isCase ? (
           <>
-            <MotionLink to="/" onClick={() => setOpenFor(null)} style={{ '--menu-order': 0 } as CSSProperties}>
-              <span className="mobile-menu-link-label">Проекты</span>
+            <MotionLink {...navInteraction} to="/" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 0 } as CSSProperties}>
+              <NavigationLabel className="mobile-menu-link-label">Кейсы</NavigationLabel>
             </MotionLink>
-            <MotionLink to="/#about" onClick={() => setOpenFor(null)} style={{ '--menu-order': 1 } as CSSProperties}>
-              <span className="mobile-menu-link-label">Обо мне</span>
+            <MotionLink {...navInteraction} to="/#about" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 1 } as CSSProperties}>
+              <NavigationLabel className="mobile-menu-link-label">Обо мне</NavigationLabel>
             </MotionLink>
             {sections.length > 0 && <span className="mobile-menu-label" style={{ '--menu-order': 2 } as CSSProperties}>Разделы кейса</span>}
             {sections.map((section, index) => (
-              <a
-                key={section.id}
+              <motion.a key={section.id} {...navInteraction}
                 href={`#${section.id}`}
                 aria-current={activeSection === section.id ? 'location' : undefined}
                 onClick={() => closeAtSection(section.id)}
-                style={{ '--menu-order': index + 3 } as CSSProperties}
+                style={{ ...navInteraction.style, '--menu-order': index + 3 } as CSSProperties}
               >
-                <span className="mobile-menu-link-label">{bindShortWords(section.label)}</span>
-              </a>
+                <NavigationLabel active={activeSection === section.id} className="mobile-menu-link-label">{bindShortWords(section.label)}</NavigationLabel>
+              </motion.a>
             ))}
           </>
         ) : (
           homeLinks.map((link, index) => (
-            <MotionLink initial={false} animate={{ opacity: open ? 1 : 0, transform: reducedMotion || open ? 'none' : 'translateY(-4px)' }} transition={{ duration: .18, delay: open && !reducedMotion ? index * .04 : 0 }}
-              key={link.href}
+            <MotionLink key={link.href} {...navInteraction} initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ ...navInteraction.transition, opacity: { duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, delay: open && !reducedMotion ? index * motionTokens.staggerSmall : 0 } }}
               to={link.href}
               aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}
               onClick={() => setOpenFor(null)}
-              style={{ '--menu-order': index } as CSSProperties}
+              style={{ ...navInteraction.style, '--menu-order': index } as CSSProperties}
             >
-              <span className="mobile-menu-link-label">{bindShortWords(link.label)}</span>
+              <NavigationLabel active={isActiveLink(link.href)} className="mobile-menu-link-label">{bindShortWords(link.label)}</NavigationLabel>
             </MotionLink>
           ))
         )}
-        <motion.a whileTap={hoverLift.whileTap} initial={false} animate={{ opacity: open ? 1 : 0, transform: reducedMotion || open ? 'translateY(0px)' : 'translateY(-4px)' }} transition={{ duration: .18, delay: open && !reducedMotion ? .08 : 0 }} href={profile.cv} target="_blank" rel="noreferrer" onClick={() => trackEvent('resume_click', { location: 'mobile-menu' })}><span className="mobile-menu-link-label">CV</span></motion.a>
+        <motion.a {...navInteraction} initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ ...navInteraction.transition, opacity: { duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, delay: open && !reducedMotion ? 2 * motionTokens.staggerSmall : 0 } }} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}><NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel></motion.a>
       </motion.nav>
     </motion.header>
   )
