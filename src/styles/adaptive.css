@@ -273,9 +273,28 @@
   .case-facts:not(.case-results) > div { min-height: 0; padding: 16px 20px; }
 }
 
-.copyright-page { margin-top: calc(var(--header-height) + 32px); }
+.copyright-page { margin-top: 32px; }
+@media (max-width: 1100px) {
+  .copyright-page { margin-top: calc(var(--header-height) + 24px); }
+}
 
 @media (max-width: 760px) {
   .home-canvas .contact-portrait { grid-row: 3 / 5; }
   .home-canvas .contacts-section .site-footer { grid-column: 1; }
+}
+
+/* Concepts use their real section list within the existing single-line pill. */
+@media (min-width: 1101px) {
+  .site-header--concept .header-navigation {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 760px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .site-header--concept .header-navigation::-webkit-scrollbar { display: none; }
+  .site-header--concept .header-navigation a,
+  .site-header--concept .desktop-header > .back-button,
+  .site-header--concept .desktop-header > .header-actions { flex: none; }
 }

@@ -21,7 +21,21 @@ export function InitialLoader() {
         return rect.width > 0 && rect.height > 0 && rect.bottom > 0 &&
           rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth
       })
-    const ready = [document.fonts.ready, ...images.map(image => image.decode().catch(() => undefined))]
+    // Home owns scroll positioning; don't expose a bootstrap frame before its
+    // measured range and native position have been synchronized.
+    const canvas = document.querySelector('.home-canvas')
+    let observer: MutationObserver | undefined
+    const positioned = !canvas || canvas.getAttribute('data-positioned') === 'true'
+      ? Promise.resolve()
+      : new Promise<void>(resolve => {
+        observer = new MutationObserver(() => {
+          if (canvas.getAttribute('data-positioned') !== 'true') return
+          observer?.disconnect()
+          resolve()
+        })
+        observer.observe(canvas, { attributes: true, attributeFilter: ['data-positioned'] })
+      })
+    const ready = [positioned, document.fonts.ready, ...images.map(image => image.decode().catch(() => undefined))]
     void Promise.all(ready).then(() => {
       if (cancelled) return
       // Let fonts/images and the canvas's ResizeObserver finish their layout.
@@ -31,7 +45,7 @@ export function InitialLoader() {
         setLoading(false)
       })
     })
-    return () => { cancelled = true; cancelAnimationFrame(frame) }
+    return () => { cancelled = true; observer?.disconnect(); cancelAnimationFrame(frame) }
   }, [])
 
   return <AnimatePresence>

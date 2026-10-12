@@ -39,7 +39,7 @@ function ScrollToPage() {
     // Two owners here would race the initial vertical/horizontal layout switch.
     if (pathname === '/') {
       previousPath.current = pathname
-      return () => savePageScroll(key, window.scrollY)
+      return
     }
     const restored = navigationType === 'POP' ? savedPageScroll(key) : undefined
     if (restored !== undefined) {

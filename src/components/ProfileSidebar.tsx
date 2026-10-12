@@ -90,7 +90,6 @@ export function ProfileHero() {
   return <section className="profile-hero" data-canvas-panel aria-labelledby="hero-title">
     <motion.div className="hero-copy" initial="hidden" animate="visible">
       <motion.div className="hero-identity" variants={variants('fade', .04)}>
-        <p>{profile.name}</p>
         <p className="hero-greeting"><span>Привет</span>{' '}<GreetingEyes />{' '}<span>я — Соня</span></p>
       </motion.div>
       <motion.h1 id="hero-title" className="profile-role">

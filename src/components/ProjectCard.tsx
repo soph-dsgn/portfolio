@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { captureHomeScroll } from '../lib/pageScroll'
+import { Link, useLocation } from 'react-router-dom'
 import type { Project } from '../data/portfolio'
 import { CaseCursor } from './CaseCursor'
 import { motion, useReducedMotion } from 'framer-motion'
@@ -15,6 +16,7 @@ const MotionLink = motion.create(Link)
 const hoverQuery = '(min-width: 1101px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const location = useLocation()
   const reduced = useReducedMotion()
   const press = useAdaptivePress()
   const [hovered, setHovered] = useState(false)
@@ -39,6 +41,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         className="project-link"
         draggable={false}
         to={`/projects/${project.id}`}
+        state={{ homeEntryKey: location.key }}
+        onClick={() => captureHomeScroll(location.key)}
         aria-labelledby={`${project.id}-title`}
         data-reveal-details={interactive}
         onPointerEnter={event => { if (event.pointerType === 'mouse') setHovered(true) }}

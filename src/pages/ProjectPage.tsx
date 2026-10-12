@@ -204,7 +204,8 @@ export function ProjectPage() {
     return <ConceptCasePage project={project} />
 
   const groups = getCaseGroups(project)
-  const showThanks = (projects.indexOf(project) + 1) % 2 === 0
+  const ordinaryCases = projects.filter(item => !item.videos)
+  const showThanks = ordinaryCases.indexOf(project) % 2 === 0
 
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>

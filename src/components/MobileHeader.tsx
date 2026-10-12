@@ -1,3 +1,4 @@
+import { useLocale } from '../i18n/locale'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
@@ -10,7 +11,7 @@ import { TelegramLink } from './ContactLinks'
 import { trackEvent } from '../lib/analytics'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
-import { scrollToCanvasTarget } from '../lib/canvasNavigation'
+import { navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
 import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
@@ -23,6 +24,7 @@ const homeLinks = [
 ]
 
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
+  const { locale } = useLocale()
   const { variants, navInteraction } = useMotionSystem()
   const { pathname, search } = useLocation()
   const [openFor, setOpenFor] = useState<string | null>(null)
@@ -32,8 +34,10 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const menuKey = pathname + search
   const open = openFor === menuKey
   const headerRef = useRef<HTMLElement>(null)
+  const navRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isCase = pathname.startsWith('/projects/')
+  const isConcept = projects.some(project => project.videos && pathname === `/projects/${project.id}`)
   const sections = useMemo(() => {
     const project = projects.find(project => pathname === `/projects/${project.id}`)
     return project ? getCaseNavigationSections(project) : []
@@ -66,6 +70,8 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
       }).sort((a, b) => a.top - b.top)
       let next = targets[0]?.id ?? ''
       for (const target of targets) if (target.top <= line) next = target.id
+      if (isCase && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2)
+        next = sections.at(-1)?.id ?? next
       setActiveSection(next)
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
@@ -78,6 +84,20 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
       cancelAnimationFrame(frame)
     }
   }, [pathname, isCase, sections])
+
+  // Reveal the active concept inside the pill, without moving the page.
+  useEffect(() => {
+    if (!isConcept) return
+    const nav = navRef.current
+    const link = nav?.querySelector<HTMLElement>('[aria-current="location"]')
+    if (!nav || !link || !nav.clientWidth) return
+    const bounds = nav.getBoundingClientRect()
+    const item = link.getBoundingClientRect()
+    const inset = parseFloat(getComputedStyle(nav).paddingLeft) || 0
+    if (item.left < bounds.left + inset || item.right > bounds.right - inset)
+      nav.scrollTo({ left: nav.scrollLeft + item.left - bounds.left - (bounds.width - item.width) / 2,
+        behavior: reducedMotion ? 'instant' : 'smooth' })
+  }, [isConcept, activeSection, locale, reducedMotion])
 
   useEffect(() => {
     if (!open) return
@@ -126,23 +146,30 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
       if (!section) return
       section.tabIndex = -1
       section.focus({ preventScroll: true })
-      if (!isCase && !scrollToCanvasTarget(section, reducedMotion ? 'instant' : 'smooth'))
+      if (isCase) navigateToSection(section, reducedMotion ? 'instant' : 'smooth')
+      else if (!scrollToCanvasTarget(section, reducedMotion ? 'instant' : 'smooth'))
         section.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth' })
     })
   }
 
   return (
-    <motion.header initial="hidden" animate="visible" variants={variants('fade')} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ' site-header--case' : ''}`} ref={headerRef}>
+    <motion.header initial="hidden" animate="visible" variants={variants('fade')} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ` site-header--case${isConcept ? ' site-header--concept' : ''}` : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
         {showBack && <BackButton to={backTo} />}
-        <nav className="header-navigation" aria-label="Главная навигация">
+        <nav ref={navRef} className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
+          {isCase ? sections.map(section => <motion.a key={section.id} {...navInteraction}
+            href={`#${section.id}`} aria-current={activeSection === section.id ? 'location' : undefined}
+            onClick={event => {
+              if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+              event.preventDefault(); closeAtSection(section.id)
+            }}><NavigationLabel active={activeSection === section.id}>{bindShortWords(section.label)}</NavigationLabel></motion.a>) : <>
           {homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
             onClick={event => {
               if (link.href.includes('#') && pathname === '/' && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey)
                 setOpenFor(null)
             }}
             aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel></MotionLink>)}
-          <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a>
+          <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a></>}
         </nav>
         <div className="header-actions">
           <TelegramLink location="header" label="TG" />
@@ -199,7 +226,10 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
               <motion.a key={section.id} {...navInteraction}
                 href={`#${section.id}`}
                 aria-current={activeSection === section.id ? 'location' : undefined}
-                onClick={() => closeAtSection(section.id)}
+                onClick={event => {
+                  if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+                  event.preventDefault(); closeAtSection(section.id)
+                }}
                 style={{ ...navInteraction.style, '--menu-order': index + 3 } as CSSProperties}
               >
                 <NavigationLabel active={activeSection === section.id} className="mobile-menu-link-label">{bindShortWords(section.label)}</NavigationLabel>

@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { useMotionSystem } from '../lib/motion'
-import { CaseThanks } from '../components/CaseThanks'
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { Icon } from '../components/Icon'
@@ -208,7 +207,6 @@ export function ConceptCasePage({ project }: Props) {
             )
           })}
         </div>
-        <CaseThanks id="concept-results" />
       </main>
     </div></Typography>
   )

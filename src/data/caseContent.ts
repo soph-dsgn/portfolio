@@ -146,11 +146,9 @@ export function getCaseGroups(project: Project): CaseGroup[] {
 }
 
 export function getCaseNavigationSections(project: Project) {
-  if (project.videos) return [
-    { id: 'overview', label: 'Контекст' },
-    { id: project.videos[0].id, label: 'UX/UI-решение' },
-    { id: 'concept-results', label: 'Результаты и выводы' },
-  ]
+  if (project.videos) return project.videos.map(video => ({
+    id: video.id, label: video.shortTitle,
+  }))
   return getCaseGroups(project)
     .filter(group => ['context', 'concept', 'final'].includes(group.id))
     .map(group => ({ id: group.id, label: group.id === 'concept' ? 'UX/UI-решение' : group.title }))

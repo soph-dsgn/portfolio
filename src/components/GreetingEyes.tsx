@@ -32,7 +32,7 @@ export function GreetingEyes() {
       const distance = Math.hypot(dx, dy)
       const strength = Math.min(distance / 120, 1)
       x.set(distance ? dx / distance * strength * 3 : 0)
-      y.set(distance ? dy / distance * strength * 6 : 0)
+      y.set(distance ? dy / distance * strength * 4.5 : 0)
     }
     const move = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse' || !finePointer.matches) return
@@ -65,17 +65,17 @@ export function GreetingEyes() {
 
   return <svg ref={ref} className="greeting-eyes" viewBox="0 0 42 28" width="42" height="28" aria-hidden="true" focusable="false">
     <defs><clipPath id={clipId}>
-      <ellipse cx="10" cy="14" rx="7" ry="11" />
-      <ellipse cx="32" cy="14" rx="7" ry="11" />
+      <ellipse cx="11" cy="14" rx="8" ry="11" />
+      <ellipse cx="31" cy="14" rx="8" ry="11" />
     </clipPath></defs>
     <g fill="var(--color-white)" stroke="currentColor" strokeWidth="1.5">
-      <ellipse cx="10" cy="14" rx="8" ry="12" />
-      <ellipse cx="32" cy="14" rx="8" ry="12" />
+      <ellipse cx="11" cy="14" rx="9" ry="12" />
+      <ellipse cx="31" cy="14" rx="9" ry="12" />
     </g>
     <g clipPath={`url(#${clipId})`}>
       <motion.g style={{ transform }} fill="currentColor">
-        <circle cx="10" cy="14" r="3.3" />
-        <circle cx="32" cy="14" r="3.3" />
+        <circle cx="11" cy="14" r="2.8" />
+        <circle cx="31" cy="14" r="2.8" />
       </motion.g>
     </g>
   </svg>
