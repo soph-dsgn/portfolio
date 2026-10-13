@@ -42,6 +42,7 @@ export function InitialLoader() {
       frame = requestAnimationFrame(() => {
         if (cancelled) return
         document.getElementById('root')?.removeAttribute('data-initial-loading')
+        document.dispatchEvent(new Event('initial-ui-ready'))
         setLoading(false)
       })
     })

@@ -2116,7 +2116,7 @@ time.chip {
   color: var(--color-muted);
   font-size: 13px;
 }
-.site-footer-credit, .site-footer > a {
+.site-footer-credit, .site-footer-copyright {
   display: flex;
   align-items: center;
   min-height: 44px;
@@ -2245,18 +2245,6 @@ time.chip {
   overflow: hidden;
   border-radius: 0;
   line-height: 0;
-}
-.case-media-assembly {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  pointer-events: none;
-}
-.case-media-assembly > span {
-  background: var(--scene-fill);
-  border-radius: var(--radius-scene);
 }
 .case-media-stage > :is(img, video) {
   display: block;

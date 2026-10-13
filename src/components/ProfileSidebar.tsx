@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { aboutPresentation, aboutTools, education, experience, profile, toolLogos } from '../data/portfolio'
 import type { Experience } from '../data/portfolio'
 import { Icon } from './Icon'
@@ -7,7 +8,7 @@ import { MetaSeparatedText } from './MetaSeparatedText'
 import { publicAsset } from '../lib/publicAsset'
 import { Footer } from './Footer'
 import { Typography } from './Typography'
-import { motionTokens, useMotionSystem } from '../lib/motion'
+import { motionTokens, useMotionSystem, useInterfaceReady } from '../lib/motion'
 import { GreetingEyes } from './GreetingEyes'
 
 function ToolsStrip() {
@@ -86,16 +87,36 @@ function ResumeEntries({ items }: { items: Experience[] }) {
 }
 
 export function ProfileHero() {
-  const { variants } = useMotionSystem()
+  const { variants, reduced } = useMotionSystem()
+  const headlineRef = useRef<HTMLHeadingElement>(null)
+  const headlineVisible = useInView(headlineRef, { amount: .35 })
+  const [documentVisible, setDocumentVisible] = useState(() => !document.hidden)
+  useEffect(() => {
+    const update = () => setDocumentVisible(!document.hidden)
+    document.addEventListener('visibilitychange', update)
+    return () => document.removeEventListener('visibilitychange', update)
+  }, [])
+  const uiReady = useInterfaceReady()
+  const breathe = !reduced && uiReady && headlineVisible && documentVisible
+  const breath = {
+    initial: false as const,
+    animate: { transform: breathe
+      ? ['scaleX(1)', `scaleX(${motionTokens.signature.type.maximum})`, `scaleX(${motionTokens.signature.type.minimum})`, 'scaleX(1)']
+      : 'scaleX(1)' },
+    transition: breathe
+      ? { duration: motionTokens.signature.type.duration, ease: motionTokens.easeFloat, repeat: Infinity }
+      : { duration: reduced ? 0 : motionTokens.micro },
+    style: { transformOrigin: 'left center' },
+  }
   return <section className="profile-hero" data-canvas-panel aria-labelledby="hero-title">
     <motion.div className="hero-copy" initial="hidden" animate="visible">
       <motion.div className="hero-identity" variants={variants('fade', .04)}>
         <p className="hero-greeting"><span>Привет</span>{' '}<GreetingEyes />{' '}<span>я — Соня</span></p>
       </motion.div>
-      <motion.h1 id="hero-title" className="profile-role">
+      <motion.h1 ref={headlineRef} id="hero-title" className="profile-role">
         <motion.span className="hero-headline-line" variants={variants('left', 0.120)}>UX/UI &amp; Product Designer</motion.span>{' '}
-        <motion.span className="hero-headline-line" variants={variants('left', 0.185)}><Typography>с опытом B2B/B2C, запуском</Typography></motion.span>{' '}
-        <motion.span className="hero-headline-line" variants={variants('left', 0.250)}><Typography>и развитием цифровых продуктов</Typography></motion.span>
+        <motion.span className="hero-headline-line" variants={variants('left', 0.185)}><motion.span className="hero-type-breath" {...breath}><Typography>с опытом B2B/B2C, запуском</Typography></motion.span></motion.span>{' '}
+        <motion.span className="hero-headline-line" variants={variants('left', 0.250)}><motion.span className="hero-type-breath" {...breath}><Typography>и развитием цифровых продуктов</Typography></motion.span></motion.span>
       </motion.h1>
       <motion.div className="hero-links" variants={variants('soft', .34)}><SocialIconLinks location="hero" /></motion.div>
       <motion.p className="hero-location" variants={variants('fade', .4)}><MetaSeparatedText value={profile.location} /></motion.p>
@@ -109,8 +130,20 @@ export function ProfileHero() {
 }
 
 export function ProfileAbout() {
-  const { variants, hoverLift, metricVariants, metricCaptionVariants } = useMotionSystem()
-  return <Typography><motion.section className="profile-about" id="about" data-canvas-panel aria-label="Обо мне"
+  const { variants, hoverLift, metricVariants, metricCaptionVariants, reduced } = useMotionSystem()
+  const aboutRef = useRef<HTMLElement>(null)
+  const [horizontal, setHorizontal] = useState(() => window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)').matches)
+  const [metricsVisible, setMetricsVisible] = useState(false)
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)')
+    const update = () => setHorizontal(media.matches)
+    const reveal = () => setMetricsVisible(true)
+    const about = aboutRef.current
+    about?.addEventListener('canvas-visible', reveal)
+    media.addEventListener('change', update)
+    return () => { about?.removeEventListener('canvas-visible', reveal); media.removeEventListener('change', update) }
+  }, [])
+  return <Typography><motion.section ref={aboutRef} className="profile-about" id="about" data-canvas-panel aria-label="Обо мне"
     initial="hidden" whileInView="visible" viewport={{ once: true, amount: .08 }}>
     <div className="about-intro">
     <motion.h2 id="about-title" className="about-statement" variants={variants('fade')}>
@@ -118,7 +151,10 @@ export function ProfileAbout() {
     </motion.h2>
     <motion.p className="about-background" variants={variants('soft', .08)}>{aboutPresentation.background}</motion.p>
     </div>
-    <motion.div className="about-principles" initial="hidden" whileInView="visible" viewport={{ once: true, amount: .04 }}>
+    <motion.div className="about-principles" initial={reduced ? false : 'hidden'}
+      animate={reduced || (horizontal && metricsVisible) ? 'visible' : horizontal ? 'hidden' : undefined}
+      whileInView={horizontal ? undefined : 'visible'} viewport={{ once: true, amount: .04 }}
+      data-metrics-state={reduced || metricsVisible ? 'visible' : 'pending'}>
       {aboutPresentation.principles.map((principle, index) => <div className="about-principle" key={principle.title}>
         <motion.h3 style={{ transformOrigin: 'left center' }} variants={metricVariants(index)}>{principle.title}</motion.h3>
         <motion.p variants={metricCaptionVariants(index)}>{principle.description}</motion.p>

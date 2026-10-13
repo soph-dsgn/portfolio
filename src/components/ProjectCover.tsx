@@ -1,4 +1,4 @@
-import { motionTokens } from '../lib/motion'
+import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { motion } from 'framer-motion'
@@ -6,12 +6,15 @@ import type { Project } from '../data/portfolio'
 import { bindShortWords } from '../lib/typography'
 
 /** One measured caption flow and one artwork stage, shared by every cover. */
-export function ProjectCover({ project, revealed, immediate, children }: {
+export function ProjectCover({ project, revealed, immediate, children, opening = false, onPortalComplete }: {
+  opening?: boolean
+  onPortalComplete?: () => void
   project: Project
   revealed: boolean
   immediate: boolean
   children: ReactNode
 }) {
+  const { reduced } = useMotionSystem()
   const rootRef = useRef<HTMLDivElement>(null)
   const captionRef = useRef<HTMLDivElement>(null)
   const [reserved, setReserved] = useState(0)
@@ -41,10 +44,13 @@ export function ProjectCover({ project, revealed, immediate, children }: {
     .filter(Boolean)
     .map(tag => tag[0].toLocaleUpperCase() + tag.slice(1))
 
-  return <div className="project-cover" ref={rootRef} style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
+  return <motion.div className="project-cover" ref={rootRef} initial={false}
+    animate={{ transform: `scale(${opening && !reduced ? motionTokens.signature.portal.scale : 1})` }}
+    transition={{ duration: reduced ? 0 : motionTokens.signature.portal.duration, ease: motionTokens.ease }}
+    onAnimationComplete={onPortalComplete} style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
     <motion.div className="project-caption" ref={captionRef} initial={false}
-      animate={{ opacity: revealed ? 1 : 0, transform: `translateY(${revealed ? 0 : 8}px)` }}
-      transition={{ duration: immediate ? 0 : motionTokens.hover, ease: motionTokens.ease }}>
+      animate={{ opacity: revealed && !opening ? 1 : 0, transform: `translateY(${revealed ? 0 : 8}px)` }}
+      transition={{ duration: opening ? motionTokens.signature.portal.duration : immediate ? 0 : motionTokens.hover, ease: motionTokens.ease }}>
       <div className="project-labels"><div className="project-tags">
         {tags.map(tag => <span className="chip" key={tag}>{tag}</span>)}
       </div></div>
@@ -57,5 +63,5 @@ export function ProjectCover({ project, revealed, immediate, children }: {
         {children}
       </motion.div>
     </div>
-  </div>
+  </motion.div>
 }

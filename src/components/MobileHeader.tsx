@@ -1,3 +1,4 @@
+import { useActiveConcept } from '../lib/useActiveConcept'
 import { useLocale } from '../i18n/locale'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -28,7 +29,7 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const { variants, navInteraction } = useMotionSystem()
   const { pathname, search } = useLocation()
   const [openFor, setOpenFor] = useState<string | null>(null)
-  const [activeSection, setActiveSection] = useState('')
+  const [activePageSection, setActiveSection] = useState('')
   const reducedMotion = useReducedMotion()
   const press = navInteraction
   const menuKey = pathname + search
@@ -42,11 +43,14 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
     const project = projects.find(project => pathname === `/projects/${project.id}`)
     return project ? getCaseNavigationSections(project) : []
   }, [pathname])
+  const activeConcept = useActiveConcept(isConcept ? sections.map(section => section.id) : [])
+  const activeSection = isConcept ? activeConcept : activePageSection
   const isActiveLink = (href: string) => href.includes('#')
     ? pathname === '/' && activeSection === href.split('#')[1]
     : pathname === href
 
   useEffect(() => {
+    if (isConcept) return
     const ids = isCase
       ? sections.map(({ id }) => id)
       : homeLinks.filter(({ href }) => href.includes('#')).map(({ href }) => href.split('#')[1])
@@ -83,7 +87,7 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
       window.removeEventListener('resize', schedule)
       cancelAnimationFrame(frame)
     }
-  }, [pathname, isCase, sections])
+  }, [pathname, isCase, isConcept, sections])
 
   // Reveal the active concept inside the pill, without moving the page.
   useEffect(() => {

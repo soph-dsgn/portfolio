@@ -14,6 +14,12 @@ export const motionTokens = {
   caption: .25, captionDelay: .18, artwork: .5, scroll: .65,
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1, adaptiveDelayFactor: .65,
   assemblyStagger: .025, maxRevealDelay: .24,
+  signature: {
+    scene: { distance: 4, mobileDistance: 2, duration: .45, mobileDuration: .35, portalDistance: 2 },
+    portal: { duration: .18, entryDuration: .22, scale: 1.015, entryScale: .992, entryOpacity: .94 },
+    concept: { duration: .3, inactiveScale: .99, mobileScale: .995, inactiveOpacity: .92, mobileOpacity: .96 },
+    type: { duration: 7, minimum: .996, maximum: 1.004 },
+  },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
   diagram: { source: .22, wireStart: .24, wire: .3, targetStart: .66, node: .35, stagger: .035, maxNodeDelay: .14, wireStagger: .025, maxWireDelay: .1, mobileStagger: .07, mobileDelay: .04, maxMobileDelay: .32, maxMobileWireDelay: .28, filter: .35, filterStart: .16, filterStateStart: .38, filterResultStart: .7 },
@@ -80,4 +86,27 @@ export function useMotionSystem() {
       delay: reduced ? 0 : index * motionTokens.metricStagger + motionTokens.captionDelay, ease: motionTokens.ease } },
   })
   return { reduced, adaptive, hover, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricVariants, metricCaptionVariants }
+}
+
+// First-document reveals must not finish behind the initial loader. All scenes
+// share this one readiness subscription; client navigation never resets it.
+const interfaceListeners = new Set<() => void>()
+const interfaceReady = () => !document.getElementById('root')?.hasAttribute('data-initial-loading')
+const announceInterface = () => {
+  if (!interfaceReady()) return
+  document.removeEventListener('initial-ui-ready', announceInterface)
+  interfaceListeners.forEach(listener => listener())
+  interfaceListeners.clear()
+}
+const subscribeInterface = (listener: () => void) => {
+  if (interfaceReady()) return () => {}
+  interfaceListeners.add(listener)
+  if (interfaceListeners.size === 1) document.addEventListener('initial-ui-ready', announceInterface)
+  return () => {
+    interfaceListeners.delete(listener)
+    if (!interfaceListeners.size) document.removeEventListener('initial-ui-ready', announceInterface)
+  }
+}
+export function useInterfaceReady() {
+  return useSyncExternalStore(subscribeInterface, interfaceReady, () => false)
 }

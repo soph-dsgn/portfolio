@@ -1,9 +1,9 @@
 import { captureHomeScroll } from '../lib/pageScroll'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import type { Project } from '../data/portfolio'
 import { CaseCursor } from './CaseCursor'
 import { motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
 import { SceneSurface } from './SceneSurface'
 import { ProjectCover } from './ProjectCover'
@@ -17,6 +17,18 @@ const hoverQuery = '(min-width: 1101px) and (hover: hover) and (pointer: fine) a
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
   const location = useLocation()
+  const navigate = useNavigate()
+  const [openingKey, setOpeningKey] = useState<string | null>(null)
+  const pending = useRef<string | null>(null)
+  const opening = openingKey === location.key
+  const finishPortal = () => {
+    const entry = pending.current
+    pending.current = null
+    setOpeningKey(null)
+    if (entry !== location.key) return
+    navigate(`/projects/${project.id}`, { state: { homeEntryKey: location.key, portal: true } })
+  }
+  useEffect(() => { pending.current = null }, [location.key])
   const reduced = useReducedMotion()
   const press = useAdaptivePress()
   const [hovered, setHovered] = useState(false)
@@ -42,7 +54,15 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         draggable={false}
         to={`/projects/${project.id}`}
         state={{ homeEntryKey: location.key }}
-        onClick={() => captureHomeScroll(location.key)}
+        onClick={event => {
+          captureHomeScroll(location.key)
+          if (event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.detail === 0 || reduced) return
+          event.preventDefault()
+          if (pending.current) return
+          pending.current = location.key
+          parallax.reset()
+          setOpeningKey(location.key)
+        }}
         aria-labelledby={`${project.id}-title`}
         data-reveal-details={interactive}
         onPointerEnter={event => { if (event.pointerType === 'mouse') setHovered(true) }}
@@ -55,8 +75,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         onBlur={() => setFocused(false)}
       >
         <CaseCursor>
-          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene">
-          <ProjectCover project={project} revealed={revealed} immediate={focused || !interactive}>
+          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble opening={opening}>
+          <ProjectCover opening={opening} onPortalComplete={finishPortal} project={project} revealed={revealed} immediate={focused || !interactive}>
           {project.cover ? (
               <motion.div className="project-media" style={parallax.style}>
                 <motion.div className="project-artwork project-artwork--image"

@@ -1,3 +1,4 @@
+import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
@@ -181,6 +182,7 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
 }
 
 export function ProjectPage() {
+  const portalEntry = usePortalEntry()
   const { t } = useLocale()
   const { slug } = useParams()
   const project = projects.find((item) => item.id === slug)
@@ -210,7 +212,7 @@ export function ProjectPage() {
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
-        <header className="case-header">
+        <motion.header {...portalEntry} className="case-header">
           {project.figmaUrl ? (
             <div className="case-meta" data-reveal="case-intro" data-reveal-order="0">
               <a className="button figma-button" href={project.figmaUrl} target="_blank" rel="noreferrer">
@@ -219,7 +221,7 @@ export function ProjectPage() {
             </div>
           ) : null}
           <h1 data-reveal="case-intro" data-reveal-order={project.figmaUrl ? 1 : 0}>{project.title}</h1>
-        </header>
+        </motion.header>
         <div className="case-content" id="case-content">
           <div className="case-overview" id="overview">
             <dl className="case-facts" aria-label="О проекте">

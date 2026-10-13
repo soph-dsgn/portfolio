@@ -1,3 +1,6 @@
+import { useActiveConcept } from '../lib/useActiveConcept'
+import { usePortalEntry } from '../lib/usePortalEntry'
+import { motionTokens } from '../lib/motion'
 import { motion } from 'framer-motion'
 import { useMotionSystem } from '../lib/motion'
 import { useEffect, useRef, useState } from 'react'
@@ -13,9 +16,11 @@ type Props = { project: Project }
 const emptyVideos: CaseVideo[] = []
 
 export function ConceptCasePage({ project }: Props) {
-  const { hoverLift } = useMotionSystem()
+  const portalEntry = usePortalEntry()
+  const { hoverLift, reduced, adaptive } = useMotionSystem()
   const reducedMotion = useReducedMotion()
   const videos = project.videos ?? emptyVideos
+  const activeConcept = useActiveConcept(videos.map(video => video.id))
   const elements = useRef<(HTMLVideoElement | null)[]>([])
   const control = useRef<(index: number) => void>(() => {})
   const [playing, setPlaying] = useState<number | null>(null)
@@ -176,10 +181,10 @@ export function ConceptCasePage({ project }: Props) {
   return (
     <Typography><div className="case-shell concept-case">
       <main className="case-main" id="main-content" tabIndex={-1}>
-        <header className="case-header" id="overview">
+        <motion.header {...portalEntry} className="case-header" id="overview">
           <h1 data-reveal="case-intro" data-reveal-order="0">{project.title}</h1>
           <p className="case-deck" data-reveal="case-intro" data-reveal-order="1">{withoutFinalPeriod(project.description)}</p>
-        </header>
+        </motion.header>
         <div className="concept-gallery" aria-label="Видео концептов">
           {videos.map((item, index) => {
             const isPlaying = playing === index
@@ -187,6 +192,13 @@ export function ConceptCasePage({ project }: Props) {
             const label = hasEnded && !isPlaying ? 'Повторить' : isPlaying ? 'Пауза' : 'Воспроизвести'
             return (
               <figure className="concept-video-item" id={item.id} key={item.id} data-reveal="image">
+                <motion.div className="concept-focus-layer" initial={false}
+                  data-concept-active={activeConcept === item.id}
+                  animate={reduced || activeConcept === item.id
+                    ? { transform: 'scale(1)', opacity: 1 }
+                    : { transform: `scale(${adaptive ? motionTokens.signature.concept.mobileScale : motionTokens.signature.concept.inactiveScale})`,
+                      opacity: adaptive ? motionTokens.signature.concept.mobileOpacity : motionTokens.signature.concept.inactiveOpacity }}
+                  transition={{ duration: reduced ? 0 : motionTokens.signature.concept.duration, ease: motionTokens.easeFloat }}>
                 <CaseMediaStage fill><video
                   ref={(node) => { elements.current[index] = node }}
                   src={item.src}
@@ -198,6 +210,7 @@ export function ConceptCasePage({ project }: Props) {
                   preload="none"
                   aria-label={item.title}
                 /></CaseMediaStage>
+                </motion.div>
                 <VisualCaption action={<motion.button {...hoverLift} type="button" className="concept-video-action" onClick={() => control.current(index)} aria-label={`${label}: ${item.title}`} title={`${label}: ${item.title}`}>
                     <span className="concept-video-action-visual"><Icon name={hasEnded && !isPlaying ? 'replay' : isPlaying ? 'pause' : 'play'} /></span>
                   </motion.button>}>
