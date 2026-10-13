@@ -3,7 +3,7 @@ import { captureHomeScroll } from '../lib/pageScroll'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import type { Project } from '../data/portfolio'
 import { CaseCursor } from './CaseCursor'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useAnimationControls, useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
 import { SceneSurface } from './SceneSurface'
@@ -21,19 +21,27 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   const navigate = useNavigate()
   const [openingKey, setOpeningKey] = useState<string | null>(null)
   const [portalOpenKey, setPortalOpenKey] = useState<string | null>(null)
+  const portalControls = useAnimationControls()
   const pending = useRef<string | null>(null)
   const opening = openingKey === location.key
-  const finishPortal = () => {
-    const entry = pending.current
-    pending.current = null
-    setOpeningKey(null)
-    setPortalOpenKey(null)
-    if (entry !== location.key) return
-    navigate(`/projects/${project.id}`, { state: { homeEntryKey: location.key, portal: true } })
-  }
   useEffect(() => { pending.current = null }, [location.key])
   const reduced = useReducedMotion()
   const { adaptive, mobileEntrance } = useMotionSystem()
+  useEffect(() => {
+    let cancelled = false
+    if (!opening || reduced) { portalControls.set({ transform: 'scale(1)' }); return }
+    const enter = async () => {
+      await portalControls.start({ transform: `scale(${motionTokens.signature.portal.pressScale})`, transition: { duration: motionTokens.signature.portal.pressDuration, ease: motionTokens.ease } })
+      if (cancelled) return
+      setPortalOpenKey(location.key)
+      await portalControls.start({ transform: `scale(${adaptive ? motionTokens.signature.portal.mobileScale : motionTokens.signature.portal.scale})`, transition: { duration: motionTokens.signature.portal.duration, ease: motionTokens.ease } })
+      if (cancelled || pending.current !== location.key) return
+      pending.current = null
+      navigate(`/projects/${project.id}`, { state: { homeEntryKey: location.key, portal: true } })
+    }
+    void enter()
+    return () => { cancelled = true; portalControls.stop() }
+  }, [opening, reduced, adaptive, location.key, project.id, navigate, portalControls])
   const cardRef = useRef<HTMLElement>(null)
   const entered = useEntrance(cardRef)
   const [hovered, setHovered] = useState(false)
@@ -56,6 +64,9 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     <article ref={cardRef} className="project-card" data-canvas-panel data-project={project.id}>
       <MotionLink
         className="project-link"
+        initial={false} animate={portalControls}
+        data-portal-phase={opening ? portalOpenKey === location.key ? 'open' : 'press' : 'idle'}
+        whileTap={adaptive && !reduced ? { transform: `scale(${motionTokens.mobile.tapScale})` } : undefined}
         draggable={false}
         to={`/projects/${project.id}`}
         state={{ homeEntryKey: location.key }}
@@ -80,8 +91,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         onBlur={() => setFocused(false)}
       >
         <CaseCursor>
-          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble opening={portalOpenKey === location.key}>
-          <ProjectCover opening={opening} onPortalOpen={() => setPortalOpenKey(location.key)} onPortalComplete={finishPortal} project={project} revealed={revealed} immediate={focused || !interactive}>
+          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble>
+          <ProjectCover opening={portalOpenKey === location.key} project={project} revealed={revealed} immediate={focused || !interactive}>
           {project.cover ? (
               <motion.div className="project-media" style={parallax.style}>
                 <motion.div className="project-artwork project-artwork--image"
