@@ -41,8 +41,8 @@ export function useArtworkParallax(enabled: boolean) {
       const rect = point.element.getBoundingClientRect()
       if (!rect.width || !rect.height) return
       const clamp = (value: number) => Math.max(-1, Math.min(1, value))
-      x.set(clamp((point.x - rect.left) / rect.width * 2 - 1) * 8)
-      y.set(clamp((point.y - rect.top) / rect.height * 2 - 1) * 8)
+      x.set(clamp((point.x - rect.left) / rect.width * 2 - 1) * motionTokens.signature.parallax.distance)
+      y.set(clamp((point.y - rect.top) / rect.height * 2 - 1) * motionTokens.signature.parallax.distance)
     })
   }
   return { style: { transform }, onPointerMove, reset }

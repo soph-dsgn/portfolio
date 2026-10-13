@@ -1,3 +1,4 @@
+import { SceneImage } from './SceneImage'
 import { captureHomeScroll } from '../lib/pageScroll'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import type { Project } from '../data/portfolio'
@@ -80,10 +81,10 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           {project.cover ? (
               <motion.div className="project-media" style={parallax.style}>
                 <motion.div className="project-artwork project-artwork--image"
-                  initial={reduced ? false : { opacity: 0, transform: index % 2 ? 'scale(.98)' : 'translateX(16px)' }}
-                  whileInView={{ opacity: 1, transform: reduced ? 'none' : index % 2 ? 'scale(1)' : 'translateX(0px)' }} viewport={{ once: true, amount: .15 }}
+                  initial={reduced || !['skywallet', 'astoria'].includes(project.id) ? false : { opacity: 0, transform: index % 2 ? 'scale(.98)' : 'translateX(16px)' }}
+                  whileInView={{ opacity: 1, transform: reduced || !['skywallet', 'astoria'].includes(project.id) ? 'none' : index % 2 ? 'scale(1)' : 'translateX(0px)' }} viewport={{ once: true, amount: .15 }}
                   transition={{ duration: reduced ? motionTokens.reduced : motionTokens.artwork, ease: motionTokens.ease }}>
-                  <img
+                  <SceneImage
                     draggable={false}
                     src={project.cover}
                     srcSet={project.coverSrcSet}

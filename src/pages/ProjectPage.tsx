@@ -1,3 +1,4 @@
+import { SceneImage } from '../components/SceneImage'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
 import { useLocale } from '../i18n/locale'
@@ -157,7 +158,7 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
     <div className="case-image-gallery" aria-label="Экраны проекта">
       {images.map((image) => (
         <motion.figure className={`case-image-frame ${image.screenCount && image.screenCount >= 4 ? 'case-layout--full' : image.screenCount === 3 ? 'case-layout--wide' : 'case-layout--medium'}`} key={image.src}
-          initial={reduced ? false : { opacity: 0 }}
+          initial={reduced ? false : { opacity: motionTokens.signature.scene.opacity }}
           whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .02 }}
           transition={{ duration: reduced ? motionTokens.reduced : motionTokens.adaptiveReveal, ease: motionTokens.ease }}>
           <a href={image.src} target="_blank" rel="noreferrer" aria-label={`Открыть изображение в полном размере: ${image.caption}`}>
@@ -165,7 +166,7 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
               heightFill={heightFill}
               multiScreen={(image.screenCount ?? 0) >= 3}
               contained={image.width * 3 !== image.height * 4}
-            ><img
+            ><SceneImage
               src={image.src}
               alt={image.alt}
               width={image.width}

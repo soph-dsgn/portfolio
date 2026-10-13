@@ -101,7 +101,7 @@ export function ProfileHero() {
   const breath = {
     initial: false as const,
     animate: { transform: breathe
-      ? ['scaleX(1)', `scaleX(${motionTokens.signature.type.maximum})`, `scaleX(${motionTokens.signature.type.minimum})`, 'scaleX(1)']
+      ? ['scaleX(1)', `scaleX(${motionTokens.signature.type.maximum})`, `scaleX(${motionTokens.signature.type.minimum})`, `scaleX(${motionTokens.signature.type.returnScale})`, 'scaleX(1)']
       : 'scaleX(1)' },
     transition: breathe
       ? { duration: motionTokens.signature.type.duration, ease: motionTokens.easeFloat, repeat: Infinity }
@@ -109,7 +109,7 @@ export function ProfileHero() {
     style: { transformOrigin: 'left center' },
   }
   return <section className="profile-hero" data-canvas-panel aria-labelledby="hero-title">
-    <motion.div className="hero-copy" initial="hidden" animate="visible">
+    <motion.div className="hero-copy" initial="hidden" animate={uiReady ? "visible" : "hidden"}>
       <motion.div className="hero-identity" variants={variants('fade', .04)}>
         <p className="hero-greeting"><span>Привет</span>{' '}<GreetingEyes />{' '}<span>я — Соня</span></p>
       </motion.div>
@@ -122,7 +122,7 @@ export function ProfileHero() {
       <motion.p className="hero-location" variants={variants('fade', .4)}><MetaSeparatedText value={profile.location} /></motion.p>
     </motion.div>
     <div className="hero-visual">
-      <motion.div className="profile-avatar" initial="hidden" animate="visible" variants={variants('scale', .18)}>
+      <motion.div className="profile-avatar" initial="hidden" animate={uiReady ? "visible" : "hidden"} variants={variants('scale', .18)}>
         <img src={publicAsset('optimized/home/avatar-1200.webp')} srcSet={`${publicAsset('optimized/home/avatar-640.webp')} 640w, ${publicAsset('optimized/home/avatar-1200.webp')} 1200w`} sizes="(min-width: 1101px) 30.5vw, (min-width: 761px) 45vw, calc(100vw - 32px)" alt={`Фото ${profile.name}`} width="1200" height="1500" loading="eager" decoding="async" fetchPriority="high" />
       </motion.div>
     </div>

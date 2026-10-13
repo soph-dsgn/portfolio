@@ -23,7 +23,7 @@ const { translate } = result.exports
 assert.equal(translate('с\u00a0опытом в\u00a0финтехе,', 'en'), 'with experience in fintech,')
 assert.equal(translate('Фото Софьи Стрельченко', 'en'), 'Photo of Sophie Strelchenko')
 assert.equal(translate('Карта → Поиск', 'en'), 'Map → Search')
-assert.equal(translate('Воспроизвести: Концепт мобильного мессенджера', 'en'), 'Play: Mobile messenger concept')
+assert.equal(translate('Воспроизвести: Мессенджер', 'en'), 'Play: Messenger')
 assert.equal(translate('Перейти к экрану 2: Обо мне', 'en'), 'Go to screen 2: About')
 assert.equal(translate('01.10.2026', 'en'), '01.10.2026')
 assert.equal(translate('Figma', 'en'), 'Figma')

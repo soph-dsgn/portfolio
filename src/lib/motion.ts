@@ -15,10 +15,12 @@ export const motionTokens = {
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1, adaptiveDelayFactor: .65,
   assemblyStagger: .025, maxRevealDelay: .24,
   signature: {
-    scene: { distance: 4, mobileDistance: 2, duration: .45, mobileDuration: .35, portalDistance: 2 },
-    portal: { duration: .18, entryDuration: .22, scale: 1.015, entryScale: .992, entryOpacity: .94 },
-    concept: { duration: .3, inactiveScale: .99, mobileScale: .995, inactiveOpacity: .92, mobileOpacity: .96 },
-    type: { duration: 7, minimum: .996, maximum: 1.004 },
+    scene: { distance: 6, mobileDistance: 3, duration: .5, mobileDuration: .4, portalDistance: 3, opacity: .94 },
+    portal: { duration: .24, entryDuration: .28, scale: 1.025, entryScale: .987, entryOpacity: .92 },
+    concept: { duration: .32, inactiveScale: .987, mobileScale: .995, inactiveOpacity: .9, mobileOpacity: .96, blur: 1 },
+    type: { duration: 7, minimum: .993, maximum: 1.007, returnScale: 1.003 },
+    metrics: { desktopScale: .92, mobileScale: .94, desktopY: 8 },
+    parallax: { distance: 8 },
   },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
@@ -74,8 +76,8 @@ export function useMotionSystem() {
     transition: reduced ? { duration: 0 } : motionTokens.interaction,
   }
   const metricVariants = (index: number): Variants => ({
-    hidden: { opacity: 0, transform: reduced ? 'scale(1)' : 'scale(.94)' },
-    visible: { opacity: 1, transform: 'scale(1)', transition: {
+    hidden: { opacity: 0, transform: reduced ? 'translateY(0px) scale(1)' : `translateY(${adaptive ? 0 : motionTokens.signature.metrics.desktopY}px) scale(${adaptive ? motionTokens.signature.metrics.mobileScale : motionTokens.signature.metrics.desktopScale})` },
+    visible: { opacity: 1, transform: 'translateY(0px) scale(1)', transition: {
       duration: reduced ? motionTokens.reduced : adaptive ? motionTokens.adaptiveReveal : motionTokens.metric,
       delay: reduced ? 0 : index * motionTokens.metricStagger, ease: motionTokens.ease,
     } },
