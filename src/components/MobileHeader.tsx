@@ -1,9 +1,10 @@
+import { captureHomeScroll } from '../lib/pageScroll'
 import { useActiveConcept } from '../lib/useActiveConcept'
 import { useLocale } from '../i18n/locale'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import type { CSSProperties, MouseEvent } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { projects, profile } from '../data/portfolio'
 import { getCaseNavigationSections } from '../data/caseContent'
@@ -12,7 +13,7 @@ import { TelegramLink } from './ContactLinks'
 import { trackEvent } from '../lib/analytics'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
-import { navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
+import { navigateToSection } from '../lib/canvasNavigation'
 import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
@@ -27,7 +28,10 @@ const homeLinks = [
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
   const { locale } = useLocale()
   const { variants, navInteraction } = useMotionSystem()
-  const { pathname, search } = useLocation()
+  const location = useLocation()
+  const { pathname, search } = location
+  const navigate = useNavigate()
+  const anchorFrame = useRef(0)
   const [openFor, setOpenFor] = useState<string | null>(null)
   const [activePageSection, setActiveSection] = useState('')
   const reducedMotion = useReducedMotion()
@@ -142,6 +146,32 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     }
   }, [open])
 
+  useEffect(() => () => cancelAnimationFrame(anchorFrame.current), [])
+
+  function navigateHomeAnchor(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+    const id = href.split('#')[1]
+    if (!id) return
+    const target = pathname === '/' ? document.getElementById(id) : null
+    if (pathname === '/' && !target) return
+    event.preventDefault()
+    cancelAnimationFrame(anchorFrame.current)
+    captureHomeScroll(location.key)
+    setOpenFor(null)
+    // PUSH marks an interactive intent. Reload/POP ignores it, so direct hash
+    // entries remain instant and saved history entries restore their position.
+    navigate(href, { state: { animateAnchor: true, anchorOriginPath: pathname } })
+    if (!target) return // HomeCanvas consumes cross-route intent after positioning.
+    // Router commit + mobile menu unlock precede the shared scroll animation.
+    anchorFrame.current = requestAnimationFrame(() => {
+      anchorFrame.current = 0
+      if (!target.isConnected) return
+      target.tabIndex = -1
+      target.focus({ preventScroll: true })
+      navigateToSection(target, reducedMotion ? 'instant' : 'smooth')
+    })
+  }
+
   function closeAtSection(id: string) {
     setActiveSection(id)
     setOpenFor(null)
@@ -150,9 +180,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
       if (!section) return
       section.tabIndex = -1
       section.focus({ preventScroll: true })
-      if (isCase) navigateToSection(section, reducedMotion ? 'instant' : 'smooth')
-      else if (!scrollToCanvasTarget(section, reducedMotion ? 'instant' : 'smooth'))
-        section.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth' })
+      navigateToSection(section, reducedMotion ? 'instant' : 'smooth')
     })
   }
 
@@ -168,10 +196,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
               event.preventDefault(); closeAtSection(section.id)
             }}><NavigationLabel active={activeSection === section.id}>{bindShortWords(section.label)}</NavigationLabel></motion.a>) : <>
           {homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
-            onClick={event => {
-              if (link.href.includes('#') && pathname === '/' && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey)
-                setOpenFor(null)
-            }}
+            onClick={event => navigateHomeAnchor(event, link.href)}
             aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel></MotionLink>)}
           <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a></>}
         </nav>
@@ -245,7 +270,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             <MotionLink key={link.href} {...navInteraction} initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ ...navInteraction.transition, opacity: { duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, delay: open && !reducedMotion ? index * motionTokens.staggerSmall : 0 } }}
               to={link.href}
               aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}
-              onClick={() => setOpenFor(null)}
+              onClick={event => navigateHomeAnchor(event, link.href)}
               style={{ ...navInteraction.style, '--menu-order': index } as CSSProperties}
             >
               <NavigationLabel active={isActiveLink(link.href)} className="mobile-menu-link-label">{bindShortWords(link.label)}</NavigationLabel>
