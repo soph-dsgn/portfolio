@@ -37,20 +37,23 @@ export function HomeCanvas() {
   const reduced = useReducedMotion()
   const location = useLocation()
   const navigationType = useNavigationType()
+  const modePosition = useRef<{ horizontal: boolean; anchor: HTMLElement | null }>({ horizontal, anchor: null })
   const positioned = useRef<string | null>(null)
   const ready = useRef(false)
   const generation = useRef(0)
   const measureCurrent = useRef<(() => boolean) | null>(null)
   const keyboardNavigation = useRef(false)
   const aboutRevealed = useRef(false)
-  const [initialization, setInitialization] = useState<{ entry: string; generation: number; restored?: number; hash: string; animateAnchor: boolean } | null>(null)
+  const [initialization, setInitialization] = useState<{ entry: string; generation: number; restored?: number; hash: string; animateAnchor: boolean; anchor?: HTMLElement | null } | null>(null)
   const distance = useMotionValue(0)
   const start = useMotionValue(0)
   const offset = useMotionValue(0)
   // Pixel-for-pixel travel keeps native wheel, trackpad and keyboard scrolling.
   // Keep one MotionValue binding across breakpoints so an old horizontal
   // subscription cannot overwrite the vertical layout's transform.
-  const transform = useTransform(offset, value => horizontal && !reduced ? `translate3d(${-value}px, 0, 0)` : 'none')
+  const layoutMode = useMotionValue(horizontal && !reduced ? 1 : 0)
+  useLayoutEffect(() => { layoutMode.set(horizontal && !reduced ? 1 : 0) }, [horizontal, reduced, layoutMode])
+  const transform = useTransform([offset, layoutMode], ([travel, mode]) => mode ? `translate3d(${-Number(travel)}px, 0, 0)` : 'none')
   const updateActivePanel = useCallback((index: number) => {
     if (activePanelIndex.current === index) return
     activePanelIndex.current = index
@@ -86,6 +89,10 @@ export function HomeCanvas() {
     const target = homeHashTarget(root.current, location.hash)
     const resolvedHash = target ? `#${target.id}` : ''
     const entry = `${location.key}:${location.hash}`
+    const modeChanged = modePosition.current.horizontal !== horizontal
+    const modeAnchor = modeChanged ? modePosition.current.anchor : null
+    modePosition.current.horizontal = horizontal
+    if (modeChanged) positioned.current = null
     const needsPosition = positioned.current !== entry
     const interactiveAnchor = needsPosition && navigationType === 'PUSH' && location.state?.animateAnchor === true && Boolean(target)
     const mountedAnchor = interactiveAnchor && location.state?.anchorOriginPath === '/' && positioned.current !== null
@@ -97,6 +104,19 @@ export function HomeCanvas() {
     // The entry's native position is saved while this DOM still exists, never
     // in a router cleanup after a shorter case has clamped the scroll range.
     const about = element.querySelector<HTMLElement>('#about')
+    let entrancePanels: { element: HTMLElement; left: number; width: number; top: number; height: number }[] = []
+    const revealPanels = (travel: number) => {
+      if (!horizontal || document.getElementById('root')?.hasAttribute('data-initial-loading')) return
+      for (const panel of entrancePanels) {
+        if (panel.element.dataset.canvasVisible === 'true') continue
+        const left = panel.left - travel
+        const visible = Math.max(0, Math.min(left + panel.width, document.documentElement.clientWidth) - Math.max(left, 0))
+        if (visible / panel.width >= .35) {
+          panel.element.dataset.canvasVisible = 'true'
+          panel.element.dispatchEvent(new Event('canvas-enter'))
+        }
+      }
+    }
     let aboutBounds = { left: 0, width: 0 }
     const revealAbout = (travel: number) => {
       if (!horizontal || aboutRevealed.current || document.getElementById('root')?.hasAttribute('data-initial-loading')) return
@@ -105,6 +125,7 @@ export function HomeCanvas() {
       const visible = Math.max(0, Math.min(left + aboutBounds.width, document.documentElement.clientWidth) - Math.max(left, 0))
       if (visible / aboutBounds.width >= .6) {
         aboutRevealed.current = true
+        about.dataset.canvasMetricsVisible = 'true'
         about.dispatchEvent(new Event('canvas-visible'))
       }
     }
@@ -113,6 +134,10 @@ export function HomeCanvas() {
       // Only the positioned entry can consume native scroll samples.
       const travel = Math.max(0, Math.min(window.scrollY - start.get(), distance.get()))
       offset.set(travel)
+      const probe = horizontal ? travel : window.scrollY + window.innerHeight * .5
+      const candidates = entrancePanels.filter(panel => horizontal ? panel.left <= probe + 100 : panel.top <= probe)
+      modePosition.current.anchor = (candidates.at(-1) ?? entrancePanels[0])?.element ?? null
+      revealPanels(travel)
       revealAbout(travel)
       updateActivePanel(nearestPanel(panelPositions.current, travel))
     }
@@ -131,6 +156,7 @@ export function HomeCanvas() {
         ![viewportWidth, viewportHeight, bounds.width, bounds.height, element.scrollWidth].every(value => Number.isFinite(value) && value > 0) ||
         !Number.isFinite(window.scrollY + bounds.top) || !panelElements.length ||
         panelElements.some(panel => !Number.isFinite(panel.offsetLeft) || panel.offsetWidth <= 0 || panel.offsetHeight <= 0)) return false
+      entrancePanels = panelElements.map(element => ({ element, left: element.offsetLeft, width: element.offsetWidth, top: element.getBoundingClientRect().top + window.scrollY, height: element.offsetHeight }))
       if (about) aboutBounds = { left: about.offsetLeft, width: about.offsetWidth }
       const travel = horizontal ? Math.max(0, element.scrollWidth - document.documentElement.clientWidth) : 0
       start.set(window.scrollY + (root.current?.getBoundingClientRect().top ?? 0))
@@ -161,7 +187,7 @@ export function HomeCanvas() {
           root.current?.setAttribute('data-positioning-phase', 'waiting-for-layout')
           return
         }
-        setInitialization({ entry, generation: version, restored: initialTop, hash: resolvedHash, animateAnchor: interactiveAnchor })
+        setInitialization({ anchor: modeAnchor, entry, generation: version, restored: initialTop, hash: resolvedHash, animateAnchor: interactiveAnchor })
       })
     }
     const waitForLayout = () => {
@@ -203,6 +229,15 @@ export function HomeCanvas() {
         waitForLayout()
         // ResizeObserver commits when real geometry exists; never flush inside this effect.
       }
+    } else if (modeChanged) {
+      // Mode changes reuse the measured bootstrap boundary, with the current
+      // panel as intent instead of a new route/hash or raw scroll coordinate.
+      ready.current = false
+      deactivateHomeScroll(location.key)
+      cancelSectionNavigation()
+      assetsReady = true
+      if (!horizontal) offset.set(0)
+      frame = requestAnimationFrame(commitMeasurement)
     } else if (needsPosition) {
       ready.current = false
       deactivateHomeScroll(location.key)
@@ -267,7 +302,8 @@ export function HomeCanvas() {
     if (horizontal && (root.current!.getBoundingClientRect().height < requiredHeight - 1 ||
       document.documentElement.scrollHeight - window.innerHeight < start.get() + distance.get() - 1)) return
     root.current?.setAttribute('data-positioning-phase', 'positioning')
-    if (initialization.restored !== undefined)
+    if (initialization.anchor?.isConnected) navigateToSection(initialization.anchor, 'instant')
+    else if (initialization.restored !== undefined)
       window.scrollTo({ top: initialization.restored, left: 0, behavior: 'instant' })
     else if (initialization.hash && !initialization.animateAnchor) {
       const target = homeHashTarget(root.current, initialization.hash)

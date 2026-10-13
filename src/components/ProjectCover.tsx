@@ -1,21 +1,42 @@
+import { useEntrance } from '../lib/useEntrance'
 import { motionTokens, useMotionSystem } from '../lib/motion'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useAnimationControls } from 'framer-motion'
 import type { Project } from '../data/portfolio'
 import { bindShortWords } from '../lib/typography'
 
 /** One measured caption flow and one artwork stage, shared by every cover. */
-export function ProjectCover({ project, revealed, immediate, children, opening = false, onPortalComplete }: {
+export function ProjectCover({ project, revealed, immediate, children, opening = false, onPortalComplete, onPortalOpen }: {
   opening?: boolean
   onPortalComplete?: () => void
+  onPortalOpen?: () => void
   project: Project
   revealed: boolean
   immediate: boolean
   children: ReactNode
 }) {
-  const { reduced } = useMotionSystem()
+  const { reduced, adaptive } = useMotionSystem()
+  const controls = useAnimationControls()
+  const [portalOpen, setPortalOpen] = useState(false)
+  const callbacks = useRef({ onPortalComplete, onPortalOpen })
+  useLayoutEffect(() => { callbacks.current = { onPortalComplete, onPortalOpen } }, [onPortalComplete, onPortalOpen])
+  useEffect(() => {
+    let cancelled = false
+    if (!opening || reduced) { controls.set({ transform: 'scale(1)' }); return }
+    const enter = async () => {
+      await controls.start({ transform: `scale(${motionTokens.signature.portal.pressScale})`, transition: { duration: motionTokens.signature.portal.pressDuration, ease: motionTokens.ease } })
+      if (cancelled) return
+      setPortalOpen(true)
+      callbacks.current.onPortalOpen?.()
+      await controls.start({ transform: `scale(${motionTokens.signature.portal.scale})`, transition: { duration: motionTokens.signature.portal.duration, ease: motionTokens.ease } })
+      if (!cancelled) { setPortalOpen(false); callbacks.current.onPortalComplete?.() }
+    }
+    void enter()
+    return () => { cancelled = true; controls.stop() }
+  }, [opening, reduced, controls])
   const rootRef = useRef<HTMLDivElement>(null)
+  const entered = useEntrance(rootRef)
   const captionRef = useRef<HTMLDivElement>(null)
   const [reserved, setReserved] = useState(0)
   const [artworkInset, setArtworkInset] = useState(0)
@@ -45,12 +66,13 @@ export function ProjectCover({ project, revealed, immediate, children, opening =
     .map(tag => tag[0].toLocaleUpperCase() + tag.slice(1))
 
   return <motion.div className="project-cover" ref={rootRef} initial={false}
-    animate={{ transform: `scale(${opening && !reduced ? motionTokens.signature.portal.scale : 1})` }}
+    animate={controls}
+    whileTap={adaptive && !reduced ? { transform: `scale(${motionTokens.mobile.tapScale})` } : undefined}
     transition={{ duration: reduced ? 0 : motionTokens.signature.portal.duration, ease: motionTokens.ease }}
-    onAnimationComplete={onPortalComplete} style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
-    <motion.div className="project-caption" ref={captionRef} initial={false}
-      animate={{ opacity: revealed && !opening ? 1 : 0, transform: `translateY(${revealed ? 0 : 8}px)` }}
-      transition={{ duration: opening ? motionTokens.signature.portal.duration : immediate ? 0 : motionTokens.hover, ease: motionTokens.ease }}>
+    style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
+    <motion.div className="project-caption" ref={captionRef} initial={adaptive && !reduced ? { opacity: 0, transform: `translateY(${motionTokens.mobile.card.captionY}px)` } : false}
+      animate={{ opacity: revealed && !portalOpen && (!adaptive || entered) ? 1 : 0, transform: `translateY(${adaptive ? entered ? 0 : motionTokens.mobile.card.captionY : revealed ? 0 : 8}px)` }}
+      transition={{ duration: reduced ? 0 : opening ? motionTokens.signature.portal.duration : adaptive ? motionTokens.mobile.entrance : immediate ? 0 : motionTokens.hover, delay: adaptive && entered && !opening && !reduced ? motionTokens.mobile.captionDelay : 0, ease: motionTokens.ease }}>
       <div className="project-labels"><div className="project-tags">
         {tags.map(tag => <span className="chip" key={tag}>{tag}</span>)}
       </div></div>
@@ -58,8 +80,8 @@ export function ProjectCover({ project, revealed, immediate, children, opening =
     </motion.div>
     <div className="project-cover-stage">
       <motion.div className="project-cover-visual" initial={false}
-        animate={{ transform: `translateY(${revealed && horizontal ? project.id === 'astoria' ? Math.max(32, reserved - artworkInset) : reserved / 2 : 0}px)` }}
-        transition={immediate ? { duration: 0 } : motionTokens.interaction}>
+        animate={{ transform: `translateY(${revealed && horizontal ? project.id === 'astoria' ? Math.max(32, reserved - artworkInset) : reserved / 2 : 0}px) scale(${portalOpen ? motionTokens.signature.portal.artworkScale : 1})` }}
+        transition={portalOpen ? { duration: motionTokens.signature.portal.duration, ease: motionTokens.ease } : immediate ? { duration: 0 } : motionTokens.interaction}>
         {children}
       </motion.div>
     </div>

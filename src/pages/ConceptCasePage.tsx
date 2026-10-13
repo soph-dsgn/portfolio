@@ -1,3 +1,5 @@
+import { MediaEntrance } from '../components/MediaEntrance'
+import { CaseTitle, CaseDeck } from '../components/CaseTitle'
 import { useActiveConcept } from '../lib/useActiveConcept'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
@@ -182,24 +184,25 @@ export function ConceptCasePage({ project }: Props) {
     <Typography><div className="case-shell concept-case">
       <main className="case-main" id="main-content" tabIndex={-1}>
         <motion.header {...portalEntry} className="case-header" id="overview">
-          <h1 data-reveal="case-intro" data-reveal-order="0">{project.title}</h1>
-          <p className="case-deck" data-reveal="case-intro" data-reveal-order="1">{withoutFinalPeriod(project.description)}</p>
+          <CaseTitle>{project.title}</CaseTitle>
+          <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
         </motion.header>
         <div className="concept-gallery" aria-label="Видео концептов">
           {videos.map((item, index) => {
+            const distant = Math.abs(index - videos.findIndex(video => video.id === activeConcept)) > 1
             const isPlaying = playing === index
             const hasEnded = completed.includes(index)
             const label = hasEnded && !isPlaying ? 'Повторить' : isPlaying ? 'Пауза' : 'Воспроизвести'
             return (
-              <figure className="concept-video-item" id={item.id} key={item.id} data-reveal="image">
-                <motion.div className="concept-focus-layer" initial={false}
+              <figure className="concept-video-item" id={item.id} key={item.id}>
+                <MediaEntrance><motion.div className="concept-focus-layer" initial={false}
                   data-concept-active={activeConcept === item.id}
                   animate={reduced || activeConcept === item.id
                     ? { transform: 'scale(1)', opacity: 1, filter: 'blur(0px)' }
-                    : { transform: `scale(${adaptive ? motionTokens.signature.concept.mobileScale : motionTokens.signature.concept.inactiveScale})`,
-                      opacity: adaptive ? motionTokens.signature.concept.mobileOpacity : motionTokens.signature.concept.inactiveOpacity,
-                      filter: `blur(${adaptive ? 0 : motionTokens.signature.concept.blur}px)` }}
-                  transition={{ duration: reduced ? 0 : motionTokens.signature.concept.duration, ease: motionTokens.easeFloat }}>
+                    : { transform: `scale(${adaptive ? motionTokens.signature.concept.mobileScale : (distant ? motionTokens.signature.concept.distantScale : motionTokens.signature.concept.inactiveScale)})`,
+                      opacity: adaptive ? motionTokens.signature.concept.mobileOpacity : (distant ? motionTokens.signature.concept.distantOpacity : motionTokens.signature.concept.inactiveOpacity),
+                      filter: `blur(${adaptive ? 0 : (distant ? motionTokens.signature.concept.distantBlur : motionTokens.signature.concept.blur)}px)` }}
+                  transition={{ duration: reduced ? 0 : motionTokens.signature.concept.duration, ease: motionTokens.easeFloat, filter: { duration: adaptive || reduced ? 0 : motionTokens.signature.concept.duration } }}>
                 <CaseMediaStage fill><video
                   ref={(node) => { elements.current[index] = node }}
                   src={item.src}
@@ -211,8 +214,8 @@ export function ConceptCasePage({ project }: Props) {
                   preload="none"
                   aria-label={item.title}
                 /></CaseMediaStage>
-                </motion.div>
-                <VisualCaption action={<motion.button {...hoverLift} type="button" className="concept-video-action" onClick={() => control.current(index)} aria-label={`${label}: ${item.title}`} title={`${label}: ${item.title}`}>
+                </motion.div></MediaEntrance>
+                <VisualCaption concept action={<motion.button {...hoverLift} type="button" className="concept-video-action" onClick={() => control.current(index)} aria-label={`${label}: ${item.title}`} title={`${label}: ${item.title}`}>
                     <span className="concept-video-action-visual"><Icon name={hasEnded && !isPlaying ? 'replay' : isPlaying ? 'pause' : 'play'} /></span>
                   </motion.button>}>
                   {withoutFinalPeriod(item.title)}

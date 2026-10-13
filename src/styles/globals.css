@@ -2683,19 +2683,11 @@ time.chip {
     border-radius: 20px;
     background: var(--color-white);
     overflow-y: auto;
-    opacity: 0;
-    transform: translateY(-8px) scale(.98);
     transform-origin: top right;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out), visibility 0s linear 220ms;
+    pointer-events: auto;
   }
   .mobile-menu[data-open='true'] {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    visibility: visible;
     pointer-events: auto;
-    transition-delay: 0ms;
   }
   .mobile-menu-backdrop {
     display: block;
@@ -2703,16 +2695,10 @@ time.chip {
     z-index: 1;
     inset: var(--header-height) 0 0;
     background: rgb(25 25 25 / 16%);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 220ms var(--ease-out), visibility 0s linear 220ms;
+    pointer-events: auto;
   }
   .mobile-menu-backdrop[data-open='true'] {
-    opacity: 1;
-    visibility: visible;
     pointer-events: auto;
-    transition-delay: 0ms;
   }
   .mobile-menu a {
     position: relative;
@@ -2722,12 +2708,8 @@ time.chip {
     padding: 10px 14px;
     border-radius: 10px;
     font-size: 16px;
-    opacity: 0;
-    transition: color 180ms ease, opacity 180ms var(--ease-out);
   }
   .mobile-menu[data-open='true'] a {
-    opacity: 1;
-    transition-delay: 0ms, calc(var(--menu-order, 0) * 30ms);
   }
   .mobile-menu-label {
     display: block;
@@ -2916,3 +2898,9 @@ button, input, select, textarea, svg text, svg tspan {
 @media (max-width: 760px) {
   .case-shell { width: calc(100% - 32px); }
 }
+
+/* Motion wrappers reserve their final layout throughout the entrance. */
+.case-title-mask { overflow: hidden; }
+.navigation-label { position: relative; display: inline-block; isolation: isolate; }
+.navigation-label-text { position: relative; z-index: 1; }
+.navigation-active-surface { position: absolute; inset: -5px -7px; border-radius: 8px; background: currentColor; opacity: .07; pointer-events: none; }

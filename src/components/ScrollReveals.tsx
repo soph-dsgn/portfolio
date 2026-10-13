@@ -43,8 +43,8 @@ export function ScrollReveals() {
       } else {
         const adaptive = window.matchMedia('(max-width: 1100px)').matches
         animations.set(block, animate(block, {
-          opacity: [0, 1], transform: [revealTransform(preset, adaptive ? 8 : 16), revealIdentity(preset)],
-        }, { duration: adaptive ? motionTokens.adaptiveReveal : motionTokens.reveal,
+          opacity: [kind === 'image' && adaptive ? motionTokens.mobile.media.opacity : 0, 1], transform: kind === 'image' ? [`translateY(${adaptive ? motionTokens.mobile.media.y : motionTokens.signature.media.y}px) scale(${adaptive ? motionTokens.mobile.media.scale : motionTokens.signature.media.scale})`, 'translateY(0px) scale(1)'] : [revealTransform(preset, adaptive ? motionTokens.mobile.distance : 16), revealIdentity(preset)],
+        }, { duration: kind === 'image' ? motionTokens.signature.media.duration : adaptive ? motionTokens.adaptiveReveal : motionTokens.reveal,
           delay: Math.min(delay / 1000, motionTokens.maxRevealDelay), ease: motionTokens.ease }))
       }
       targetsByBlock.get(block)?.forEach((target) => observer?.unobserve(target))

@@ -2,10 +2,10 @@ import { captureHomeScroll } from '../lib/pageScroll'
 import { useActiveConcept } from '../lib/useActiveConcept'
 import { useLocale } from '../i18n/locale'
 import { motionTokens, useMotionSystem } from '../lib/motion'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useId, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { projects, profile } from '../data/portfolio'
 import { getCaseNavigationSections } from '../data/caseContent'
 import { bindShortWords } from '../lib/typography'
@@ -28,6 +28,7 @@ const homeLinks = [
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
   const { locale } = useLocale()
   const { variants, navInteraction } = useMotionSystem()
+  const navScope = useId()
   const location = useLocation()
   const { pathname, search } = location
   const navigate = useNavigate()
@@ -184,11 +185,20 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     })
   }
 
+  const menuPanel = {
+    hidden: { opacity: 0, transform: reducedMotion ? 'none' : `translateY(${motionTokens.mobile.menu.y}px)` },
+    visible: { opacity: 1, transform: 'translateY(0px)', transition: { duration: reducedMotion ? motionTokens.reduced : motionTokens.mobile.menu.duration, ease: motionTokens.ease, staggerChildren: reducedMotion ? 0 : motionTokens.mobile.menu.stagger } },
+    exit: { opacity: 0, transform: reducedMotion ? 'none' : `translateY(${motionTokens.mobile.menu.itemY}px)`, transition: { duration: reducedMotion ? motionTokens.reduced : motionTokens.mobile.menu.exit, ease: motionTokens.ease } },
+  }
+  const menuItem = {
+    hidden: { opacity: 0, transform: reducedMotion ? 'none' : `translateY(${motionTokens.mobile.menu.itemY}px)` },
+    visible: { opacity: 1, transform: 'translateY(0px)', transition: { duration: reducedMotion ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease } },
+  }
   return (
     <motion.header initial="hidden" animate="visible" variants={variants('fade')} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ` site-header--case${isConcept ? ' site-header--concept' : ''}` : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
         {showBack && <BackButton to={backTo} />}
-        <nav ref={navRef} className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
+        <LayoutGroup id={`${navScope}-desktop`}><nav ref={navRef} className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
           {isCase ? sections.map(section => <motion.a key={section.id} {...navInteraction}
             href={`#${section.id}`} aria-current={activeSection === section.id ? 'location' : undefined}
             onClick={event => {
@@ -199,7 +209,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             onClick={event => navigateHomeAnchor(event, link.href)}
             aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel></MotionLink>)}
           <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a></>}
-        </nav>
+        </nav></LayoutGroup>
         <div className="header-actions">
           <TelegramLink location="header" label="TG" />
         </div>
@@ -230,29 +240,27 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
           <Icon name={open ? 'close' : 'menu'} />
         </motion.button>
       </div>
-      <motion.nav
+      <LayoutGroup id={`${navScope}-mobile`}><AnimatePresence initial={false}>{open && <motion.nav
         id="mobile-menu"
         className="mobile-menu"
         aria-label="Мобильное меню"
         data-open={open}
         aria-hidden={!open}
         inert={!open}
-        initial={false}
-        animate={{ opacity: open ? 1 : 0, transform: reducedMotion ? 'none' : open ? 'translateY(0px)' : 'translateY(-6px)' }}
-        transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease }}
+        initial="hidden" animate="visible" exit="exit" variants={menuPanel}
       >
         <LanguageSelector />
         {isCase ? (
           <>
-            <MotionLink {...navInteraction} to="/" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 0 } as CSSProperties}>
+            <MotionLink {...navInteraction} variants={menuItem} to="/" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 0 } as CSSProperties}>
               <NavigationLabel className="mobile-menu-link-label">Кейсы</NavigationLabel>
             </MotionLink>
-            <MotionLink {...navInteraction} to="/#about" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 1 } as CSSProperties}>
+            <MotionLink {...navInteraction} variants={menuItem} to="/#about" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 1 } as CSSProperties}>
               <NavigationLabel className="mobile-menu-link-label">Обо мне</NavigationLabel>
             </MotionLink>
             {sections.length > 0 && <span className="mobile-menu-label" style={{ '--menu-order': 2 } as CSSProperties}>Разделы кейса</span>}
             {sections.map((section, index) => (
-              <motion.a key={section.id} {...navInteraction}
+              <motion.a key={section.id} {...navInteraction} variants={menuItem}
                 href={`#${section.id}`}
                 aria-current={activeSection === section.id ? 'location' : undefined}
                 onClick={event => {
@@ -267,7 +275,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
           </>
         ) : (
           homeLinks.map((link, index) => (
-            <MotionLink key={link.href} {...navInteraction} initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ ...navInteraction.transition, opacity: { duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, delay: open && !reducedMotion ? index * motionTokens.staggerSmall : 0 } }}
+            <MotionLink key={link.href} {...navInteraction} variants={menuItem}
               to={link.href}
               aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}
               onClick={event => navigateHomeAnchor(event, link.href)}
@@ -277,8 +285,8 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             </MotionLink>
           ))
         )}
-        <motion.a {...navInteraction} initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ ...navInteraction.transition, opacity: { duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, delay: open && !reducedMotion ? 2 * motionTokens.staggerSmall : 0 } }} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}><NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel></motion.a>
-      </motion.nav>
+        <motion.a {...navInteraction} variants={menuItem} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}><NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel></motion.a>
+      </motion.nav>}</AnimatePresence></LayoutGroup>
     </motion.header>
   )
 }

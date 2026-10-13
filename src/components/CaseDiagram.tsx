@@ -1,6 +1,8 @@
+import { useEntrance } from '../lib/useEntrance'
+import { useMotionSystem } from '../lib/motion'
 import { motionTokens } from '../lib/motion'
 import { useMemo, useRef, type CSSProperties } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { CaseVisualSpec, VisualItem } from './CaseVisual'
 import { InlineArrows } from './ArrowIcon'
 import { withoutFinalPeriod } from '../data/caseContent'
@@ -279,12 +281,13 @@ function diagramEdges(visual: CaseVisualSpec, mode: DiagramMode): DiagramEdge[] 
 
 export function CaseDiagram({ visual, mode }: { visual: CaseVisualSpec; mode: DiagramMode }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '0px 0px -12% 0px' })
+  const inView = useEntrance(ref, .05)
+  const { adaptive } = useMotionSystem()
   const reduced = Boolean(useReducedMotion())
   const visible = reduced || inView
   const edges = useMemo(() => diagramEdges(visual, mode), [visual, mode])
   return <DiagramSequence edges={edges} visible={visible} reduced={reduced}><div ref={ref} className={`case-diagram case-diagram--${mode}`}>
-    <MobileCaseDiagram visual={visual} mode={mode} visible={visible} />
+    {adaptive && <MobileCaseDiagram visual={visual} mode={mode} visible={visible} />}
     {mode === 'service-map' && <ServiceMap items={visual.items} visible={visible} reduced={reduced} />}
     {mode === 'filters' && <FilterStates items={visual.items} visible={visible} reduced={reduced} />}
     {mode === 'route' && <Route visual={visual} visible={visible} reduced={reduced} />}

@@ -1,3 +1,4 @@
+import { CaseTitle, CaseDeck } from '../components/CaseTitle'
 import { SceneImage } from '../components/SceneImage'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
@@ -221,7 +222,7 @@ export function ProjectPage() {
               </a>
             </div>
           ) : null}
-          <h1 data-reveal="case-intro" data-reveal-order={project.figmaUrl ? 1 : 0}>{project.title}</h1>
+          <CaseTitle>{project.title}</CaseTitle>
         </motion.header>
         <div className="case-content" id="case-content">
           <div className="case-overview" id="overview">
@@ -230,7 +231,7 @@ export function ProjectPage() {
               <div data-reveal="fact" data-reveal-order="1"><dt>Платформа</dt><dd><MetaSeparatedText value={project.platform} /></dd></div>
               <div data-reveal="fact" data-reveal-order="2"><dt>Ниша</dt><dd>{project.niche ? <MetaSeparatedText value={project.niche} separator="slash" /> : null}</dd></div>
             </dl>
-            <p className="case-deck" data-reveal="text">{withoutFinalPeriod(project.description)}</p>
+            <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
           </div>
           {groups.map((group) => (
             <section className="case-section case-document-section" id={group.id} key={group.id} aria-labelledby={`${group.id}-title`}>

@@ -1,5 +1,5 @@
 import { useContext, useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type CSSProperties } from 'react'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { SceneMotionContext } from '../lib/SceneMotionContext'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 
@@ -50,15 +50,18 @@ export function SceneImage(props: ImgHTMLAttributes<HTMLImageElement>) {
     observer.observe(parent)
     return () => observer.disconnect()
   }, [active, props.src])
+  const parts: Variants = {
+    hidden: (index: number) => ({ transform: `translate3d(${quadrants[index].x * (assembling ? amplitude : 0)}px, ${quadrants[index].y * (assembling ? amplitude : 0)}px, 0) scale(${assembling ? motionTokens.signature.scene.scale : 1})`, opacity: assembling ? motionTokens.signature.scene.opacity : 1 }),
+    visible: (index: number) => ({ transform: `translate3d(${quadrants[index].x * (opening ? motionTokens.signature.scene.portalDistance : 0)}px, ${quadrants[index].y * (opening ? motionTokens.signature.scene.portalDistance : 0)}px, 0) scale(1)`, opacity: 1,
+      transition: { duration: opening ? motionTokens.signature.portal.duration : adaptive ? motionTokens.signature.scene.mobileDuration : motionTokens.signature.scene.duration, delay: opening ? 0 : index * (adaptive ? motionTokens.signature.scene.mobileStagger : motionTokens.signature.scene.stagger), ease: motionTokens.ease } }),
+  }
   return <>
     <img {...props} ref={image} data-scene-image={finished ? 'assembled' : assembling ? 'assembling' : 'waiting'}
       onLoad={event => { setLoaded(true); props.onLoad?.(event) }} />
     {active && frame && <div className="scene-image-parts" aria-hidden="true">
       {quadrants.map((part, index) => <div key={index} className="scene-image-quadrant" style={{ clipPath: part.clip }}>
         <motion.div className="scene-image-slice"
-          initial={{ transform: `translate3d(${part.x * (assembling ? amplitude : 0)}px, ${part.y * (assembling ? amplitude : 0)}px, 0)`, opacity: motionTokens.signature.scene.opacity }}
-          animate={{ transform: `translate3d(${part.x * (opening ? motionTokens.signature.scene.portalDistance : 0)}px, ${part.y * (opening ? motionTokens.signature.scene.portalDistance : 0)}px, 0)`, opacity: 1 }}
-          transition={{ duration: opening ? motionTokens.signature.portal.duration : adaptive ? motionTokens.signature.scene.mobileDuration : motionTokens.signature.scene.duration, ease: motionTokens.ease }}
+          custom={index} variants={parts} initial="hidden" animate="visible"
           onAnimationComplete={() => { if (index === quadrants.length - 1 && !opening) setFinished(true) }}>
           <img src={frame.src} alt="" draggable={false} decoding="async" style={{ position: 'absolute', left: frame.left, top: frame.top,
             width: frame.width, height: frame.height, maxWidth: 'none', maxHeight: 'none', objectFit: frame.fit as CSSProperties['objectFit'], objectPosition: frame.position,

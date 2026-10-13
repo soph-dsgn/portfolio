@@ -7,9 +7,11 @@ export function NavigationLabel({ active = false, className, children }: {
   active?: boolean; className?: string; children: ReactNode
 }) {
   const { reduced } = useMotionSystem()
-  return <motion.span className={className} initial={false}
+  return <motion.span className={`navigation-label ${className ?? ''}`} initial={false}
     animate={{ opacity: active ? 1 : .94 }}
     transition={{ duration: reduced ? 0 : motionTokens.navState, ease: motionTokens.ease }}>
-    {children}
+    {active && <motion.span aria-hidden="true" className="navigation-active-surface" initial={false} animate={{ opacity: .07 }} layoutId={reduced ? undefined : 'nav-active'}
+      transition={reduced ? { duration: 0 } : motionTokens.interaction} />}
+    <span className="navigation-label-text">{children}</span>
   </motion.span>
 }

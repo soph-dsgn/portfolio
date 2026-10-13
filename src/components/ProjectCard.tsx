@@ -8,8 +8,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
 import { SceneSurface } from './SceneSurface'
 import { ProjectCover } from './ProjectCover'
-import { useAdaptivePress } from '../lib/useAdaptivePress'
-import { motionTokens } from '../lib/motion'
+import { useEntrance } from '../lib/useEntrance'
+import { motionTokens, revealIdentity, revealTransform, useMotionSystem } from '../lib/motion'
 import { useArtworkParallax } from '../lib/useArtworkParallax'
 
 const MotionLink = motion.create(Link)
@@ -20,18 +20,22 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   const location = useLocation()
   const navigate = useNavigate()
   const [openingKey, setOpeningKey] = useState<string | null>(null)
+  const [portalOpenKey, setPortalOpenKey] = useState<string | null>(null)
   const pending = useRef<string | null>(null)
   const opening = openingKey === location.key
   const finishPortal = () => {
     const entry = pending.current
     pending.current = null
     setOpeningKey(null)
+    setPortalOpenKey(null)
     if (entry !== location.key) return
     navigate(`/projects/${project.id}`, { state: { homeEntryKey: location.key, portal: true } })
   }
   useEffect(() => { pending.current = null }, [location.key])
   const reduced = useReducedMotion()
-  const press = useAdaptivePress()
+  const { adaptive, mobileEntrance } = useMotionSystem()
+  const cardRef = useRef<HTMLElement>(null)
+  const entered = useEntrance(cardRef)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const [interactive, setInteractive] = useState(() => window.matchMedia(hoverQuery).matches)
@@ -49,8 +53,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     if (event.pointerType !== 'mouse' || !event.currentTarget.matches(':hover')) setHovered(false)
   }
   return (
-    <article className="project-card" data-canvas-panel data-project={project.id}>
-      <MotionLink {...press}
+    <article ref={cardRef} className="project-card" data-canvas-panel data-project={project.id}>
+      <MotionLink
         className="project-link"
         draggable={false}
         to={`/projects/${project.id}`}
@@ -76,13 +80,15 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         onBlur={() => setFocused(false)}
       >
         <CaseCursor>
-          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble opening={opening}>
-          <ProjectCover opening={opening} onPortalComplete={finishPortal} project={project} revealed={revealed} immediate={focused || !interactive}>
+          <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble opening={portalOpenKey === location.key}>
+          <ProjectCover opening={opening} onPortalOpen={() => setPortalOpenKey(location.key)} onPortalComplete={finishPortal} project={project} revealed={revealed} immediate={focused || !interactive}>
           {project.cover ? (
               <motion.div className="project-media" style={parallax.style}>
                 <motion.div className="project-artwork project-artwork--image"
-                  initial={reduced || !['skywallet', 'astoria'].includes(project.id) ? false : { opacity: 0, transform: index % 2 ? 'scale(.98)' : 'translateX(16px)' }}
-                  whileInView={{ opacity: 1, transform: reduced || !['skywallet', 'astoria'].includes(project.id) ? 'none' : index % 2 ? 'scale(1)' : 'translateX(0px)' }} viewport={{ once: true, amount: .15 }}
+                  initial={adaptive ? 'hidden' : reduced || !['skywallet', 'astoria'].includes(project.id) ? false : { opacity: 0, transform: revealTransform(index % 2 ? 'scale' : 'right') }}
+                  animate={adaptive ? entered ? 'visible' : 'hidden' : undefined}
+                  variants={adaptive ? mobileEntrance(0, motionTokens.mobile.card.scale, motionTokens.mobile.card.opacity) : undefined}
+                  whileInView={adaptive ? undefined : { opacity: 1, transform: revealIdentity('soft') }} viewport={{ once: true, amount: .15 }}
                   transition={{ duration: reduced ? motionTokens.reduced : motionTokens.artwork, ease: motionTokens.ease }}>
                   <SceneImage
                     draggable={false}

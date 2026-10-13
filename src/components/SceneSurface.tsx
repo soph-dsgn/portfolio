@@ -1,5 +1,5 @@
 import { SceneMotionContext } from '../lib/SceneMotionContext'
-import { useInView } from 'framer-motion'
+import { useEntrance } from '../lib/useEntrance'
 import { useMotionSystem, useInterfaceReady } from '../lib/motion'
 import { useId, useRef, type ReactNode } from 'react'
 
@@ -13,7 +13,7 @@ export function SceneSurface({ single = false, children, className = '', assembl
 }) {
   const { reduced, adaptive } = useMotionSystem()
   const observe = useRef<HTMLDivElement>(null)
-  const visible = useInView(observe, { once: true, amount: adaptive ? .18 : .35 })
+  const visible = useEntrance(observe, adaptive ? .18 : .35)
   const uiReady = useInterfaceReady()
   const assembled = visible && uiReady
   const animated = assemble && !single && !reduced

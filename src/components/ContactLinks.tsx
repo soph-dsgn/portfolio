@@ -25,8 +25,8 @@ export function ContactLinks({ location, resume = true }: { location: string; re
 
 export function SocialIconLinks({ location, first = 'telegram' }: { location: string; first?: 'telegram' | 'hh' }) {
   const { hoverLift, staggerGroup, opacityVariants } = useMotionSystem()
-  const interaction = { ...hoverLift, whileHover: hoverLift.whileHover ? { transform: 'translateY(-3px) scale(1.06)' } : undefined }
-  return <motion.nav initial="hidden" whileInView="visible" viewport={{ once: true, amount: .1 }} variants={staggerGroup} className="social-icon-links" aria-label="Социальные сети и почта">
+  const interaction = { ...hoverLift, whileHover: hoverLift.whileHover ? { transform: 'translate3d(0px, -3px, 0px) scale(1.06)' } : undefined }
+  return <motion.nav initial={location === 'hero' || location === 'contacts' ? undefined : 'hidden'} whileInView={location === 'hero' || location === 'contacts' ? undefined : 'visible'} viewport={{ once: true, amount: .1 }} variants={staggerGroup} className="social-icon-links" aria-label="Социальные сети и почта">
     {first === 'hh' ? <motion.a {...interaction} variants={opacityVariants} className="social-icon-link social-icon-link--hh" href={profile.hh} aria-disabled={!profile.hh || undefined} target="_blank" rel="noreferrer" aria-label="Резюме на HH.ru" title="HH.ru"
       onClick={profile.hh ? () => trackEvent('resume_click', { location, source: 'hh' }) : undefined}><img src={publicAsset('hh-logo.svg')} alt="" width="56" height="56" loading="lazy" decoding="async" /></motion.a> : <motion.a {...interaction} variants={opacityVariants} className="social-icon-link social-icon-link--telegram" href={profile.telegram} target="_blank" rel="noreferrer" aria-label="Написать в Telegram" title="Telegram"
       onClick={() => {

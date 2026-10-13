@@ -1,5 +1,5 @@
 /* Framer owns entrance transforms; CSS keeps only the existing colour feedback. */
-.mobile-menu a { transition-property: color; }
+.mobile-menu a { transition: none; }
 /* Adaptive UI is isolated from the desktop canvas and editorial grid. */
 [data-motion-managed='true'] { transition: none; }
 .case-diagram-mobile { display: none; }
@@ -61,9 +61,7 @@
     border-radius: 24px;
     max-height: calc(100dvh - 112px);
     transform-origin: top center;
-    transition: visibility 0s linear 220ms;
   }
-  .mobile-menu[data-open='true'] { transition-delay: 0s; }
   .mobile-menu a { border-radius: 14px; padding: 14px 16px; min-height: 50px; }
   .mobile-menu a:active { background: var(--color-surface); }
   .mobile-menu-backdrop { inset: 0; transition: none; }

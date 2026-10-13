@@ -7,20 +7,32 @@ export const motionTokens = {
   interaction: { type: 'spring' as const, stiffness: 450, damping: 34 },
   cursor: { stiffness: 450, damping: 38 },
   press: { type: 'spring' as const, stiffness: 550, damping: 38 },
-  reveal: .45, adaptiveReveal: .35, menu: .2, stagger: .06,
+  reveal: .45, adaptiveReveal: .5, menu: .2, stagger: .06,
   metric: .42, metricStagger: .07, mediaAssembly: .55, mediaAssemblyMobile: .45,
   navState: .18,
   micro: .16, hover: .22, reduced: .1, loaderExit: .18,
   caption: .25, captionDelay: .18, artwork: .5, scroll: .65,
-  staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1, adaptiveDelayFactor: .65,
+  staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1,
   assemblyStagger: .025, maxRevealDelay: .24,
   signature: {
-    scene: { distance: 6, mobileDistance: 3, duration: .5, mobileDuration: .4, portalDistance: 3, opacity: .94 },
-    portal: { duration: .24, entryDuration: .28, scale: 1.025, entryScale: .987, entryOpacity: .92 },
-    concept: { duration: .32, inactiveScale: .987, mobileScale: .995, inactiveOpacity: .9, mobileOpacity: .96, blur: 1 },
-    type: { duration: 7, minimum: .993, maximum: 1.007, returnScale: 1.003 },
-    metrics: { desktopScale: .92, mobileScale: .94, desktopY: 8 },
+    scene: { distance: 12, mobileDistance: 5, duration: .6, mobileDuration: .48, stagger: .032, mobileStagger: .025, scale: .985, portalDistance: 4, opacity: .92 },
+    portal: { pressDuration: .09, pressScale: .99, duration: .25, entryDuration: .35, scale: 1.035, artworkScale: 1.02, entryScale: .975, entryOpacity: .88, entryY: 8 },
+    concept: { duration: .4, inactiveScale: .982, distantScale: .975, mobileScale: .99, inactiveOpacity: .84, distantOpacity: .79, mobileOpacity: .92, blur: 1, distantBlur: 1.5 },
+    type: { duration: 8, minimum: .996, maximum: 1.006, returnScale: 1.003, opacity: [1, .92, 1, .96, 1] },
+    metrics: { desktopScale: .9, mobileScale: .9, desktopY: 14, groupStagger: .11, captionStart: .16, valueDuration: .36, captionDuration: .25 },
+    title: { duration: .55, deckDelay: .1 },
+    media: { duration: .5, y: 18, scale: .985 },
     parallax: { distance: 8 },
+  },
+  mobile: {
+    entrance: .5, distance: 16, groupStagger: .065, captionDelay: .08, toolsDelay: .32,
+    media: { duration: .5, y: 16, conceptY: 14, captionY: 6, conceptCaptionY: 8, scale: .98, opacity: .88 },
+    hero: { greeting: 8, title: 18, secondary: 14, actions: 10, photoY: 16, photoScale: .97 },
+    about: { statement: 16, background: 10 }, contact: { headline: 16, actions: 10, signature: 12, scale: .98 },
+    card: { captionY: 12, scale: .975, opacity: .9 },
+    metrics: { y: 12, stagger: .09 }, tools: { y: 6, stagger: .025 },
+    menu: { duration: .22, exit: .16, y: -8, itemY: -4, stagger: .03 },
+    tapScale: .985, diagram: { step: .22, connectorStart: .13, connectorDuration: .12 },
   },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
@@ -39,14 +51,13 @@ const subscribeHover = (update: () => void) => {
 }
 export type RevealPreset = 'soft' | 'left' | 'right' | 'scale' | 'fade'
 export function revealTransform(preset: RevealPreset, distance = 16) {
-  return preset === 'left' ? `translateX(-${distance}px)`
-    : preset === 'right' ? `translateX(${distance}px)`
-    : preset === 'scale' ? 'scale(.98)'
-    : preset === 'fade' ? 'none' : `translateY(${distance}px)`
+  const x = preset === 'left' ? -distance : preset === 'right' ? distance : 0
+  const y = preset === 'soft' ? distance : 0
+  return `translate3d(${x}px, ${y}px, 0px) scale(${preset === 'scale' ? .98 : 1})`
 }
 
-export function revealIdentity(preset: RevealPreset) {
-  return preset === 'scale' ? 'scale(1)' : preset === 'left' || preset === 'right' ? 'translateX(0px)' : preset === 'fade' ? 'none' : 'translateY(0px)'
+export function revealIdentity(_preset: RevealPreset) {
+  return 'translate3d(0px, 0px, 0px) scale(1)'
 }
 
 export function useMotionSystem() {
@@ -55,39 +66,42 @@ export function useMotionSystem() {
   const hover = useSyncExternalStore(subscribeHover, () => window.matchMedia('(hover: hover) and (pointer: fine)').matches, () => false)
   const transition = { duration: reduced ? motionTokens.reduced : adaptive ? motionTokens.adaptiveReveal : motionTokens.reveal, ease: motionTokens.ease }
   const variants = (preset: RevealPreset = 'soft', delay = 0): Variants => ({
-    hidden: { opacity: 0, transform: reduced ? revealIdentity(preset) : revealTransform(preset, adaptive ? 8 : 16) },
-    visible: { opacity: 1, transform: revealIdentity(preset), transition: { ...transition, delay: reduced ? 0 : delay * (adaptive ? motionTokens.adaptiveDelayFactor : 1) } },
+    hidden: { opacity: 0, transform: reduced ? revealIdentity(preset) : adaptive ? `translate3d(0px, ${preset === 'fade' ? 0 : motionTokens.mobile.distance}px, 0px) scale(1)` : revealTransform(preset, 16) },
+    visible: { opacity: 1, transform: revealIdentity(preset), transition: { ...transition, delay: reduced ? 0 : delay } },
   })
+  const mobileEntrance = (y = motionTokens.mobile.distance, scale = 1, opacity = 0): Variants => ({
+    hidden: { opacity, transform: reduced ? revealIdentity('soft') : `translate3d(0px, ${y}px, 0px) scale(${scale})` },
+    visible: { opacity: 1, transform: revealIdentity('soft'), transition: { duration: reduced ? motionTokens.reduced : motionTokens.mobile.entrance, ease: motionTokens.ease } },
+  })
+  const mobileGroup = (stagger = motionTokens.mobile.groupStagger, delay = 0): Variants => ({ hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : stagger, delayChildren: reduced ? 0 : delay } } })
   const staggerGroup: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : adaptive ? motionTokens.staggerAdaptive : motionTokens.stagger, delayChildren: reduced ? 0 : motionTokens.groupDelay } } }
   const opacityVariants: Variants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition } }
   const reveal = (preset: RevealPreset = 'soft', delay = 0) => ({
     initial: 'hidden', whileInView: 'visible', viewport: { once: true, amount: .04 }, variants: variants(preset, delay),
   })
   const navInteraction = {
-    style: { transform: 'translateY(0px) scale(1)' },
-    whileHover: hover && !reduced ? { transform: 'translateY(-1px) scale(1)' } : undefined,
-    whileTap: !reduced ? { transform: 'translateY(0px) scale(.97)' } : undefined,
+    style: { transform: 'translate3d(0px, 0px, 0px) scale(1)' },
+    whileHover: hover && !reduced ? { transform: 'translate3d(0px, -1px, 0px) scale(1)' } : undefined,
+    whileTap: !reduced ? { transform: 'translate3d(0px, 0px, 0px) scale(.97)' } : undefined,
     transition: reduced ? { duration: 0 } : motionTokens.interaction,
   }
   const hoverLift = {
-    style: { transform: 'translateY(0px) scale(1)' },
-    whileHover: hover && !reduced ? { transform: 'translateY(-2px) scale(1.03)' } : undefined,
-    whileTap: !reduced ? { transform: 'translateY(0px) scale(.97)' } : undefined,
+    style: { transform: 'translate3d(0px, 0px, 0px) scale(1)' },
+    whileHover: hover && !reduced ? { transform: 'translate3d(0px, -2px, 0px) scale(1.03)' } : undefined,
+    whileTap: !reduced ? { transform: 'translate3d(0px, 0px, 0px) scale(.97)' } : undefined,
     transition: reduced ? { duration: 0 } : motionTokens.interaction,
   }
-  const metricVariants = (index: number): Variants => ({
-    hidden: { opacity: 0, transform: reduced ? 'translateY(0px) scale(1)' : `translateY(${adaptive ? 0 : motionTokens.signature.metrics.desktopY}px) scale(${adaptive ? motionTokens.signature.metrics.mobileScale : motionTokens.signature.metrics.desktopScale})` },
-    visible: { opacity: 1, transform: 'translateY(0px) scale(1)', transition: {
-      duration: reduced ? motionTokens.reduced : adaptive ? motionTokens.adaptiveReveal : motionTokens.metric,
-      delay: reduced ? 0 : index * motionTokens.metricStagger, ease: motionTokens.ease,
-    } },
+  const metricGroupVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : adaptive ? motionTokens.mobile.metrics.stagger : motionTokens.signature.metrics.groupStagger } } }
+  const metricItemVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : motionTokens.signature.metrics.captionStart } } }
+  const metricVariants = (): Variants => ({
+    hidden: { opacity: 0, transform: reduced ? 'none' : `translate3d(0px, ${adaptive ? motionTokens.mobile.metrics.y : motionTokens.signature.metrics.desktopY}px, 0px) scale(${adaptive ? motionTokens.signature.metrics.mobileScale : motionTokens.signature.metrics.desktopScale})` },
+    visible: { opacity: 1, transform: 'translate3d(0px, 0px, 0px) scale(1)', transition: { duration: reduced ? motionTokens.reduced : motionTokens.signature.metrics.valueDuration, ease: motionTokens.ease } },
   })
-  const metricCaptionVariants = (index: number): Variants => ({
+  const metricCaptionVariants = (): Variants => ({
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: reduced ? motionTokens.reduced : motionTokens.caption,
-      delay: reduced ? 0 : index * motionTokens.metricStagger + motionTokens.captionDelay, ease: motionTokens.ease } },
+    visible: { opacity: 1, transition: { duration: reduced ? motionTokens.reduced : motionTokens.signature.metrics.captionDuration, ease: motionTokens.ease } },
   })
-  return { reduced, adaptive, hover, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricVariants, metricCaptionVariants }
+  return { reduced, adaptive, hover, mobileEntrance, mobileGroup, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricGroupVariants, metricItemVariants, metricVariants, metricCaptionVariants }
 }
 
 // First-document reveals must not finish behind the initial loader. All scenes
