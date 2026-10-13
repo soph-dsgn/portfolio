@@ -171,9 +171,10 @@ export const projects: Project[] = [
     videos: [
       { id: 'crypto-wallet', title: 'Криптокошелёк', shortTitle: 'Криптокошелёк', src: '/cases/concept/3.mp4?v=462cab3cd9d6', poster: '/optimized/concepts/poster-3.webp?v=af7125f89aa3', width: 2800, height: 2100 },
       { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/cases/concept/7.mp4?v=47339e11983b', poster: '/optimized/concepts/poster-7.webp?v=b2c2ae29097c', width: 2800, height: 2100 },
-      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 2800, height: 2100 },
+      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/cases/concept/8.mp4?v=805abfba7d0c', poster: '/optimized/concepts/poster-8.webp?v=4211dcc657a6', width: 2800, height: 2100 },
       { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 2800, height: 2100 },
       { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 2800, height: 2100 },
+      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 2800, height: 2100 },
       { id: 'weather', title: 'Приложение погоды', shortTitle: 'Погода', src: '/cases/concept/6.mp4', poster: '/optimized/concepts/poster-6.webp', width: 2800, height: 2100 },
       { id: 'crypto-portfolio', title: 'Криптопортфель', shortTitle: 'Криптопортфель', src: '/cases/concept/5.mp4?v=4f9a91800fc1', poster: '/optimized/concepts/poster-5.webp?v=c6bc07e2437a', width: 2800, height: 2100 },
     ],
