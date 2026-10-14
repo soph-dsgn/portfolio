@@ -94,13 +94,14 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           <SceneSurface single={project.id === 'skywallet' || project.id === 'astoria'} className="project-scene" assemble>
           <ProjectCover opening={portalOpenKey === location.key} project={project} revealed={revealed} immediate={focused || !interactive}>
           {project.cover ? (
-              <motion.div className="project-media" style={parallax.style}>
-                <motion.div className="project-artwork project-artwork--image"
+              <motion.div className="project-media project-media--entrance" inherit={false}
                   initial={adaptive ? 'hidden' : reduced || !['skywallet', 'astoria'].includes(project.id) ? false : { opacity: 0, transform: revealTransform(index % 2 ? 'scale' : 'right') }}
                   animate={adaptive ? entered ? 'visible' : 'hidden' : undefined}
                   variants={adaptive ? mobileEntrance(0, motionTokens.mobile.card.scale, motionTokens.mobile.card.opacity) : undefined}
                   whileInView={adaptive ? undefined : { opacity: 1, transform: revealIdentity('soft') }} viewport={{ once: true, amount: .15 }}
                   transition={{ duration: reduced ? motionTokens.reduced : motionTokens.artwork, ease: motionTokens.ease }}>
+                  <motion.div className="project-media project-media--parallax" inherit={false} style={parallax.style}>
+                  <div className="project-artwork project-artwork--image">
                   <SceneImage
                     draggable={false}
                     src={project.cover}
@@ -112,7 +113,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
                     loading="lazy"
                     decoding="async"
                   />
-                </motion.div>
+                  </div>
+                  </motion.div>
               </motion.div>
           ) : (
             <div className="project-artwork project-artwork--pending" aria-hidden="true">
