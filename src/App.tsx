@@ -87,7 +87,7 @@ function App() {
           path="*"
           element={
             <main className="not-found" id="main-content" tabIndex={-1}>
-              <h1>Страница не найдена</h1>
+              <h1>Кажется, такой страницы у меня нет</h1>
               <Link className="button" to="/">
                 На главную
               </Link>

@@ -13,9 +13,9 @@ export function CaseThanks({ id }: { id?: string }) {
       {...reveal('fade')}
     >
       <AchievementArtwork />
-      <p className="case-thanks-eyebrow">Достижение получено</p>
+      <p className="case-thanks-eyebrow">Спасибо, что дочитали</p>
       <h2>Любопытный исследователь</h2>
-      <p>Кейс прочитан, детали изучены — достижение ваше</p>
+      <p>Рада, что вы заглянули в детали</p>
     </motion.aside>
   )
 }

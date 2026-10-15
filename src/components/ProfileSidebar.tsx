@@ -116,8 +116,8 @@ export function ProfileHero() {
       </motion.div>
       <motion.h1 ref={headlineRef} id="hero-title" className="profile-role">
         <motion.span className="hero-headline-line" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.title) : variants('left', 0.120)}>UX/UI &amp; Product Designer</motion.span>{' '}
-        <motion.span className="hero-headline-line" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.secondary) : variants('left', 0.185)}><motion.span className="hero-type-breath" data-breathing={breathe ? 'active' : 'paused'} {...breath}><Typography>с опытом B2B/B2C, запуском</Typography></motion.span></motion.span>{' '}
-        <motion.span className="hero-headline-line" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.secondary) : variants('left', 0.250)}><motion.span className="hero-type-breath" data-breathing={breathe ? 'active' : 'paused'} {...breath}><Typography>и развитием цифровых продуктов</Typography></motion.span></motion.span>
+        <motion.span className="hero-headline-line" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.secondary) : variants('left', 0.185)}><motion.span className="hero-type-breath" data-breathing={breathe ? 'active' : 'paused'} {...breath}><Typography>Проектирую B2B/B2C-продукты:</Typography></motion.span></motion.span>{' '}
+        <motion.span className="hero-headline-line" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.secondary) : variants('left', 0.250)}><motion.span className="hero-type-breath" data-breathing={breathe ? 'active' : 'paused'} {...breath}><Typography>от первой логики до интерфейса, который можно отдавать в разработку</Typography></motion.span></motion.span>
       </motion.h1>
       <motion.div className="hero-links" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.actions) : variants('soft', .34)}><SocialIconLinks location="hero" /></motion.div>
       <motion.p className="hero-location" variants={adaptive ? mobileEntrance(0) : variants('fade', .4)}><MetaSeparatedText value={profile.location} /></motion.p>
@@ -185,8 +185,8 @@ export function ProfileContact({ homepage = false }: { homepage?: boolean }) {
   return (
     <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, amount: .08 }} variants={adaptive ? mobileGroup() : undefined} className="contacts-section" id="contacts" data-canvas-panel aria-labelledby="contacts-title">
       <motion.div className="contact-copy">
-        <motion.h2 id="contacts-title" className={homepage ? 'contact-headline--intro' : undefined} variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.headline) : variants('fade')}><Typography>{homepage ? 'Ищете дизайнера в команду? Давайте познакомимся — расскажу о своём опыте и узнаю о ваших задачах' : 'Будем на связи!'}</Typography></motion.h2>
-        <motion.div className="contact-actions" variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.actions) : variants('soft', .12)}><TelegramLink location="contacts" label="Связаться" showIcon={false} /><SocialIconLinks location="contacts" first="hh" /></motion.div>
+        <motion.h2 id="contacts-title" className={homepage ? 'contact-headline--intro' : undefined} variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.headline) : variants('fade')}><Typography>{homepage ? 'Если кажется, что я подхожу вашей команде — давайте знакомиться.' : 'Будем на связи!'}</Typography></motion.h2>
+        <motion.div className="contact-actions" variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.actions) : variants('soft', .12)}><TelegramLink location="contacts" label="Написать мне" showIcon={false} /><SocialIconLinks location="contacts" first="hh" /></motion.div>
       </motion.div>
       <motion.div className="contact-signature" variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.signature, motionTokens.mobile.contact.scale) : variants('left', .22)}>
         <span className="sr-only">@wsslxq</span>

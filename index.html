@@ -78,7 +78,7 @@
     </style>
     <div id="root" data-initial-loading>
       <div class="initial-loader" role="status" aria-live="polite">
-        <p><span id="initial-loading-copy">Докручиваю детали и выравниваю сетку</span><span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
+        <p><span id="initial-loading-copy">Минутку, расставляю всё по местам</span><span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
       </div>
     </div>
     <script>
@@ -86,7 +86,7 @@
       try {
         if (localStorage.getItem('portfolio.locale') === 'en') {
           document.documentElement.lang = 'en';
-          document.getElementById('initial-loading-copy').textContent = 'Polishing details and aligning the grid';
+          document.getElementById('initial-loading-copy').textContent = 'Just a moment, getting everything in place';
         }
       } catch { /* Use Russian when storage is unavailable. */ }
     </script>
