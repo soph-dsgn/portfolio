@@ -1913,8 +1913,6 @@
   "Минутку, расставляю всё по местам": "Just a moment, getting everything in place",
   "Кажется, такой страницы у меня нет": "Looks like I don’t have that page",
   "Другие мои работы есть на главной": "You can find my other work on the homepage",
-  "Спасибо, что дочитали": "Thanks for reading",
-  "Рада, что вы заглянули в детали": "I’m glad you took a closer look",
   "Разбираюсь в требованиях и сценариях, нахожу места, где легко запутаться, и готовлю решения к разработке. Проверяю не только визуал: понятно ли человеку, что делать, получается ли закончить задачу и есть ли смысл вернуться": "I work through requirements and user flows, find the confusing parts and prepare designs for development. I look beyond the visuals: do people know what to do, can they finish the task, and is there a reason to come back?",
   "SkyCapital даёт обменникам инфраструктуру WhiteLabel. Партнёры передают заявки через API, а сотрудники проверяют операции, обороты и комиссии и разбираются с проблемными обменами": "SkyCapital provides WhiteLabel infrastructure for exchange services. Partners submit requests through an API; their staff check transactions, turnover and fees, and investigate exchanges that need attention",
   "В кабинете уже были ордера, детали операций, клиенты и управление командой. Но общей картины за период не хватало, а за объяснением статусов и сбоев интеграции приходилось идти в поддержку": "The portal already had orders, transaction details, customers and team management. What it lacked was an overview for a given period. Understanding statuses and integration issues still meant contacting support",
@@ -2115,5 +2113,6 @@
   "Собрала структуру вокруг трёх моментов путешествия": "The structure follows three stages of a trip",
   "Связала их вокруг поездки и личного прогресса. Так функции поддерживают друг друга, а у человека появляются поводы вернуться": "Trips and personal progress connect the features, helping them support each other and giving people reasons to return",
   "Сформировала более 10 ключевых пользовательских сценариев и связала их через общую навигацию": "Shared navigation connects more than 10 core user flows",
-  "Сформировала общую UI-логику для:": "Shared UI patterns cover:"
+  "Сформировала общую UI-логику для:": "Shared UI patterns cover:",
+  "Вы получили ачивку за то, что заглянули в детали": "You earned an achievement for taking a closer look"
 }
