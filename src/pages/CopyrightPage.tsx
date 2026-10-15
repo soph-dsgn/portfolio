@@ -1,6 +1,5 @@
 import { useLocale } from '../i18n/locale'
 import { useEffect } from 'react'
-import { Footer } from '../components/Footer'
 import { profile } from '../data/portfolio'
 import { trackEvent } from '../lib/analytics'
 import { Typography } from '../components/Typography'
@@ -61,7 +60,6 @@ export function CopyrightPage() {
         </address>
         <p className="copyright-updated">Дата последнего обновления документа: 01.10.2026.</p>
       </article>
-      <Footer />
     </main></Typography>
   )
 }

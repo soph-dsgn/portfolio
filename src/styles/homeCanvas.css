@@ -25,6 +25,7 @@
   padding-block: 24px;
 }
 .home-canvas .hero-headline-line { display: block; white-space: nowrap; }
+.home-canvas .hero-headline-secondary { font-size: var(--type-hero-secondary); }
 .home-canvas .hero-headline-line + .hero-headline-line { color: var(--color-muted-on-dark); }
 .home-canvas .profile-role { min-width: 0; max-width: 100%; }
 .home-canvas .hero-headline-line + .hero-headline-line { white-space: normal; text-wrap: balance; }

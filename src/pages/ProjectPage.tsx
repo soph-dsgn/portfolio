@@ -199,7 +199,7 @@ export function ProjectPage() {
     return (
       <main className="not-found" id="main-content" tabIndex={-1}>
         <h1>Проект не найден</h1>
-        <p>Другие мои работы есть на главной.</p>
+        <p>Другие мои работы есть на главной</p>
         <Link className="button" to="/">На главную</Link>
       </main>
     )

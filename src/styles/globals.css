@@ -2190,9 +2190,6 @@ time.chip {
   margin-top: var(--space-3);
   font-size: 14px;
 }
-.copyright-page .site-footer {
-  margin-top: var(--space-8);
-}
 .not-found {
   max-width: 600px;
   margin: 100px auto;
