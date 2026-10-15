@@ -4,10 +4,10 @@ import type { PointerEvent, ReactNode } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 /** The entire cover owns one continuous hover zone, including its caption and whitespace. */
-export function CaseCursor({ children }: { children: ReactNode }) {
+export function CaseCursor({ children, enabled = true, requirePointerMovement = false }: { children: ReactNode; enabled?: boolean; requirePointerMovement?: boolean }) {
   const [visible, setVisible] = useState(false)
   const { reduced, adaptive, hover } = useMotionSystem()
-  const tracking = hover && !adaptive && !reduced
+  const tracking = enabled && hover && !adaptive && !reduced
   const visibleRef = useRef(false)
   const hide = () => { visibleRef.current = false; setVisible(false) }
   const x = useMotionValue(0)
@@ -45,10 +45,13 @@ export function CaseCursor({ children }: { children: ReactNode }) {
     if (event.pointerType === 'mouse' && event.currentTarget.matches(':hover')) return
     hide()
   }
-  return <div className="case-cursor-surface" data-cursor={visible} onPointerEnter={tracking ? follow : undefined} onPointerMove={tracking ? follow : undefined} onPointerLeave={hide} onPointerCancel={cancel}>
+  return <div className="case-cursor-surface" data-cursor={visible && tracking && !requirePointerMovement} onPointerEnter={tracking && !requirePointerMovement ? follow : undefined} onPointerMove={tracking ? event => {
+      if (requirePointerMovement && ((!event.movementX && !event.movementY) || event.currentTarget.closest('.home-canvas')?.getAttribute('data-positioned') !== 'true')) return
+      follow(event)
+    } : undefined} onPointerLeave={hide} onPointerCancel={cancel}>
     {children}
-    <motion.span className="case-cursor" aria-hidden="true" style={{ transform: position }}>
-      <motion.span initial={false} animate={{ opacity: visible ? 1 : 0, transform: reduced ? 'scale(1)' : `scale(${visible ? 1 : .94})` }} transition={{ duration: motionTokens.micro, ease: motionTokens.ease }}>Смотреть кейс</motion.span>
+    <motion.span className="case-cursor" aria-hidden="true" style={{ transform: position, visibility: tracking && !requirePointerMovement ? 'visible' : 'hidden' }}>
+      <motion.span initial={false} animate={{ opacity: visible ? 1 : 0, transform: reduced ? 'scale(1)' : `scale(${visible ? 1 : .94})` }} transition={{ duration: tracking && !requirePointerMovement ? motionTokens.micro : 0, ease: motionTokens.ease }}>Смотреть кейс</motion.span>
     </motion.span>
   </div>
 }

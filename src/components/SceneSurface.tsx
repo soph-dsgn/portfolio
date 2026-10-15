@@ -4,9 +4,9 @@ import { useMotionSystem, useInterfaceReady } from '../lib/motion'
 import { useId, useRef, type ReactNode } from 'react'
 
 /** The same rounded segment geometry clips homepage covers and case media. */
-export function SceneSurface({ single = false, children, className = '', assemble = false, opening = false }: {
+export function SceneSurface({ single = false, children, className = '', assemble = false, settled = false }: {
+  settled?: boolean
   assemble?: boolean
-  opening?: boolean
   single?: boolean
   children: ReactNode
   className?: string
@@ -16,11 +16,11 @@ export function SceneSurface({ single = false, children, className = '', assembl
   const visible = useEntrance(observe, adaptive ? .18 : .35)
   const uiReady = useInterfaceReady()
   const assembled = visible && uiReady
-  const animated = assemble && !single && !reduced
+  const animated = assemble && !single && !reduced && !settled
   const clipId = `scene-${useId().replace(/:/g, '')}`
   const segments = single ? [[0, 0]] : [[0, 0], [50, 0], [0, 50], [50, 50]]
   return (
-    <div ref={animated ? observe : undefined} data-scene-motion={animated ? assembled ? 'assembled' : 'waiting' : 'static'} className={`scene-surface ${className}`} style={{ clipPath: `url(#${clipId})` }}>
+    <div ref={animated ? observe : undefined} data-scene-motion={settled ? 'assembled' : animated ? assembled ? 'assembled' : 'waiting' : 'static'} className={`scene-surface ${className}`} style={{ clipPath: `url(#${clipId})` }}>
       <svg className="scene-surface-mask" width="100%" height="100%" aria-hidden="true" focusable="false">
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
@@ -45,7 +45,7 @@ export function SceneSurface({ single = false, children, className = '', assembl
           </clipPath>
         </defs>
       </svg>
-      <SceneMotionContext.Provider value={{ reveal: animated && assembled, opening: !single && !reduced && opening }}>
+      <SceneMotionContext.Provider value={{ reveal: animated && assembled, settled }}>
         {children}
       </SceneMotionContext.Provider>
     </div>

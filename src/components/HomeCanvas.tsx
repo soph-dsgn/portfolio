@@ -1,5 +1,6 @@
+import { HomeMotionContext, homeSeenProjects } from '../lib/HomeMotionContext'
 import { flushSync } from 'react-dom'
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
 import { useLocation, useNavigationType } from 'react-router-dom'
 import { activateHomeScroll, captureHomeScroll, deactivateHomeScroll, savedPageScroll } from '../lib/pageScroll'
@@ -37,6 +38,9 @@ export function HomeCanvas() {
   const reduced = useReducedMotion()
   const location = useLocation()
   const navigationType = useNavigationType()
+  const restoredMotion = useMemo(() => navigationType === 'POP' && savedPageScroll(location.key, location.hash) !== undefined, [navigationType, location])
+  const settledProjects = useMemo(() => restoredMotion ? new Set(homeSeenProjects(location.key)) : new Set<string>(), [restoredMotion, location])
+  const [motionReady, setMotionReady] = useState(false)
   const modePosition = useRef<{ horizontal: boolean; anchor: HTMLElement | null }>({ horizontal, anchor: null })
   const positioned = useRef<string | null>(null)
   const ready = useRef(false)
@@ -94,7 +98,7 @@ export function HomeCanvas() {
     modePosition.current.horizontal = horizontal
     if (modeChanged) positioned.current = null
     const needsPosition = positioned.current !== entry
-    const interactiveAnchor = needsPosition && navigationType === 'PUSH' && location.state?.animateAnchor === true && Boolean(target)
+    const interactiveAnchor = needsPosition && navigationType === 'PUSH' && location.state?.sectionNavigation === 'interactive' && Boolean(target)
     const mountedAnchor = interactiveAnchor && location.state?.anchorOriginPath === '/' && positioned.current !== null
     const controller = new AbortController()
     const saved = navigationType === 'POP' && needsPosition && (!location.hash || target)
@@ -196,6 +200,7 @@ export function HomeCanvas() {
       positioned.current = null
       deactivateHomeScroll(location.key)
       cancelSectionNavigation()
+      setMotionReady(false)
       root.current?.setAttribute('data-positioned', 'false')
       root.current?.setAttribute('data-positioning-phase', 'waiting-for-layout')
     }
@@ -217,19 +222,25 @@ export function HomeCanvas() {
     window.addEventListener('scroll', sync, { passive: true })
     document.addEventListener('initial-ui-ready', sync)
     if (needsPosition && mountedAnchor) {
-      // Same-canvas clicks keep the native position/range. MobileHeader starts
-      // the one shared tween after this router commit; bootstrap must not reset it.
+      // A committed same-page intent reuses the ready canvas. Do not bootstrap
+      // or restore it; this branch alone starts the physical scroll.
       assetsReady = true
       if (measure()) {
         positioned.current = entry
         ready.current = true
         activateHomeScroll(location.key, location.hash)
         sync()
+        if (target) {
+          target.tabIndex = -1
+          target.focus({ preventScroll: true })
+          navigateToSection(target, reduced ? 'instant' : 'smooth')
+        }
       } else {
         waitForLayout()
         // ResizeObserver commits when real geometry exists; never flush inside this effect.
       }
     } else if (modeChanged) {
+      setMotionReady(false)
       // Mode changes reuse the measured bootstrap boundary, with the current
       // panel as intent instead of a new route/hash or raw scroll coordinate.
       ready.current = false
@@ -241,6 +252,7 @@ export function HomeCanvas() {
     } else if (needsPosition) {
       ready.current = false
       deactivateHomeScroll(location.key)
+      setMotionReady(false)
       root.current?.setAttribute('data-positioned', 'false')
       root.current?.setAttribute('data-positioning-phase', 'preparing')
       cancelSectionNavigation()
@@ -287,7 +299,7 @@ export function HomeCanvas() {
       window.removeEventListener('scroll', sync)
       document.removeEventListener('initial-ui-ready', sync)
     }
-  }, [horizontal, location.hash, location.key, navigationType, distance, offset, start, locale, updateActivePanel, location.state?.animateAnchor, location.state?.anchorOriginPath])
+  }, [horizontal, location.hash, location.key, navigationType, distance, offset, start, locale, updateActivePanel, location.state?.sectionNavigation, location.state?.anchorOriginPath, reduced])
 
   // This effect runs against React's committed scroll range. Bootstrap has one
   // owner: intent -> document/layout ready -> range commit -> native position ->
@@ -319,6 +331,7 @@ export function HomeCanvas() {
     captureHomeScroll(location.key)
     root.current?.setAttribute('data-positioning-phase', 'ready')
     root.current?.setAttribute('data-positioned', 'true')
+    setMotionReady(true)
     document.dispatchEvent(new Event('initial-ui-ready'))
     // Cross-route user clicks start at hero, with the committed native range
     // and tracking enabled. Direct URLs/POP use the instant branch above.
@@ -332,8 +345,8 @@ export function HomeCanvas() {
     }
   }, [initialization, height, horizontal, location.key, location.hash, start, distance, offset, updateActivePanel, reduced])
 
-  return <main id="main-content" className="home-canvas" ref={root} tabIndex={-1}
-    data-horizontal={horizontal} style={{ height, overflowAnchor: 'none' }} onFocusCapture={event => {
+  return <HomeMotionContext.Provider value={{ restored: restoredMotion, ready: motionReady, entry: location.key, seen: settledProjects }}><main id="main-content" className="home-canvas" ref={root} tabIndex={-1}
+    data-restored-home={restoredMotion || undefined} data-horizontal={horizontal} style={{ height, overflowAnchor: 'none' }} onFocusCapture={event => {
       if (keyboardNavigation.current && ready.current && horizontal && event.target instanceof Element && event.target.closest('[data-canvas-panel]') && !event.target.matches('[data-canvas-panel]'))
         scrollToCanvasTarget(event.target)
     }}>
@@ -352,5 +365,5 @@ export function HomeCanvas() {
         </button>)}
       </nav>}
     </div>
-  </main>
+  </main></HomeMotionContext.Provider>
 }

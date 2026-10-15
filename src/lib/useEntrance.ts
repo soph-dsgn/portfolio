@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useSyncExternalStore, type RefObject } from 'react'
+import { HomeMotionContext } from './HomeMotionContext'
+import { useCallback, useContext, useEffect, useSyncExternalStore, type RefObject } from 'react'
 import { useInView } from 'framer-motion'
 import { useInterfaceReady, useMotionSystem } from './motion'
 
@@ -15,7 +16,8 @@ const remember = (node: HTMLElement) => {
  */
 export function useEntrance(ref: RefObject<HTMLElement | null>, amount = .12, canvasEvent = 'canvas-enter') {
   const { adaptive, reduced } = useMotionSystem()
-  const ready = useInterfaceReady()
+  const home = useContext(HomeMotionContext)
+  const ready = useInterfaceReady() && (!home || home.ready)
   const intersecting = useInView(ref, { amount })
   const subscribe = useCallback((update: () => void) => { listeners.add(update); return () => { listeners.delete(update) } }, [])
   const snapshot = useCallback(() => Boolean(ref.current && entered.has(ref.current)), [ref])

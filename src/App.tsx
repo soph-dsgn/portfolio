@@ -31,8 +31,8 @@ function ScrollToPage() {
   const navigationType = useNavigationType()
   const previousPath = useRef<string | null>(null)
   useLayoutEffect(() => {
-    cancelSectionNavigation()
     if (previousPath.current !== null && previousPath.current !== pathname) {
+      cancelSectionNavigation()
       document.getElementById('main-content')?.focus({ preventScroll: true })
     }
     // HomeCanvas owns home positioning after its real scroll range is committed.
@@ -41,6 +41,9 @@ function ScrollToPage() {
       previousPath.current = pathname
       return
     }
+    // Home hash commits belong to HomeCanvas; cancelling here would stop the
+    // tween that fulfils that same navigation intent. Other pages own theirs.
+    cancelSectionNavigation()
     const restored = navigationType === 'POP' ? savedPageScroll(key) : undefined
     if (restored !== undefined) {
       window.scrollTo({ top: restored, behavior: 'instant' })

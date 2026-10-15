@@ -7,8 +7,8 @@ import type { Project } from '../data/portfolio'
 import { bindShortWords } from '../lib/typography'
 
 /** One measured caption flow and one artwork stage, shared by every cover. */
-export function ProjectCover({ project, revealed, immediate, children, opening = false }: {
-  opening?: boolean
+export function ProjectCover({ project, revealed, immediate, children, settled = false }: {
+  settled?: boolean
   project: Project
   revealed: boolean
   immediate: boolean
@@ -16,7 +16,8 @@ export function ProjectCover({ project, revealed, immediate, children, opening =
 }) {
   const { reduced, adaptive } = useMotionSystem()
   const rootRef = useRef<HTMLDivElement>(null)
-  const entered = useEntrance(rootRef)
+  const observed = useEntrance(rootRef)
+  const entered = settled || observed
   const captionRef = useRef<HTMLDivElement>(null)
   const [reserved, setReserved] = useState(0)
   const [artworkInset, setArtworkInset] = useState(0)
@@ -47,9 +48,9 @@ export function ProjectCover({ project, revealed, immediate, children, opening =
 
   return <motion.div className="project-cover" ref={rootRef} initial={false}
     style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
-    <motion.div className="project-caption" ref={captionRef} initial={adaptive && !reduced ? { opacity: 0, transform: `translateY(${motionTokens.mobile.card.captionY}px)` } : false}
-      animate={{ opacity: revealed && !opening && (!adaptive || entered) ? 1 : 0, transform: `translateY(${adaptive ? entered ? 0 : motionTokens.mobile.card.captionY : revealed ? 0 : 8}px)` }}
-      transition={{ duration: reduced ? 0 : opening ? motionTokens.signature.portal.duration : adaptive ? motionTokens.mobile.entrance : immediate ? 0 : motionTokens.hover, delay: adaptive && entered && !opening && !reduced ? motionTokens.mobile.captionDelay : 0, ease: motionTokens.ease }}>
+    <motion.div className="project-caption" ref={captionRef} initial={adaptive && !reduced && !settled ? { opacity: 0, transform: `translateY(${motionTokens.mobile.card.captionY}px)` } : false}
+      animate={{ opacity: revealed && (!adaptive || entered) ? 1 : 0, transform: `translateY(${adaptive ? entered ? 0 : motionTokens.mobile.card.captionY : revealed ? 0 : 8}px)` }}
+      transition={{ duration: reduced || (settled && immediate) ? 0 : adaptive ? motionTokens.mobile.entrance : immediate ? 0 : motionTokens.hover, delay: adaptive && entered && !reduced && !settled ? motionTokens.mobile.captionDelay : 0, ease: motionTokens.ease }}>
       <div className="project-labels"><div className="project-tags">
         {tags.map(tag => <span className="chip" key={tag}>{tag}</span>)}
       </div></div>
@@ -58,7 +59,7 @@ export function ProjectCover({ project, revealed, immediate, children, opening =
     <div className="project-cover-stage">
       <motion.div className="project-cover-visual" initial={false}
         animate={{ transform: `translateY(${revealed && horizontal ? project.id === 'astoria' ? Math.max(32, reserved - artworkInset) : reserved / 2 : 0}px)` }}
-        transition={opening ? { duration: motionTokens.signature.portal.duration, ease: motionTokens.ease } : immediate ? { duration: 0 } : motionTokens.interaction}>
+        transition={immediate ? { duration: 0 } : motionTokens.interaction}>
         {children}
       </motion.div>
     </div>

@@ -63,7 +63,6 @@
     transform-origin: top center;
   }
   .mobile-menu a { border-radius: 14px; padding: 14px 16px; min-height: 50px; }
-  .mobile-menu a:active { background: var(--color-surface); }
   .mobile-menu-backdrop { inset: 0; transition: none; }
 
   .home-canvas .contacts-section {
@@ -148,8 +147,8 @@
     transform-origin: top center;
   }
   .case-section-panel a { display: flex; align-items: center; min-height: 48px; padding: 12px 16px; border-radius: 14px; font-size: 15px; line-height: 1.4; color: #55555d; }
-  .case-section-panel a[aria-current] { color: var(--color-text); font-weight: 600; background: var(--color-surface); }
-  .case-section-panel a:active { background: var(--color-surface); color: var(--color-text); }
+  .case-section-panel a[aria-current] { color: var(--color-text); font-weight: var(--weight-medium); }
+  .case-section-panel a:active { color: var(--color-text); }
   .case-section-trigger:focus-visible, .case-section-panel a:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
 
   /* Narrow diagrams retain full-size labels and measured SVG connectors. */
@@ -213,7 +212,7 @@
 }
 
 @media (max-width: 1100px) and (hover: hover) {
-  .mobile-menu a:hover, .case-section-panel a:hover { background: var(--color-surface); color: var(--color-text); }
+  .mobile-menu a:hover, .case-section-panel a:hover { color: var(--color-text); }
 }
 
 @media (max-width: 1100px) and (prefers-reduced-motion: reduce) {
