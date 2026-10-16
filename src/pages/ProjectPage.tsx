@@ -159,7 +159,7 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
     <div className="case-image-gallery" aria-label="Экраны проекта">
       {images.map((image) => (
         <motion.figure className={`case-image-frame ${image.screenCount && image.screenCount >= 4 ? 'case-layout--full' : image.screenCount === 3 ? 'case-layout--wide' : 'case-layout--medium'}`} key={image.src}
-          initial={reduced ? false : { opacity: motionTokens.signature.scene.opacity }}
+          initial={reduced ? false : { opacity: motionTokens.signature.media.opacity }}
           whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .02 }}
           transition={{ duration: reduced ? motionTokens.reduced : motionTokens.adaptiveReveal, ease: motionTokens.ease }}>
           <a href={image.src} target="_blank" rel="noreferrer" aria-label={`Открыть изображение в полном размере: ${image.caption}`}>

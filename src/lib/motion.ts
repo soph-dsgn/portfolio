@@ -8,29 +8,33 @@ export const motionTokens = {
   cursor: { stiffness: 450, damping: 38 },
   press: { type: 'spring' as const, stiffness: 550, damping: 38 },
   reveal: .45, adaptiveReveal: .5, menu: .2, stagger: .06,
-  metric: .42, metricStagger: .07, mediaAssembly: .55, mediaAssemblyMobile: .45,
+  metric: .42, metricStagger: .07,
   navState: .18,
   micro: .16, hover: .22, reduced: .1, loaderExit: .18,
   caption: .25, captionDelay: .18, artwork: .5, scroll: .65,
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1,
-  assemblyStagger: .025, maxRevealDelay: .24,
+  maxRevealDelay: .24,
   signature: {
-    scene: { distance: 12, mobileDistance: 5, duration: .6, mobileDuration: .48, stagger: .032, mobileStagger: .025, scale: .985, opacity: .92 },
     portal: { pressDuration: .09, pressScale: .99, duration: .25, entryDuration: .35, scale: 1.025, mobileScale: 1.015, entryScale: .975, entryOpacity: .88, entryY: 8 },
     concept: { duration: .4, inactiveScale: .982, distantScale: .975, mobileScale: .99, inactiveOpacity: .84, distantOpacity: .79, mobileOpacity: .92, blur: 1, distantBlur: 1.5 },
     type: { duration: 8, minimum: .996, maximum: 1.006, returnScale: 1.003, opacity: [1, .92, 1, .96, 1] },
     metrics: { desktopScale: .9, mobileScale: .9, desktopY: 14, groupStagger: .11, captionStart: .16, valueDuration: .36, captionDuration: .25 },
     title: { duration: .55, deckDelay: .1 },
-    media: { duration: .5, y: 18, scale: .985 },
+    media: { duration: .5, y: 18, scale: .985, opacity: .92 },
     parallax: { distance: 8 },
   },
   mobile: {
+    mask: { duration: .62, closed: 'inset(100% 0% 0% 0%)', open: 'inset(0% 0% 0% 0%)', horizontal: 'inset(0% 100% 0% 0%)' },
+    line: { duration: .55, hidden: 'translateY(105%)' },
+    greeting: { stagger: .065, eyeScale: .65 },
+    photo: { duration: .7 },
+    achievement: { trophy: .42, starsStart: .22, starStagger: .055, titleStart: .38, textStart: .48, scale: .94 },
     entrance: .5, distance: 16, groupStagger: .065, captionDelay: .08, toolsDelay: .32,
     media: { duration: .5, y: 16, conceptY: 14, captionY: 6, conceptCaptionY: 8, scale: .98, opacity: .88 },
     hero: { greeting: 8, title: 18, secondary: 14, actions: 10, photoY: 16, photoScale: .97 },
     about: { statement: 16, background: 10 }, contact: { headline: 16, actions: 10, signature: 12, scale: .98 },
-    card: { captionY: 12, scale: .975, opacity: .9 },
-    metrics: { y: 12, stagger: .09 }, tools: { y: 6, stagger: .025 },
+    card: { captionY: 12, scale: .975, opacity: .9, captionStart: .18, pressOpacity: .9, drift: 4 },
+    metrics: { y: 12, stagger: .18, captionStart: .09 }, tools: { y: 6, stagger: .025 },
     menu: { duration: .22, exit: .16, y: -8, itemY: -4, stagger: .03 },
     tapScale: .985, diagram: { step: .22, connectorStart: .13, connectorDuration: .12 },
   },
@@ -74,6 +78,15 @@ export function useMotionSystem() {
     visible: { opacity: 1, transform: revealIdentity('soft'), transition: { duration: reduced ? motionTokens.reduced : motionTokens.mobile.entrance, ease: motionTokens.ease } },
   })
   const mobileGroup = (stagger = motionTokens.mobile.groupStagger, delay = 0): Variants => ({ hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : stagger, delayChildren: reduced ? 0 : delay } } })
+  // Only the content reveal moves. The scene's silhouette and layout stay static.
+  const mobileMask = (horizontal = false, duration = motionTokens.mobile.mask.duration): Variants => ({
+    hidden: { clipPath: reduced ? motionTokens.mobile.mask.open : horizontal ? motionTokens.mobile.mask.horizontal : motionTokens.mobile.mask.closed },
+    visible: { clipPath: motionTokens.mobile.mask.open, transition: { duration: reduced ? 0 : duration, ease: motionTokens.ease } },
+  })
+  const mobileLine: Variants = {
+    hidden: { transform: reduced ? 'translateY(0%)' : motionTokens.mobile.line.hidden },
+    visible: { transform: 'translateY(0%)', transition: { duration: reduced ? 0 : motionTokens.mobile.line.duration, ease: motionTokens.ease } },
+  }
   const staggerGroup: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : adaptive ? motionTokens.staggerAdaptive : motionTokens.stagger, delayChildren: reduced ? 0 : motionTokens.groupDelay } } }
   const opacityVariants: Variants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition } }
   const reveal = (preset: RevealPreset = 'soft', delay = 0) => ({
@@ -92,7 +105,7 @@ export function useMotionSystem() {
     transition: reduced ? { duration: 0 } : motionTokens.interaction,
   }
   const metricGroupVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : adaptive ? motionTokens.mobile.metrics.stagger : motionTokens.signature.metrics.groupStagger } } }
-  const metricItemVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : motionTokens.signature.metrics.captionStart } } }
+  const metricItemVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: reduced ? 0 : adaptive ? motionTokens.mobile.metrics.captionStart : motionTokens.signature.metrics.captionStart } } }
   const metricVariants = (): Variants => ({
     hidden: { opacity: 0, transform: reduced ? 'none' : `translate3d(0px, ${adaptive ? motionTokens.mobile.metrics.y : motionTokens.signature.metrics.desktopY}px, 0px) scale(${adaptive ? motionTokens.signature.metrics.mobileScale : motionTokens.signature.metrics.desktopScale})` },
     visible: { opacity: 1, transform: 'translate3d(0px, 0px, 0px) scale(1)', transition: { duration: reduced ? motionTokens.reduced : motionTokens.signature.metrics.valueDuration, ease: motionTokens.ease } },
@@ -101,7 +114,7 @@ export function useMotionSystem() {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: reduced ? motionTokens.reduced : motionTokens.signature.metrics.captionDuration, ease: motionTokens.ease } },
   })
-  return { reduced, adaptive, hover, mobileEntrance, mobileGroup, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricGroupVariants, metricItemVariants, metricVariants, metricCaptionVariants }
+  return { reduced, adaptive, hover, mobileEntrance, mobileGroup, mobileMask, mobileLine, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricGroupVariants, metricItemVariants, metricVariants, metricCaptionVariants }
 }
 
 // First-document reveals must not finish behind the initial loader. All scenes

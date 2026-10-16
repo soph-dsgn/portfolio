@@ -16,9 +16,17 @@ function storeFor(ids: string[]): Store {
     frame = 0
     const line = (document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0) + 36
     let next = ids[0] ?? ''
+    const mobile = window.matchMedia('(max-width: 1100px)').matches
+    let nearest = Infinity
     for (const id of ids) {
       const target = document.getElementById(id)
-      if (target && target.getBoundingClientRect().top <= line) next = id
+      if (!target) continue
+      const bounds = target.getBoundingClientRect()
+      if (mobile) {
+        const media = target.querySelector('video')?.getBoundingClientRect() ?? bounds
+        const distance = Math.abs(media.top + media.height / 2 - window.innerHeight / 2)
+        if (distance < nearest) { nearest = distance; next = id }
+      } else if (bounds.top <= line) next = id
     }
     if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2)
       next = ids.at(-1) ?? next

@@ -1,26 +1,16 @@
-import { SceneMotionContext } from '../lib/SceneMotionContext'
-import { useEntrance } from '../lib/useEntrance'
-import { useMotionSystem, useInterfaceReady } from '../lib/motion'
-import { useId, useRef, type ReactNode } from 'react'
+import { useId, type ReactNode, type Ref } from 'react'
 
 /** The same rounded segment geometry clips homepage covers and case media. */
-export function SceneSurface({ single = false, children, className = '', assemble = false, settled = false }: {
-  settled?: boolean
-  assemble?: boolean
+export function SceneSurface({ single = false, children, className = '', ref }: {
+  ref?: Ref<HTMLDivElement>
   single?: boolean
   children: ReactNode
   className?: string
 }) {
-  const { reduced, adaptive } = useMotionSystem()
-  const observe = useRef<HTMLDivElement>(null)
-  const visible = useEntrance(observe, adaptive ? .18 : .35)
-  const uiReady = useInterfaceReady()
-  const assembled = visible && uiReady
-  const animated = assemble && !single && !reduced && !settled
   const clipId = `scene-${useId().replace(/:/g, '')}`
   const segments = single ? [[0, 0]] : [[0, 0], [50, 0], [0, 50], [50, 50]]
   return (
-    <div ref={animated ? observe : undefined} data-scene-motion={settled ? 'assembled' : animated ? assembled ? 'assembled' : 'waiting' : 'static'} className={`scene-surface ${className}`} style={{ clipPath: `url(#${clipId})` }}>
+    <div ref={ref} data-scene-motion="static" className={`scene-surface ${className}`} style={{ clipPath: `url(#${clipId})` }}>
       <svg className="scene-surface-mask" width="100%" height="100%" aria-hidden="true" focusable="false">
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
@@ -45,9 +35,7 @@ export function SceneSurface({ single = false, children, className = '', assembl
           </clipPath>
         </defs>
       </svg>
-      <SceneMotionContext.Provider value={{ reveal: animated && assembled, settled }}>
-        {children}
-      </SceneMotionContext.Provider>
+      {children}
     </div>
   )
 }

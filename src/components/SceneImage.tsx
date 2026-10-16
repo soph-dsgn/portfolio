@@ -1,73 +1,25 @@
-import { useContext, useLayoutEffect, useRef, useState, type ImgHTMLAttributes, type CSSProperties } from 'react'
-import { motion, type Variants } from 'framer-motion'
-import { SceneMotionContext } from '../lib/SceneMotionContext'
-import { motionTokens, useMotionSystem } from '../lib/motion'
+import { useContext, useLayoutEffect, useRef, useState, type ImgHTMLAttributes } from 'react'
+import { motion, type HTMLMotionProps } from 'framer-motion'
+import { MediaStageContext } from '../lib/MediaStageContext'
+import { useMotionSystem } from '../lib/motion'
 
-type Frame = { src: string; left: number; top: number; width: number; height: number; fit: string; position: string; radius: string }
-const quadrants = [
-  { x: -1, y: -1, clip: 'polygon(0 0, 50% 0, 50% 50%, 0 50%)' },
-  { x: 1, y: -1, clip: 'polygon(50% 0, 100% 0, 100% 50%, 50% 50%)' },
-  { x: -1, y: 1, clip: 'polygon(0 50%, 50% 50%, 50% 100%, 0 100%)' },
-  { x: 1, y: 1, clip: 'polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%)' },
-]
-
-/** Four temporary visual slices; the original image fills seams and owns semantics.
- * Slices live inside the same artwork parent, so existing hover/parallax applies
- * to both. No cloned captions, DOM ids, controls or live video elements.
- */
+/** Only case image content reveals; its parent SVG silhouette never animates.
+ * Static CSS presentation scales (contained/multi-screen) remain untouched. */
 export function SceneImage(props: ImgHTMLAttributes<HTMLImageElement>) {
-  const { reveal, settled } = useContext(SceneMotionContext)
-  const { adaptive, reduced } = useMotionSystem()
-  const image = useRef<HTMLImageElement>(null)
+  const visible = useContext(MediaStageContext)
+  const { adaptive, mobileMask } = useMotionSystem()
+  const ref = useRef<HTMLImageElement>(null)
   const [loaded, setLoaded] = useState(false)
-  const [finished, setFinished] = useState(false)
-  const [frame, setFrame] = useState<Frame | null>(null)
-  const assembling = reveal && loaded && !finished && !reduced && !settled
-  const active = assembling
-  const amplitude = adaptive ? motionTokens.signature.scene.mobileDistance : motionTokens.signature.scene.distance
   useLayoutEffect(() => {
-    if (image.current?.complete && image.current.naturalWidth) setLoaded(true)
+    if (ref.current?.complete && ref.current.naturalWidth) setLoaded(true)
   }, [props.src])
-  useLayoutEffect(() => {
-    const img = image.current
-    const parent = img?.parentElement
-    if (!active || !img || !parent) return
-    const measure = () => {
-      const bounds = parent.getBoundingClientRect()
-      const rect = img.getBoundingClientRect()
-      if (!bounds.width || !bounds.height) return
-      // Remove ancestor transform scaling; retain the image's own presentation.
-      const sx = parent.offsetWidth / bounds.width
-      const sy = parent.offsetHeight / bounds.height
-      const style = getComputedStyle(img)
-      setFrame({ src: img.currentSrc || img.src,
-        left: (rect.left - bounds.left) * sx, top: (rect.top - bounds.top) * sy,
-        width: rect.width * sx, height: rect.height * sy,
-        fit: style.objectFit, position: style.objectPosition, radius: style.borderRadius })
-    }
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(parent)
-    return () => observer.disconnect()
-  }, [active, props.src])
-  const parts: Variants = {
-    hidden: (index: number) => ({ transform: `translate3d(${quadrants[index].x * (assembling ? amplitude : 0)}px, ${quadrants[index].y * (assembling ? amplitude : 0)}px, 0) scale(${assembling ? motionTokens.signature.scene.scale : 1})`, opacity: assembling ? motionTokens.signature.scene.opacity : 1 }),
-    visible: (index: number) => ({ transform: 'translate3d(0px, 0px, 0) scale(1)', opacity: 1,
-      transition: { duration: adaptive ? motionTokens.signature.scene.mobileDuration : motionTokens.signature.scene.duration, delay: index * (adaptive ? motionTokens.signature.scene.mobileStagger : motionTokens.signature.scene.stagger), ease: motionTokens.ease } }),
-  }
-  return <>
-    <img {...props} ref={image} data-scene-image={settled || finished ? 'assembled' : assembling ? 'assembling' : 'waiting'}
-      onLoad={event => { setLoaded(true); props.onLoad?.(event) }} />
-    {active && frame && <div className="scene-image-parts" aria-hidden="true">
-      {quadrants.map((part, index) => <div key={index} className="scene-image-quadrant" style={{ clipPath: part.clip }}>
-        <motion.div className="scene-image-slice"
-          custom={index} variants={parts} initial="hidden" animate="visible"
-          onAnimationComplete={() => { if (index === quadrants.length - 1) setFinished(true) }}>
-          <img src={frame.src} alt="" draggable={false} decoding="async" style={{ position: 'absolute', left: frame.left, top: frame.top,
-            width: frame.width, height: frame.height, maxWidth: 'none', maxHeight: 'none', objectFit: frame.fit as CSSProperties['objectFit'], objectPosition: frame.position,
-            borderRadius: frame.radius, transform: 'none' }} />
-        </motion.div>
-      </div>)}
-    </div>}
-  </>
+  // Lazy full-size case screens can arrive after intersection. Reveal actual
+  // pixels, rather than finishing the animation while only the stage is visible.
+  const waiting = adaptive && visible !== null && (!visible || !loaded)
+  return <motion.img {...props as HTMLMotionProps<'img'>} ref={ref}
+    onLoad={event => { setLoaded(true); props.onLoad?.(event) }}
+    onError={event => { setLoaded(true); props.onError?.(event) }}
+    initial={waiting ? 'hidden' : false}
+    animate={waiting ? 'hidden' : 'visible'}
+    variants={mobileMask()} />
 }

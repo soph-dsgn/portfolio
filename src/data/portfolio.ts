@@ -175,7 +175,6 @@ export const projects: Project[] = [
       { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 2800, height: 2100 },
       { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 2800, height: 2100 },
       { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 2800, height: 2100 },
-      { id: 'weather', title: 'Приложение погоды', shortTitle: 'Погода', src: '/cases/concept/6.mp4', poster: '/optimized/concepts/poster-6.webp', width: 2800, height: 2100 },
       { id: 'crypto-portfolio', title: 'Криптопортфель', shortTitle: 'Криптопортфель', src: '/cases/concept/5.mp4?v=4f9a91800fc1', poster: '/optimized/concepts/poster-5.webp?v=c6bc07e2437a', width: 2800, height: 2100 },
     ],
   },

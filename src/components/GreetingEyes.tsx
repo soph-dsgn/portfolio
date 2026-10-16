@@ -63,7 +63,19 @@ export function GreetingEyes() {
     }
   }, [reduced, x, y])
 
-  return <svg ref={ref} className="greeting-eyes" viewBox="0 0 42 28" width="42" height="28" aria-hidden="true" focusable="false">
+  return <svg ref={ref} className="greeting-eyes" viewBox="0 0 42 28" width="42" height="28" aria-hidden="true" focusable="false"
+    onPointerDown={event => {
+      if (reduced || event.pointerType === 'mouse') return
+      const bounds = event.currentTarget.getBoundingClientRect()
+      const dx = (event.clientX - bounds.left - bounds.width / 2) / (bounds.width / 2)
+      const dy = (event.clientY - bounds.top - bounds.height / 2) / (bounds.height / 2)
+      const length = Math.max(1, Math.hypot(dx, dy))
+      x.set(dx / length * 3)
+      y.set(dy / length * 4.5)
+    }}
+    onPointerUp={event => { if (event.pointerType !== 'mouse') { x.set(0); y.set(0) } }}
+    onPointerCancel={() => { x.set(0); y.set(0) }}
+    onPointerLeave={event => { if (event.pointerType !== 'mouse') { x.set(0); y.set(0) } }}>
     <defs><clipPath id={clipId}>
       <ellipse cx="11" cy="14" rx="8" ry="11" />
       <ellipse cx="31" cy="14" rx="8" ry="11" />

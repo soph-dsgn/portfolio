@@ -342,10 +342,3 @@
   .home-canvas .about-principles { row-gap: 8px; }
   .home-canvas .about-tool-chips { gap: 4px 6px; }
 }
-
-/* Temporary image slices use the existing artwork coordinate space/mask. */
-.scene-image-parts, .scene-image-quadrant, .scene-image-slice { position: absolute; inset: 0; pointer-events: none; }
-.scene-image-parts { z-index: 1; overflow: hidden; }
-.scene-image-quadrant { overflow: hidden; }
-.scene-image-slice { transform-origin: center; }
-.scene-image-slice > img { display: block; }

@@ -45,12 +45,13 @@ export function ProjectCover({ project, revealed, immediate, children, settled =
     .flatMap(tag => tag.split('/').map(part => part.trim()))
     .filter(Boolean)
     .map(tag => tag[0].toLocaleUpperCase() + tag.slice(1))
+  const artworkOffset = project.id === 'astoria' && horizontal ? 16 : 0
 
   return <motion.div className="project-cover" ref={rootRef} initial={false}
     style={{ '--cover-reserved-height': `${reserved}px` } as CSSProperties}>
     <motion.div className="project-caption" ref={captionRef} initial={adaptive && !reduced && !settled ? { opacity: 0, transform: `translateY(${motionTokens.mobile.card.captionY}px)` } : false}
       animate={{ opacity: revealed && (!adaptive || entered) ? 1 : 0, transform: `translateY(${adaptive ? entered ? 0 : motionTokens.mobile.card.captionY : revealed ? 0 : 8}px)` }}
-      transition={{ duration: reduced || (settled && immediate) ? 0 : adaptive ? motionTokens.mobile.entrance : immediate ? 0 : motionTokens.hover, delay: adaptive && entered && !reduced && !settled ? motionTokens.mobile.captionDelay : 0, ease: motionTokens.ease }}>
+      transition={{ duration: reduced || (settled && immediate) ? 0 : adaptive ? motionTokens.mobile.entrance : immediate ? 0 : motionTokens.hover, delay: adaptive && entered && !reduced && !settled ? motionTokens.mobile.card.captionStart : 0, ease: motionTokens.ease }}>
       <div className="project-labels"><div className="project-tags">
         {tags.map(tag => <span className="chip" key={tag}>{tag}</span>)}
       </div></div>
@@ -58,7 +59,7 @@ export function ProjectCover({ project, revealed, immediate, children, settled =
     </motion.div>
     <div className="project-cover-stage">
       <motion.div className="project-cover-visual" initial={false}
-        animate={{ transform: `translateY(${revealed && horizontal ? project.id === 'astoria' ? Math.max(32, reserved - artworkInset) : reserved / 2 : 0}px)` }}
+        animate={{ transform: `translateY(${artworkOffset + (revealed && horizontal ? project.id === 'astoria' ? Math.max(32, reserved - artworkInset) : reserved / 2 : 0)}px)` }}
         transition={immediate ? { duration: 0 } : motionTokens.interaction}>
         {children}
       </motion.div>
