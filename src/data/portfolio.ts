@@ -160,7 +160,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: 'concepts',
-    title: 'Концепты',
+    title: 'UI-концепты',
     description: 'Здесь можно немного отойти от продуктовых ограничений. Экспериментирую с визуалом, motion и интерфейсами просто потому, что мне интересно посмотреть: «а что, если сделать вот так?»',
     tags: ['UI', 'Motion'],
     discipline: 'UX/UI-дизайнер',

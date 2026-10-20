@@ -1,6 +1,4 @@
-import { motionTokens } from '../lib/motion'
 import { useEffect, useId, useState } from 'react'
-import { motion } from 'framer-motion'
 import type { RefObject } from 'react'
 
 export type DiagramEdge = { from: string; to: string }
@@ -102,12 +100,11 @@ function wirePath(from: Box, to: Box, nodes: Box[], mode: string, gap: number): 
   return `M ${from.cx} ${y1} C ${from.cx} ${y1 + direction * bend}, ${to.cx} ${curveEnd - direction * bend}, ${to.cx} ${curveEnd} L ${to.cx} ${y2}`
 }
 
-export function DiagramWires({ rootRef, edges, mode, visible, reduced }: {
+export function DiagramWires({ rootRef, edges, mode, onMeasured }: {
   rootRef: RefObject<HTMLDivElement | null>
   edges: DiagramEdge[]
   mode: string
-  visible: boolean
-  reduced: boolean
+  onMeasured: () => void
 }) {
   const markerId = `${useId().replace(/:/g, '')}-diagram-arrow`
   const [drawing, setDrawing] = useState<{ width: number; height: number; paths: DrawnEdge[] }>({ width: 0, height: 0, paths: [] })
@@ -160,6 +157,7 @@ export function DiagramWires({ rootRef, edges, mode, visible, reduced }: {
         return targets.filter(target => !mergedKeys.has(target.key)).map(({ key, box }) => ({ key, vertical: box.top > start.bottom + gap * 2, path: wirePath(start, box, boxes, mode, gap) }))
       })
       setDrawing({ width: root.clientWidth, height: root.clientHeight, paths: [...paths, ...merges] })
+      onMeasured()
     }
     measure()
     const observer = new ResizeObserver(measure)
@@ -172,7 +170,7 @@ export function DiagramWires({ rootRef, edges, mode, visible, reduced }: {
       observer.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [rootRef, edges, mode])
+  }, [rootRef, edges, mode, onMeasured])
 
   if (!drawing.paths.length) return null
   return <svg className="case-diagram-wires" viewBox={`0 0 ${drawing.width} ${drawing.height}`}
@@ -184,10 +182,8 @@ export function DiagramWires({ rootRef, edges, mode, visible, reduced }: {
           strokeLinecap="round" strokeLinejoin="round" />
       </marker>)}
     </defs>
-    {drawing.paths.map((edge, index) => <motion.path key={edge.key} d={edge.path}
+    {drawing.paths.map(edge => <path key={edge.key} d={edge.path}
       fill="none" stroke="currentColor" strokeWidth={geometry.stroke} strokeLinecap="round" strokeLinejoin="round"
-      markerEnd={edge.arrow === false ? undefined : `url(#${markerId}${edge.vertical ? '-down' : ''})`} initial={false}
-      animate={{ pathLength: reduced || visible ? 1 : 0, opacity: reduced || visible ? 1 : 0 }}
-      transition={{ duration: reduced ? 0 : motionTokens.diagram.wire, delay: visible && !reduced ? motionTokens.diagram.wireStart + Math.min(index * motionTokens.diagram.wireStagger, motionTokens.diagram.maxWireDelay) : 0, ease: motionTokens.ease }} />)}
+      markerEnd={edge.arrow === false ? undefined : `url(#${markerId}${edge.vertical ? '-down' : ''})`} />)}
   </svg>
 }

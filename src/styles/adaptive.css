@@ -14,12 +14,12 @@
     min-width: 0;
     padding: 16px;
     border-radius: var(--radius-control);
-    background: var(--color-surface);
+    background: transparent;
     overflow-wrap: anywhere;
   }
-  .case-diagram-mobile-card strong { display: block; font-size: 16px; line-height: 1.4; font-weight: 500; color: var(--color-text); }
-  .case-diagram-mobile-card p { margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--color-muted); }
-  .case-diagram-mobile-card .case-diagram-mobile-note { font-size: 14px; }
+  .case-diagram-mobile-card strong { display: block; font-size: var(--case-v-card-title); line-height: 1.4; font-weight: var(--weight-strong); color: var(--color-text); }
+  .case-diagram-mobile-card p { margin: var(--case-v-copy-gap) 0 0; font-size: var(--case-v-body); line-height: 1.6; color: var(--color-muted); }
+  .case-diagram-mobile-card .case-diagram-mobile-note { font-size: var(--case-v-note); }
   .case-diagram-mobile-connector { display: block; margin: 8px auto; color: var(--color-muted); }
 }
 
@@ -152,9 +152,7 @@
   .case-section-trigger:focus-visible, .case-section-panel a:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
 
   /* Narrow diagrams retain full-size labels and measured SVG connectors. */
-  .case-diagram { padding: 24px; }
   .case-diagram-node { min-height: 60px; padding: 14px 16px; }
-  .case-diagram-node strong { font-size: 16px; line-height: 1.4; }
   .case-diagram-service-map, .case-diagram-filter, .case-diagram-paired,
   .case-diagram-status-aside { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .case-diagram-service-map { gap: 64px; }
@@ -185,15 +183,11 @@
   .case-diagram-risk-row, .case-diagram-change-row { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .case-diagram-change-row > p { grid-column: 1; }
   .case-diagram-explanations > div { grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 12px; }
-  .case-diagram-explanations dt { font-size: 16px; font-weight: 500; }
-  .case-diagram-explanations dd { font-size: 15px; line-height: 1.6; }
 }
 
 @media (max-width: 760px) {
   .home-canvas .contacts-section { min-height: 560px; padding: 24px; }
-  .case-diagram { padding: 20px; }
   .case-diagram-entry-points { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .case-diagram-branches > div > p { font-size: 14px; line-height: 1.55; }
   .case-main > .version-switch { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); width: 100%; }
   .case-main > .version-switch button { min-width: 0; padding-inline: 10px; white-space: normal; line-height: 1.35; }
 }

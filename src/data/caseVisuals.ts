@@ -12,6 +12,8 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'portal-insights', group: 'context', after: 'Мобильная версия должна сохранять', title: 'От задачи к решению', kind: 'columns',
+      presentation: 'problem-solution',
+      pairTones: { problem: 'problem', response: 'solution' },
       columns: ['Задача', 'Проблема', 'Решение'],
       items: [
         { label: 'Оценить работу за период', detail: 'Список ордеров не даёт общей сводки', note: 'Дашборд с показателями, динамикой и статусами' },
@@ -20,17 +22,19 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ], caption: 'Основание: разбор существующего интерфейса и технического задания',
     },
     {
-      id: 'portal-support', group: 'context', after: 'Для бизнеса это создаёт зависимость', title: 'Почему партнёр обращается в поддержку', kind: 'comparison',
+      id: 'portal-support', group: 'context', after: 'Так обслуживание партнёров зависело', title: 'Почему партнёр обращается в поддержку', kind: 'comparison',
+      presentation: 'risks',
       items: [
-        { label: 'Проверка статуса', detail: 'Не хватает общей картины и последовательной сверки данных ордера', note: 'Партнёр уточняет состояние операции вручную' },
-        { label: 'Проверка интеграции', detail: 'Статус обмена не отвечает на вопрос о доставке уведомления', note: 'Партнёр запрашивает технические данные у поддержки' },
+        { label: 'Проверка статуса', detail: 'Не хватает общей картины и последовательной сверки данных ордера', note: 'Партнёр уточняет состояние операции вручную', tone: 'problem' },
+        { label: 'Проверка интеграции', detail: 'Статус обмена не отвечает на вопрос о доставке уведомления', note: 'Партнёр запрашивает технические данные у поддержки', tone: 'problem' },
       ], caption: 'Оба пути увеличивают нагрузку на поддержку, если данные и следующий шаг недоступны в кабинете',
     },
     {
-      id: 'portal-hierarchy', group: 'structure', after: 'Разделение на связанные рабочие разделы', title: 'Уровни информации', kind: 'comparison',
+      id: 'portal-hierarchy', group: 'structure', after: 'Поэтому связала рабочие разделы', title: 'Уровни информации', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Дашборд', detail: 'Период → ключевые показатели → динамика и распределение статусов' },
-        { label: 'Детали ордера', detail: 'Статус и суммы → комиссии и клиент → технический запрос' },
+        { label: 'Дашборд', detail: 'Период → ключевые показатели → динамика и распределение статусов', tone: 'neutral' },
+        { label: 'Детали ордера', detail: 'Статус и суммы → комиссии и клиент → технический запрос', tone: 'neutral' },
       ], caption: 'От общего состояния бизнеса к данным, нужным для конкретной проверки',
     },
     {
@@ -54,32 +58,36 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'portal-orders-before-after', group: 'concept', after: 'Компактные фильтры', title: 'Работа с ордерами: до и после', kind: 'comparison',
+      presentation: 'before-after',
       items: [
-        { label: 'До', detail: 'Крупный блок фильтров; данные для сверки разнесены по странице' },
-        { label: 'После', detail: 'Фильтры в строке над таблицей; статус и финансовые данные сгруппированы; переход в детали остаётся рядом с ордером' },
+        { label: 'До', detail: 'Крупный блок фильтров; данные для сверки разнесены по странице', tone: 'problem' },
+        { label: 'После', detail: 'Фильтры в строке над таблицей; статус и финансовые данные сгруппированы; переход в детали остаётся рядом с ордером', tone: 'solution' },
       ],
     },
     {
-      id: 'portal-disclosure', group: 'concept', after: 'Исходный API-запрос вынесен', title: 'Детали без лишней технической плотности', kind: 'comparison',
+      id: 'portal-disclosure', group: 'concept', after: 'API-запрос убрала в раскрываемый блок', title: 'Детали без лишней технической плотности', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Первый уровень', detail: 'Статус, суммы, комиссии и данные клиента видны сразу' },
-        { label: 'Раскрытый уровень', detail: 'Исходный API-запрос и JSON доступны по запросу для диагностики' },
+        { label: 'Первый уровень', detail: 'Статус, суммы, комиссии и данные клиента видны сразу', tone: 'neutral' },
+        { label: 'Раскрытый уровень', detail: 'Исходный API-запрос и JSON доступны по запросу для диагностики', tone: 'neutral' },
       ],
     },
     {
-      id: 'portal-diagnostics', group: 'concept', after: 'Этот раздел помогает проверять', title: 'Два уровня диагностики', kind: 'comparison',
+      id: 'portal-diagnostics', group: 'concept', after: 'Так можно проверить обмен данными', title: 'Два уровня диагностики', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Операция', detail: 'Какой у ордера финансовый статус и какие суммы нужно сверить?' },
-        { label: 'Уведомление', detail: 'Было ли событие доставлено в систему партнёра? Что содержат запрос и ответ?' },
+        { label: 'Операция', detail: 'Какой у ордера финансовый статус и какие суммы нужно сверить?', tone: 'neutral' },
+        { label: 'Уведомление', detail: 'Было ли событие доставлено в систему партнёра? Что содержат запрос и ответ?', tone: 'neutral' },
       ], caption: 'Один и тот же ордер проверяется на двух уровнях: результат обмена и доставка события',
     },
     {
       id: 'portal-states', group: 'concept', after: 'ошибка всего экрана', title: 'Состояния дашборда', kind: 'matrix',
+      presentation: 'states',
       items: [
-        { label: 'Загрузка', detail: 'Данные ещё поступают', note: 'Показать состояние ожидания' },
-        { label: 'Пустой период', detail: 'За выбранный период нет операций', note: 'Изменить период' },
-        { label: 'Ошибка виджета', detail: 'Часть данных недоступна', note: 'Оставить доступные данные и повторить загрузку блока' },
-        { label: 'Ошибка экрана', detail: 'Общая загрузка не удалась', note: 'Повторить запрос' },
+        { label: 'Загрузка', detail: 'Данные ещё поступают', note: 'Показать состояние ожидания', tone: 'neutral' },
+        { label: 'Пустой период', detail: 'За выбранный период нет операций', note: 'Изменить период', tone: 'neutral' },
+        { label: 'Ошибка виджета', detail: 'Часть данных недоступна', note: 'Оставить доступные данные и повторить загрузку блока', tone: 'problem' },
+        { label: 'Ошибка экрана', detail: 'Общая загрузка не удалась', note: 'Повторить запрос', tone: 'problem' },
       ],
     },
     {
@@ -104,33 +112,38 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
   skywallet: [
     {
       id: 'wallet-ecosystem', group: 'context', after: 'Продукт объединял два ключевых сценария', title: 'Два контура одной экосистемы', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'SkyWallet', detail: 'Некастодиальный кошелёк: пользователь самостоятельно хранит активы и управляет ключами' },
-        { label: 'Sky Capital', detail: 'Биржевой контур: обмен, пополнение и вывод через платформу' },
+        { label: 'SkyWallet', detail: 'Некастодиальный кошелёк: пользователь самостоятельно хранит активы и управляет ключами', tone: 'neutral' },
+        { label: 'Sky Capital', detail: 'Биржевой контур: обмен, пополнение и вывод через платформу', tone: 'neutral' },
       ],
     },
     {
       id: 'wallet-entities', group: 'context', after: 'пользователи плохо различают', title: 'Сущности, которые нельзя смешивать', kind: 'flow',
       items: [
-        { label: 'Wallet', detail: 'Кошелёк' }, { label: 'Account', detail: 'Аккаунт' },
-        { label: 'Network', detail: 'Сеть' }, { label: 'Asset', detail: 'Актив' },
+        { label: 'Wallet', detail: 'Кошелёк' },
+        { label: 'Account', detail: 'Аккаунт' },
+        { label: 'Network', detail: 'Сеть' },
+        { label: 'Asset', detail: 'Актив' },
         { label: 'Address', detail: 'Адрес получения или отправки' },
       ],
     },
     {
       id: 'wallet-risks', group: 'context', after: 'не учесть сетевую комиссию', title: 'Карта ошибок пользователя', kind: 'matrix',
+      presentation: 'risks',
       items: [
-        { label: 'Seed-фраза', detail: 'Потеря доступа без возможности восстановления через поддержку' },
-        { label: 'Сеть и адрес', detail: 'Перевод с несовместимыми параметрами' },
-        { label: 'Комиссия', detail: 'Недостаточно средств для завершения отправки' },
-        { label: 'Тип счёта', detail: 'Путаница между личным кошельком и биржевым балансом' },
+        { label: 'Seed-фраза', detail: 'Потеря доступа без возможности восстановления через поддержку', tone: 'problem' },
+        { label: 'Сеть и адрес', detail: 'Перевод с несовместимыми параметрами', tone: 'problem' },
+        { label: 'Комиссия', detail: 'Недостаточно средств для завершения отправки', tone: 'problem' },
+        { label: 'Тип счёта', detail: 'Путаница между личным кошельком и биржевым балансом', tone: 'problem' },
       ],
     },
     {
       id: 'wallet-contours', group: 'context', after: 'В биржевом контуре средства', title: 'Разные правила хранения и доступа', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Некастодиальный кошелёк', detail: 'Ключи и seed-фраза у пользователя. Поддержка не восстанавливает доступ', note: 'Чувствительные действия подтверждаются локальным паролем' },
-        { label: 'Биржевой счёт', detail: 'Средства находятся на стороне платформы. Для операций с рублями требуется идентификация', note: 'Сценарий подчиняется правилам биржевого контура' },
+        { label: 'Некастодиальный кошелёк', detail: 'Ключи и seed-фраза у пользователя. Поддержка не восстанавливает доступ', note: 'Чувствительные действия подтверждаются локальным паролем', tone: 'neutral' },
+        { label: 'Биржевой счёт', detail: 'Средства находятся на стороне платформы. Для операций с рублями требуется идентификация', note: 'Сценарий подчиняется правилам биржевого контура', tone: 'neutral' },
       ],
     },
     {
@@ -162,6 +175,7 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'wallet-receive', group: 'structure', after: 'Предупреждение о переводе только', title: 'Получение средств', kind: 'flow', numbered: true,
+      presentation: 'steps',
       items: [
         { label: 'Актив и сеть', detail: 'Определить контекст получения' },
         { label: 'Адрес или QR', detail: 'Скопировать адрес или показать код' },
@@ -177,10 +191,11 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'wallet-send-design', group: 'concept', after: 'Перед отправкой пользователь повторно', title: 'От формы к пошаговому сценарию', kind: 'comparison',
+      id: 'wallet-send-design', group: 'concept', after: 'Перед отправкой ещё раз показывала', title: 'От формы к пошаговому сценарию', kind: 'comparison',
+      presentation: 'before-after',
       items: [
-        { label: 'Ранний подход', detail: 'Все поля и контекст операции в одной форме' },
-        { label: 'Финальная логика', detail: 'Выбор актива → ввод данных → проверка → подтверждение' },
+        { label: 'Ранний подход', detail: 'Все поля и контекст операции в одной форме', tone: 'problem' },
+        { label: 'Финальная логика', detail: 'Выбор актива → ввод данных → проверка → подтверждение', tone: 'solution' },
       ],
     },
     {
@@ -223,20 +238,12 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'wallet-handoff', group: 'system', after: 'уточняла бизнес-логику', title: 'От логики к передаче в разработку', kind: 'flow', numbered: true,
+      presentation: 'steps',
       items: [
         { label: 'Бизнес-логика', detail: 'Согласование MVP и финансовых контуров' },
         { label: 'Сценарии', detail: 'Архитектура и состояния' },
         { label: 'Прототип', detail: 'Проверка последовательности действий' },
         { label: 'Спецификации', detail: 'Компоненты, ошибки и ограничения для разработки' },
-      ],
-    },
-    {
-      id: 'wallet-kpi', group: 'final', after: 'рост завершённости создания', title: 'Результаты ключевых сценариев', kind: 'matrix', presentation: 'results',
-      items: [
-        { label: 'Создание или импорт', detail: 'Завершённость сценария выросла на 15–20%' },
-        { label: 'Отправка средств', detail: 'Ошибок стало меньше на 20–30%' },
-        { label: 'Время перевода', detail: 'Сократилось на 15–25%' },
-        { label: 'Первая транзакция', detail: 'Завершённость выросла на 10–15%' },
       ],
     },
   ],
@@ -260,7 +267,8 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ], caption: 'Контентные страницы и подборки управляются через CMS; данные туров приходят через API',
     },
     {
-      id: 'astoria-problem', group: 'context', after: 'Для бизнеса проблема заключалась', title: 'Одна проблема с двух сторон', kind: 'comparison',
+      id: 'astoria-problem', group: 'context', after: 'Команде нужен был контроль над выдачей', title: 'Одна проблема с двух сторон', kind: 'comparison',
+      presentation: 'insights',
       items: [
         { label: 'Пользователь', detail: 'Разрозненные точки входа, сложное сравнение и слабая связь между поиском и оформлением' },
         { label: 'Бизнес', detail: 'Зависимость от чужого интерфейса, ограниченный контроль выдачи и контента' },
@@ -268,9 +276,10 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'astoria-intents', group: 'context', after: 'Когда я ещё не выбрала направление', title: 'Два намерения — один результат', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Знаю параметры поездки', detail: 'Начинаю с поиска и уточняю предложение фильтрами' },
-        { label: 'Пока выбираю', detail: 'Изучаю горячие туры, цены и направления' },
+        { label: 'Знаю параметры поездки', detail: 'Начинаю с поиска и уточняю предложение фильтрами', tone: 'neutral' },
+        { label: 'Пока выбираю', detail: 'Изучаю горячие туры, цены и направления', tone: 'neutral' },
       ], caption: 'Оба пути приводят к подходящему туру и понятному следующему шагу',
     },
     {
@@ -283,12 +292,13 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'astoria-alternatives', group: 'structure', after: 'Собственный адаптивный агрегатор', title: 'Выбор продуктовой модели', kind: 'columns',
+      id: 'astoria-alternatives', group: 'structure', after: 'Выбрала собственный адаптивный агрегатор', title: 'Выбор продуктовой модели', kind: 'columns',
+      presentation: 'options',
       columns: ['Вариант', 'Что решает', 'Ограничение или эффект'],
       items: [
         { label: 'Внешний виджет', detail: 'Базовый поиск с меньшим объёмом изменений', note: 'Зависимость от сторонней логики остаётся' },
         { label: 'Только поиск и выдача', detail: 'Основная функция выбора тура', note: 'Нет исследовательского пути и основы для SEO' },
-        { label: 'Собственный агрегатор', detail: 'Несколько точек входа и единая поисковая логика', note: 'Выбранное решение' },
+        { label: 'Собственный агрегатор', detail: 'Несколько точек входа и единая поисковая логика', note: 'Выбранное решение', tone: 'solution' },
       ],
     },
     {
@@ -319,9 +329,10 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'astoria-card-depth', group: 'concept', after: 'Детали перелёта, размещения', title: 'Глубина информации при выборе', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Карточка в выдаче', detail: 'Отель, рейтинг, направление, даты, питание, длительность, стоимость и специальные признаки' },
-        { label: 'Страница тура', detail: 'Перелёт, размещение, услуги, галерея и подробный состав предложения' },
+        { label: 'Карточка в выдаче', detail: 'Отель, рейтинг, направление, даты, питание, длительность, стоимость и специальные признаки', tone: 'neutral' },
+        { label: 'Страница тура', detail: 'Перелёт, размещение, услуги, галерея и подробный состав предложения', tone: 'neutral' },
       ],
     },
     {
@@ -334,13 +345,14 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'astoria-states', group: 'concept', after: 'успешная и неуспешная оплата', title: 'Состояния за пределами идеального пути', kind: 'matrix',
+      presentation: 'states',
       items: [
-        { label: 'Загрузка', detail: 'Результаты ещё поступают' },
-        { label: 'Пустая выдача', detail: 'Под выбранные условия ничего не найдено' },
-        { label: 'Цена изменилась', detail: 'Нужна новая проверка решения' },
-        { label: 'Тур недоступен', detail: 'Оформление невозможно' },
-        { label: 'Ошибка формы', detail: 'Исправить ввод' },
-        { label: 'Результат оплаты', detail: 'Различить успех и неуспех' },
+        { label: 'Загрузка', detail: 'Результаты ещё поступают', tone: 'neutral' },
+        { label: 'Пустая выдача', detail: 'Под выбранные условия ничего не найдено', tone: 'problem' },
+        { label: 'Цена изменилась', detail: 'Нужна новая проверка решения', tone: 'problem' },
+        { label: 'Тур недоступен', detail: 'Оформление невозможно', tone: 'problem' },
+        { label: 'Ошибка формы', detail: 'Исправить ввод', tone: 'problem' },
+        { label: 'Результат оплаты', detail: 'Различить успех и неуспех', tone: 'neutral' },
       ],
     },
     {
@@ -371,6 +383,7 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'astoria-outcomes', group: 'final', after: '−5% отказов', title: 'Связь решения с показателем', kind: 'columns',
+      presentation: 'impact',
       columns: ['Решение', 'Пользовательский эффект', 'Показатель'],
       items: [
         { label: 'Приоритетные фильтры', detail: 'Быстрее найти подходящее', note: 'Время поиска тура' },
@@ -381,7 +394,8 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
   ],
   'womens-health': [
     {
-      id: 'health-blueprint', group: 'context', after: 'Я начала работу с анализа', title: 'Путь через разные сервисы', kind: 'columns', numbered: true,
+      id: 'health-blueprint', group: 'context', after: 'Путь мог начинаться с поста', title: 'Путь через разные сервисы', kind: 'columns', numbered: true,
+      presentation: 'friction',
       columns: ['Шаг', 'Действие пользовательницы', 'Что остаётся ручным'],
       items: [
         { label: 'Знакомство', detail: 'Находит эксперта в соцсетях', note: 'Разные точки входа' },
@@ -391,7 +405,8 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'health-design-first', group: 'context', after: 'Поэтому первым этапом стал Design First', title: 'Design First: порядок работы', kind: 'flow', numbered: true,
+      id: 'health-design-first', group: 'context', after: 'Поэтому начала с Design First', title: 'Design First: порядок работы', kind: 'flow', numbered: true,
+      presentation: 'steps',
       items: [
         { label: 'Погружение', detail: 'Текущая модель и путь' },
         { label: 'Архитектура', detail: 'Разделы и связи' },
@@ -402,17 +417,19 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'health-problem', group: 'context', after: 'Главный продуктовый вызов', title: 'Причина фрагментации', kind: 'comparison',
+      id: 'health-problem', group: 'context', after: 'Мне нужно было связать покупки', title: 'Причина фрагментации', kind: 'comparison',
+      presentation: 'risks',
       items: [
-        { label: 'Пользовательница', detail: 'Неясно, какой продукт выбрать, как записаться и где продолжить после покупки' },
-        { label: 'Бизнес', detail: 'Ручная выдача доступов, нагрузка на команду и отсутствие единой аналитики' },
+        { label: 'Пользовательница', detail: 'Неясно, какой продукт выбрать, как записаться и где продолжить после покупки', tone: 'problem' },
+        { label: 'Бизнес', detail: 'Ручная выдача доступов, нагрузка на команду и отсутствие единой аналитики', tone: 'problem' },
       ], caption: 'В центре обеих проблем — отсутствие единого цифрового пути',
     },
     {
       id: 'health-jobs', group: 'context', after: 'просмотр статей, видео и подкастов', title: 'Два класса сценариев', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'Конверсия', detail: 'Выбор продукта → покупка или запись → получение доступа' },
-        { label: 'Возвращение', detail: 'Контент → инструмент или курс → прогресс → следующий визит' },
+        { label: 'Конверсия', detail: 'Выбор продукта → покупка или запись → получение доступа', tone: 'neutral' },
+        { label: 'Возвращение', detail: 'Контент → инструмент или курс → прогресс → следующий визит', tone: 'neutral' },
       ],
     },
     {
@@ -427,9 +444,10 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'health-mvp', group: 'structure', after: 'сложная подписочная', title: 'Граница первого релиза', kind: 'comparison',
+      presentation: 'comparison',
       items: [
-        { label: 'MVP', detail: 'Главная, каталог и карточка продукта, тариф, консультация, авторизация, покупка и личный кабинет' },
-        { label: 'Позже', detail: 'Собственная CRM, расширенное хранение медицинских данных, языки, offline, биометрия и сложная подписка' },
+        { label: 'MVP', detail: 'Главная, каталог и карточка продукта, тариф, консультация, авторизация, покупка и личный кабинет', tone: 'neutral' },
+        { label: 'Позже', detail: 'Собственная CRM, расширенное хранение медицинских данных, языки, offline, биометрия и сложная подписка', tone: 'neutral' },
       ],
     },
     {
@@ -499,6 +517,7 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'health-outcomes', group: 'final', after: '−15% времени', title: 'Изменение продукта', kind: 'levels',
+      presentation: 'impact',
       items: [
         { label: 'Разные точки → система', detail: 'Контент, продукт, консультация и инструменты связаны' },
         { label: 'Ручные шаги → самообслуживание', detail: 'Запись, оплата и доступ собраны в сценариях' },
@@ -517,6 +536,7 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
     },
     {
       id: 'atlyx-lifecycle', group: 'context', after: 'travel-сервис должен быть полезен', title: 'До, во время и после поездки', kind: 'flow', numbered: true,
+      presentation: 'steps',
       items: [
         { label: 'До', detail: 'Сохранить места, добавить рейс, составить план' },
         { label: 'Во время', detail: 'Открыть карту, данные рейса и детали поездки' },
@@ -524,7 +544,8 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'atlyx-fragmentation', group: 'context', after: 'Информация о путешествии обычно', title: 'Контекст поездки распадается', kind: 'columns',
+      id: 'atlyx-fragmentation', group: 'context', after: 'Билеты — в почте', title: 'Контекст поездки распадается', kind: 'columns',
+      presentation: 'friction',
       columns: ['Что нужно', 'Где хранится', 'Проблема'],
       items: [
         { label: 'Билеты', detail: 'Почта или авиакомпания', note: 'Отдельно от маршрута' },
@@ -534,7 +555,9 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'atlyx-opportunity', group: 'context', after: 'Для продукта это создавало риск', title: 'Проблема → возможность', kind: 'columns',
+      id: 'atlyx-opportunity', group: 'context', after: 'Без повода вернуться приложение рисковало', title: 'Проблема → возможность', kind: 'columns',
+      presentation: 'opportunity',
+      pairTones: { problem: 'problem', response: 'solution' },
       columns: ['Проблема', 'Продуктовое решение', 'Польза'],
       items: [
         { label: 'Данные в разных сервисах', detail: 'Единый контекст поездки', note: 'Быстрый доступ к нужному' },
@@ -551,10 +574,11 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'atlyx-architecture', group: 'structure', after: 'Вместо этого была выбрана', title: 'От набора функций к travel cycle', kind: 'comparison',
+      id: 'atlyx-architecture', group: 'structure', after: 'Связала их вокруг поездки', title: 'От набора функций к travel cycle', kind: 'comparison',
+      presentation: 'before-after',
       items: [
-        { label: 'Отдельные разделы', detail: 'Карта, перелёты, переводчик и профиль работают независимо' },
-        { label: 'Модель поездки', detail: 'Путешествие связывает места, рейсы, маршрут и личный прогресс' },
+        { label: 'Отдельные разделы', detail: 'Карта, перелёты, переводчик и профиль работают независимо', tone: 'problem' },
+        { label: 'Модель поездки', detail: 'Путешествие связывает места, рейсы, маршрут и личный прогресс', tone: 'solution' },
       ],
     },
     {
@@ -611,12 +635,13 @@ export const caseVisuals: Record<string, CaseVisualSpec[]> = {
       ],
     },
     {
-      id: 'atlyx-states', group: 'system', after: 'Это позволило проектировать продукт', title: 'Неидеальные сценарии', kind: 'matrix',
+      id: 'atlyx-states', group: 'system', after: 'Важно было связать не только экраны', title: 'Неидеальные сценарии', kind: 'matrix',
+      presentation: 'states',
       items: [
-        { label: 'Пустая поездка', detail: 'Нет добавленных планов' },
-        { label: 'Рейс не найден', detail: 'Доступен ручной ввод' },
-        { label: 'Загрузка или ошибка', detail: 'Отдельная обратная связь' },
-        { label: 'Успех', detail: 'Сохранённое место или рейс' },
+        { label: 'Пустая поездка', detail: 'Нет добавленных планов', tone: 'neutral' },
+        { label: 'Рейс не найден', detail: 'Доступен ручной ввод', tone: 'problem' },
+        { label: 'Загрузка или ошибка', detail: 'Отдельная обратная связь', tone: 'problem' },
+        { label: 'Успех', detail: 'Сохранённое место или рейс', tone: 'solution' },
       ],
     },
     {

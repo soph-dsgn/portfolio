@@ -5,8 +5,18 @@ import { Icon } from './Icon'
 import { withoutFinalPeriod } from '../data/caseContent'
 import { CaseDiagram } from './CaseDiagram'
 import { diagramModeFor } from '../data/caseDiagramModes'
+import { CaseEditorialVisual } from './CaseEditorialVisual'
+import '../styles/caseVisualTokens.css'
 
-export type VisualItem = { label: string; detail?: string; note?: string; branches?: { yes: string; no: string } }
+export type MetricMeasure =
+  | { kind: 'relative'; value: number | [number, number]; unit: 'percent' | 'points'; direction: 'increase' | 'decrease' }
+  | { kind: 'completion'; value: number }
+  | { kind: 'before-after'; before: number; after: number; unit: 'percent' | 'points' | 'minutes' }
+export type VisualItem = {
+  label: string; detail?: string; note?: string; branches?: { yes: string; no: string }
+  tone?: 'problem' | 'solution' | 'hypothesis' | 'neutral'
+  measure?: MetricMeasure
+}
 
 export type CaseVisualSpec = {
   id: string
@@ -17,7 +27,8 @@ export type CaseVisualSpec = {
   kind: 'columns' | 'flow' | 'matrix' | 'comparison' | 'levels'
   numbered?: boolean
   columns?: string[]
-  presentation?: 'results'
+  presentation?: 'results' | 'problem-solution' | 'opportunity' | 'before-after' | 'insights' | 'changes' | 'comparison' | 'risks' | 'friction' | 'options' | 'impact' | 'steps' | 'states'
+  pairTones?: { problem: 'problem' | 'neutral'; response: 'solution' | 'hypothesis' | 'neutral' }
   items: VisualItem[]
 }
 
@@ -40,11 +51,13 @@ export function CaseVisual({ visual, precedingHeading = '' }: { visual: CaseVisu
   const { reveal, variants } = useMotionSystem()
   const showHeading = !repeatsHeading(visual.title, precedingHeading, visual.id)
   const diagramMode = diagramModeFor(visual.id)
+  const isDiagram = Boolean(diagramMode && !visual.presentation)
   const isTable = visual.kind === 'columns' && visual.columns && !diagramMode
 
   return (
     <motion.figure className={`case-visual case-visual--${visual.kind}${showHeading ? '' : ' case-visual--untitled'}`}
-      {...reveal(visual.kind === 'comparison' ? 'right' : visual.kind === 'flow' ? 'left' : 'scale', .08)}
+      data-visual-id={visual.id} data-presentation={visual.presentation ?? 'diagram'}
+      {...(isDiagram || visual.presentation === 'changes' ? { initial: false as const } : reveal(visual.kind === 'comparison' ? 'right' : visual.kind === 'flow' ? 'left' : 'scale', .08))}
       aria-labelledby={showHeading ? `${visual.id}-title` : undefined}
       aria-label={showHeading ? undefined : visual.title}>
       {showHeading ? (
@@ -53,7 +66,9 @@ export function CaseVisual({ visual, precedingHeading = '' }: { visual: CaseVisu
           <span><InlineArrows text={visual.title} /></span>
         </figcaption>
       ) : null}
-      {isTable ? (
+      {visual.presentation && visual.presentation !== 'results' ? (
+        <CaseEditorialVisual visual={visual} />
+      ) : isTable ? (
         <div className="case-visual-table-wrap">
           <table className="case-visual-table">
             <thead><tr>{visual.columns?.map((column) => <th scope="col" key={column}><InlineArrows text={column} /></th>)}</tr></thead>

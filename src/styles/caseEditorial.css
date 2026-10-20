@@ -94,10 +94,6 @@
   letter-spacing: -.025em;
 }
 .case-shell--editorial .case-overview { gap: 32px; }
-.case-shell--editorial .case-visual figcaption { font-size: 25px; font-weight: 600; line-height: 1.25; }
-.case-shell--editorial .case-visual :is(dd, td),
-.case-shell--editorial .case-visual-results span { color: var(--case-body-color); line-height: 1.65; }
-.case-shell--editorial .case-visual .case-visual-caption,
 .case-shell--editorial .visual-caption {
   max-width: var(--case-reading-column);
   color: var(--case-caption-color);
@@ -105,16 +101,6 @@
   line-height: 1.6;
   margin-top: 16px;
 }
-.case-shell--editorial .case-results { width: 100%; gap: 24px; }
-.case-shell--editorial .case-results dt,
-.case-shell--editorial .case-visual-results strong {
-  color: var(--color-text);
-  font-size: clamp(28px, 3vw, 44px);
-  line-height: 1.15;
-  letter-spacing: -.035em;
-  font-weight: 600;
-}
-.case-shell--editorial .case-results dd { color: var(--case-body-color); font-weight: 400; font-size: 17px; line-height: 1.65; margin-top: 16px; }
 .case-shell--editorial .case-image-gallery { gap: var(--case-space-group); margin-top: 20px; }
 .case-shell--editorial .case-image-frame { width: 100%; justify-self: start; }
 .case-shell--editorial .case-image-frame.case-layout--medium,
@@ -132,9 +118,7 @@
   .case-shell--editorial .case-editorial-text h3 { font-size: 27px; }
   .case-shell--editorial .case-editorial-text h4 { font-size: 23px; }
   .case-shell--editorial .case-editorial-text p.case-narrative-lead { font-size: 20px; }
-  .case-shell--editorial .case-visual figcaption { font-size: 23px; }
   .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: 25px; }
   .case-shell--editorial .case-overview { gap: 28px; }
   .case-shell--editorial .case-image-gallery { margin-top: 16px; }
-  .case-shell--editorial .case-results { gap: 16px; }
 }

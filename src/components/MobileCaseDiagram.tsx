@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion'
-import { useMotionSystem, motionTokens } from '../lib/motion'
 import type { CaseVisualSpec, VisualItem } from './CaseVisual'
 import { diagramHubs, stateCenters, type DiagramMode } from '../data/caseDiagramModes'
 import { withoutFinalPeriod } from '../data/caseContent'
@@ -37,25 +35,24 @@ function mobileGroups(visual: CaseVisualSpec, mode: DiagramMode): VisualItem[][]
   return items.map(item => [item])
 }
 
-function VerticalConnector({ visible, reduced, delay }: { visible: boolean; reduced: boolean; delay: number }) {
+function VerticalConnector() {
   return <svg className="case-diagram-mobile-connector" width="16" height="28" viewBox="0 0 16 28" aria-hidden="true">
-    <motion.path initial={false} animate={{ pathLength: visible || reduced ? 1 : 0, opacity: visible || reduced ? 1 : 0 }} transition={{ duration: reduced ? motionTokens.reduced : motionTokens.mobile.diagram.connectorDuration, delay: reduced ? 0 : delay, ease: motionTokens.ease }} d="M8 2V24 M5 21L8 24L11 21" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 2V24 M5 21L8 24L11 21" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 }
 
-export function MobileCaseDiagram({ visual, mode, visible }: { visual: CaseVisualSpec; mode: DiagramMode; visible: boolean }) {
-  const { variants, reduced } = useMotionSystem()
+export function MobileCaseDiagram({ visual, mode }: { visual: CaseVisualSpec; mode: DiagramMode }) {
   const groups = mobileGroups(visual, mode).filter(group => group.length)
   return <div className="case-diagram-mobile">
     {groups.map((group, index) => <div className={`case-diagram-mobile-step${mode === 'status-pairs' && index === 2 ? ' case-diagram-mobile-step--separate' : ''}`} key={index}>
-      {index > 0 && !(mode === 'status-pairs' && index === 2) && <VerticalConnector visible={visible} reduced={reduced} delay={(index - 1) * motionTokens.mobile.diagram.step + motionTokens.mobile.diagram.connectorStart} />}
-      <motion.div className="case-diagram-mobile-group" initial={visible ? false : 'hidden'} animate={visible ? 'visible' : 'hidden'} variants={variants('soft', index * motionTokens.mobile.diagram.step)}>
+      {index > 0 && !(mode === 'status-pairs' && index === 2) && <VerticalConnector />}
+      <div className="case-diagram-mobile-group">
         {group.map((item, itemIndex) => <div className="case-diagram-mobile-card" key={`${item.label}-${itemIndex}`}>
           <strong><InlineArrows text={withoutFinalPeriod(item.label)} /></strong>
           {item.detail && <p><InlineArrows text={withoutFinalPeriod(item.detail)} /></p>}
           {item.note && <p className="case-diagram-mobile-note"><InlineArrows text={withoutFinalPeriod(item.note)} /></p>}
         </div>)}
-      </motion.div>
+      </div>
     </div>)}
   </div>
 }

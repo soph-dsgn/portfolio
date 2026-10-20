@@ -1,0 +1,38 @@
+.case-main > .case-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  width: 100%;
+  margin-top: var(--section-padding);
+  padding-block: var(--space-8);
+}
+.case-navigation-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  min-width: 0;
+  padding-inline: var(--space-2);
+  overflow: visible;
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: var(--weight-regular);
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-decoration: none;
+}
+.case-navigation-item--next { margin-left: auto; text-align: right; }
+.case-navigation-item[aria-disabled='true'] { color: var(--color-border); }
+.case-navigation-item:focus-visible { outline-offset: 8px; }
+.case-navigation-arrow { display: inline-flex; flex: none; }
+.case-navigation-arrow .arrow-icon { width: 1em; height: 1em; }
+/* The wrapper is the only motion owner here. The shared CSS hover used to
+   push the SVG glyph outside its own viewBox, independently of Framer Motion. */
+.case-navigation .case-navigation-item .arrow-icon-glyph { transition: none; }
+.case-navigation .case-navigation-item:hover .arrow-icon:not(.arrow-icon--up-right) .arrow-icon-glyph { transform: none; }
+.case-navigation-item > span:not(.case-navigation-arrow) { white-space: nowrap; }
+@media (max-width: 600px) {
+  .case-main > .case-navigation { gap: var(--space-4); }
+  .case-navigation-item { font-size: 14px; gap: var(--space-2); }
+}

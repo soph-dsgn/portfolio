@@ -11,6 +11,8 @@ export const motionTokens = {
   metric: .42, metricStagger: .07,
   navState: .18,
   micro: .16, hover: .22, reduced: .1, loaderExit: .18,
+  caseNavigation: { arrowDistance: 4, hoverOpacity: .75, pressOpacity: .6 },
+  evidence: { duration: .65, stagger: .06 },
   caption: .25, captionDelay: .18, artwork: .5, scroll: .65,
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1,
   maxRevealDelay: .24,
@@ -36,11 +38,11 @@ export const motionTokens = {
     card: { captionY: 12, scale: .975, opacity: .9, captionStart: .18, pressOpacity: .9, drift: 4 },
     metrics: { y: 12, stagger: .18, captionStart: .09 }, tools: { y: 6, stagger: .025 },
     menu: { duration: .22, exit: .16, y: -8, itemY: -4, stagger: .03 },
-    tapScale: .985, diagram: { step: .22, connectorStart: .13, connectorDuration: .12 },
+    tapScale: .985,
   },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
-  diagram: { source: .22, wireStart: .24, wire: .3, targetStart: .66, node: .35, stagger: .035, maxNodeDelay: .14, wireStagger: .025, maxWireDelay: .1, mobileStagger: .07, mobileDelay: .04, maxMobileDelay: .32, maxMobileWireDelay: .28, filter: .35, filterStart: .16, filterStateStart: .38, filterResultStart: .7 },
+  diagram: { revealDuration: .5, revealDistance: 12 },
 }
 
 const subscribeAdaptive = (update: () => void) => {

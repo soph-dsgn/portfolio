@@ -1,4 +1,5 @@
 import { CaseTitle, CaseDeck } from '../components/CaseTitle'
+import { CaseNavigation } from '../components/CaseNavigation'
 import { SceneImage } from '../components/SceneImage'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
@@ -90,9 +91,10 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
   }
   nodes.forEach((node) => {
     if (groupId === 'final' && node.kind === 'list' && blockIndex === 0 && textNodes.length === 0) {
+      const resultVisuals = visualsAfter(projectId, groupId, node.items.join(' '))
       blocks.push({ key: "results", content: <CaseResults items={node.items} /> })
       blockIndex += 1
-      for (const visual of visualsAfter(projectId, groupId, node.items.join(' '))) {
+      for (const visual of resultVisuals) {
         blocks.push({ key: visual.id, visual, content: <CaseVisual visual={visual} precedingHeading={groupTitle} /> })
       }
       return
@@ -113,7 +115,7 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
   for (let index = 0; index < blocks.length; index += 1) {
     const block = blocks[index]
     const next = blocks[index + 1]
-    const companionMode = next?.visual && diagramModeFor(next.visual.id)
+    const companionMode = next?.visual && !next.visual.presentation && diagramModeFor(next.visual.id)
     const start = block.nodes && next?.visual?.items.length === 2 &&
       (companionMode === 'contrast' || companionMode === 'transformation') ? companionStart(block.nodes) : null
     if (block.nodes && start !== null) {
@@ -242,6 +244,7 @@ export function ProjectPage() {
           ))}
         </div>
         {showThanks ? <CaseThanks /> : null}
+        <CaseNavigation projectId={project.id} />
       </main>
     </div></Typography>
   )

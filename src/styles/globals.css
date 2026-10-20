@@ -605,7 +605,7 @@ h3 {
   gap: 24px;
   margin: 0;
 }
-.case-facts > div {
+.case-facts:not(.case-results) > div {
   min-width: 0;
   padding: 24px;
   border-radius: var(--radius-content-card);
@@ -630,12 +630,14 @@ h3 {
 .case-results {
   min-width: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--case-v-gap);
+  padding: var(--case-v-padding);
+  background: var(--case-v-surface);
+  border-radius: var(--radius-content-card);
 }
 .case-metric-grid > :where(div, li) {
-  padding: 32px;
-  border-radius: 32px;
-  background: var(--color-white);
+  padding: 0;
+  background: transparent;
 }
 /* An unmatched last result keeps its full reading width. */
 @media (min-width: 761px) {
@@ -645,15 +647,17 @@ h3 {
 }
 .case-results dt {
   color: var(--color-text);
-  font-size: 36px;
-  font-weight: 500;
+  font-size: var(--case-v-metric);
+  font-weight: var(--weight-strong);
   line-height: 1.25;
   letter-spacing: -.02em;
 }
 .case-results dd {
-  font-size: var(--type-body);
-  font-weight: 400;
-  line-height: 1.5;
+  margin-top: var(--case-v-copy-gap);
+  color: var(--case-v-body-color);
+  font-size: var(--case-v-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--case-v-leading);
 }
 
 /* Shared segmented geometry: small inside corners, continuous rounded ends. */
@@ -1001,18 +1005,20 @@ time.chip {
 }
 .case-visual figcaption {
   color: var(--color-text);
-  font-size: 24px;
-  font-weight: 500;
+  font-size: var(--case-v-title);
+  font-weight: var(--weight-strong);
   letter-spacing: -.025em;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .case-visual-results {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
-  margin: var(--space-4) 0 0;
-  padding: 0;
+  margin: var(--case-v-gap) 0 0;
+  padding: var(--case-v-padding);
   list-style: none;
+  background: var(--case-v-surface);
+  border-radius: var(--radius-content-card);
 }
 .case-visual-results > li {
   display: grid;
@@ -1023,19 +1029,21 @@ time.chip {
 }
 .case-visual-results strong {
   color: var(--color-text);
-  font-size: var(--type-card-title);
+  font-size: var(--case-v-metric);
   font-weight: var(--weight-strong);
   line-height: 1.35;
 }
 .case-visual-results span {
-  font-size: var(--type-body);
-  line-height: var(--leading-body);
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 .case-visual-plain {
   display: grid;
   gap: 12px;
-  margin: var(--space-4) 0 0;
-  padding: 0;
+  margin: var(--case-v-gap) 0 0;
+  padding: var(--case-v-padding);
+  background: var(--case-v-surface);
+  border-radius: var(--radius-content-card);
 }
 .case-visual-plain > div {
   display: grid;
@@ -1043,25 +1051,28 @@ time.chip {
   gap: 16px;
 }
 .case-visual-plain dt {
-  font-weight: 500;
+  font-weight: var(--weight-strong);
+  font-size: var(--case-v-card-title);
 }
 .case-visual-plain dd {
   margin: 0;
+  font-size: var(--case-v-body);
+  color: var(--case-v-body-color);
 }
 .case-visual .case-visual-caption {
   max-width: none;
   margin-top: var(--space-4);
-  color: var(--color-muted);
-  font-size: 13px;
-  line-height: 1.45;
+  color: var(--case-caption-color, var(--color-muted));
+  font-size: var(--case-v-note);
+  line-height: var(--case-v-leading);
 }
 .case-diagram {
   position: relative;
   min-width: 0;
-  margin-top: var(--space-4);
-  padding: var(--space-6);
+  margin-top: var(--case-v-gap);
+  padding: var(--case-v-padding);
   border-radius: var(--radius-content-card);
-  background: var(--color-white);
+  background: var(--case-v-surface);
   color: var(--color-text);
 }
 .case-diagram > :not(.case-diagram-wires) {
@@ -1088,7 +1099,7 @@ time.chip {
   min-height: 64px;
   padding: 12px 16px;
   border-radius: var(--radius-group);
-  background: var(--color-surface);
+  background: transparent;
   text-align: center;
 }
 .case-diagram-node--primary {
@@ -1096,9 +1107,9 @@ time.chip {
   color: var(--color-page);
 }
 .case-diagram-node strong {
-  font-size: var(--type-body);
+  font-size: var(--case-v-card-title);
   font-weight: var(--weight-strong);
-  line-height: 1.35;
+  line-height: var(--case-v-heading-leading);
   overflow-wrap: normal;
   word-break: normal;
 }
@@ -1107,13 +1118,13 @@ time.chip {
   gap: 2px;
 }
 .case-diagram-node small {
-  font-size: var(--type-note);
+  font-size: var(--case-v-note);
   line-height: 1.3;
   font-weight: var(--weight-regular);
 }
 .case-diagram-number {
   color: var(--color-muted);
-  font-size: 12px;
+  font-size: var(--case-v-note);
   flex: none;
 }
 .case-diagram-node--primary .case-diagram-number {
@@ -1132,18 +1143,21 @@ time.chip {
   padding: 8px 0;
 }
 .case-diagram-explanations dt {
-  font-weight: 500;
-  line-height: 1.45;
+  font-size: var(--case-v-card-title);
+  font-weight: var(--weight-strong);
+  line-height: var(--case-v-heading-leading);
 }
 .case-diagram-explanations dd {
   margin: 0;
-  line-height: 1.5;
+  font-size: var(--case-v-body);
+  color: var(--case-v-body-color);
+  line-height: var(--case-v-leading);
 }
 .case-diagram-note {
   display: block;
   margin-top: 4px;
   color: var(--color-muted);
-  font-size: 13px;
+  font-size: var(--case-v-note);
 }
 .case-diagram-service-map {
   display: grid;
@@ -1169,13 +1183,13 @@ time.chip {
   min-height: 230px;
   padding: 18px;
   border-radius: var(--radius-content-card);
-  background: var(--color-surface);
+  background: transparent;
 }
 .case-diagram-overline {
   display: block;
   margin-bottom: 10px;
   color: var(--color-muted);
-  font-size: 13px;
+  font-size: var(--case-v-note);
   font-weight: 500;
 }
 .case-diagram-filter-pills, .case-diagram-filter-selected, .case-diagram-filter-expanded {
@@ -1187,7 +1201,7 @@ time.chip {
   padding: 6px 10px;
   border-radius: 8px;
   background: var(--color-white);
-  font-size: 13px;
+  font-size: var(--case-v-note);
   line-height: 1.35;
 }
 .case-diagram-filter-pills .case-diagram-filter-active {
@@ -1213,7 +1227,7 @@ time.chip {
 .case-diagram-filter-selected-label {
   display: block;
   margin: 18px 0 8px;
-  font-size: 13px;
+  font-size: var(--case-v-note);
   font-weight: 500;
 }
 .case-diagram-filter-selected span {
@@ -1292,20 +1306,21 @@ time.chip {
   display: inline-block;
   padding: 4px 10px;
   border-radius: 8px;
-  background: var(--color-surface);
-  font-size: 13px;
+  background: transparent;
+  font-size: var(--case-v-note);
   font-weight: 500;
 }
 .case-diagram-branches strong {
   max-width: 260px;
-  font-size: 16px;
-  line-height: 1.4;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-branches p {
   max-width: 280px;
   margin: 8px 0 0;
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 .case-diagram-branch-end {
   display: grid;
@@ -1329,14 +1344,15 @@ time.chip {
   text-align: center;
 }
 .case-diagram-hub strong {
-  font-size: 18px;
-  line-height: 1.3;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-hub small {
   display: block;
   margin-top: 4px;
   color: var(--color-tile);
-  font-size: 12px;
+  font-size: var(--case-v-note);
   line-height: 1.4;
 }
 .case-diagram-architecture-end, .case-diagram-convergence {
@@ -1347,10 +1363,13 @@ time.chip {
   margin-top: 44px;
 }
 .case-diagram-architecture-end strong {
+  font-size: var(--case-v-card-title);
+  font-weight: var(--weight-strong);
+  line-height: var(--case-v-heading-leading);
   min-width: 180px;
   padding: 12px 20px;
   border-radius: 16px;
-  background: var(--color-surface);
+  background: transparent;
   text-align: center;
 }
 .case-diagram-convergence-entries {
@@ -1397,7 +1416,7 @@ time.chip {
 }
 .case-diagram-status-aside > span {
   color: var(--color-muted);
-  font-size: 13px;
+  font-size: var(--case-v-note);
 }
 .case-diagram-status-pairs {
   display: grid;
@@ -1418,12 +1437,13 @@ time.chip {
   color: var(--color-page);
 }
 .case-diagram-state-root strong {
-  font-size: 17px;
-  line-height: 1.35;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-state-root span {
   color: #ddd;
-  font-size: 12px;
+  font-size: var(--case-v-note);
   line-height: 1.4;
 }
 .case-diagram-state-rail {
@@ -1437,22 +1457,23 @@ time.chip {
   align-items: start;
   padding: 14px 16px;
   border-radius: var(--radius-group);
-  background: var(--color-surface);
+  background: transparent;
 }
 .case-diagram-state-row strong {
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-state-row span {
   display: block;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 .case-diagram-state-row small {
   display: block;
   margin-top: 5px;
   color: var(--color-muted);
-  font-size: 13px;
+  font-size: var(--case-v-note);
   line-height: 1.45;
 }
 .case-diagram-entity-map {
@@ -1474,7 +1495,7 @@ time.chip {
   min-height: 142px;
   padding: 14px;
   border-radius: 16px;
-  background: var(--color-surface);
+  background: transparent;
 }
 .case-diagram-entity-term {
   display: flex;
@@ -1483,13 +1504,14 @@ time.chip {
   align-items: baseline;
 }
 .case-diagram-entity-term strong {
-  font-size: 15px;
-  line-height: 1.35;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-entity-term span {
   color: var(--color-muted);
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 .case-diagram-risk-heading, .case-diagram-risk-row {
   display: grid;
@@ -1500,7 +1522,7 @@ time.chip {
 .case-diagram-risk-heading {
   padding: 0 0 8px;
   color: var(--color-muted);
-  font-size: 13px;
+  font-size: var(--case-v-note);
 }
 .case-diagram-risk-row {
   min-height: 62px;
@@ -1509,16 +1531,17 @@ time.chip {
 .case-diagram-risk-row strong, .case-diagram-risk-row p {
   padding: 12px 16px;
   border-radius: var(--radius-group);
-  background: var(--color-surface);
+  background: transparent;
 }
 .case-diagram-risk-row strong {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-risk-row p {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 .case-diagram-change-row {
   display: grid;
@@ -1536,22 +1559,23 @@ time.chip {
 .case-diagram-change-row > span, .case-diagram-change-row > strong {
   padding: 12px 16px;
   border-radius: var(--radius-group);
-  background: var(--color-surface);
+  background: transparent;
 }
 .case-diagram-change-row > span {
   color: var(--color-muted);
-  font-size: 16px;
+  font-size: var(--case-v-body);
   line-height: 1.4;
 }
 .case-diagram-change-row > strong {
-  font-size: 17px;
-  line-height: 1.4;
+  font-size: var(--case-v-card-title);
+  line-height: var(--case-v-heading-leading);
+  font-weight: var(--weight-strong);
 }
 .case-diagram-change-row > p {
   grid-column: 2;
   margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--case-v-body);
+  line-height: var(--case-v-leading);
 }
 @media (min-width: 901px) {
   .case-diagram-state-map { grid-template-columns: minmax(0, 1fr); gap: 148px; }
@@ -1593,10 +1617,10 @@ time.chip {
 }
 .case-visual-table-wrap {
   min-width: 0;
-  margin-top: var(--space-4);
-  padding: var(--space-6);
+  margin-top: var(--case-v-gap);
+  padding: var(--case-v-padding);
   border-radius: var(--radius-content-card);
-  background: var(--color-white);
+  background: var(--case-v-surface);
   overflow-x: auto;
 }
 .case-visual--untitled .case-visual-results,
@@ -1613,48 +1637,37 @@ time.chip {
 }
 .case-visual-table th,
 .case-visual-table td {
+  color: var(--case-v-body-color);
   width: 33.333%;
-  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  padding: var(--space-4);
   vertical-align: top;
   overflow-wrap: normal;
   word-break: normal;
-  font-size: 16px;
+  font-size: var(--case-v-body);
   font-weight: 400;
-  line-height: 1.45;
+  line-height: var(--case-v-leading);
 }
 .case-visual-table thead th {
-  color: var(--color-muted);
-  font-size: var(--type-button);
-  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  font-size: var(--case-v-card-title);
+  font-weight: var(--weight-strong);
 }
 .case-visual-table tbody th {
   color: var(--color-text);
-  font-weight: 500;
+  font-weight: var(--weight-strong);
+  font-size: var(--case-v-card-title);
 }
 @media (max-width: 760px) {
   .case-facts {
     grid-template-columns: 1fr;
   }
-  .case-facts > div {
+  .case-facts:not(.case-results) > div {
     padding: 20px;
-  }
-  .case-results > div {
-    padding: 24px;
-    border-radius: 24px;
-  }
-  .case-results dt {
-    font-size: 32px;
-  }
-  .case-diagram {
-    padding: 16px;
   }
   .case-diagram-node {
     min-height: 56px;
     padding: 10px 12px;
     border-radius: 14px;
-  }
-  .case-diagram-node strong {
-    font-size: 14px;
   }
   .case-diagram-explanations > div {
     grid-template-columns: 1fr;
@@ -1757,9 +1770,6 @@ time.chip {
     grid-template-columns: 1fr;
     gap: 2px;
   }
-  .case-visual-table-wrap {
-    padding: var(--space-4);
-  }
   .case-visual-table,
   .case-visual-table tbody,
   .case-visual-table tr {
@@ -1782,7 +1792,7 @@ time.chip {
     content: attr(data-label);
     display: block;
     color: var(--color-muted);
-    font-size: 11px;
+    font-size: var(--case-v-note);
     font-weight: 500;
   }
 }
@@ -2378,7 +2388,7 @@ time.chip {
   .case-document-section > h2 {
     font-size: var(--type-section);
   }
-  .case-text-card h3, .case-standalone-heading h3, .case-visual figcaption {
+  .case-text-card h3, .case-standalone-heading h3 {
     font-size: 20px;
   }
   .case-thanks {
@@ -2891,3 +2901,9 @@ button, input, select, textarea, svg text, svg tspan {
 .case-title-mask { overflow: hidden; }
 .navigation-label { position: relative; display: inline-block; isolation: isolate; }
 .navigation-label-text { position: relative; z-index: 1; }
+/* Onest's visible cap/word bounds sit slightly above its centred line box.
+   Correct the static inner content, leaving Motion's control transforms alone. */
+.site-header .navigation-label,
+.site-header .header-actions .telegram-link > span { transform: translateY(.5px); }
+/* The plane's x bounds centre is 11.39 in its 24-unit viewBox; y is balanced. */
+.site-header .telegram-link > .icon { transform: translateX(.5px); }
