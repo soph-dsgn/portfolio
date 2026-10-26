@@ -26,6 +26,7 @@ import { visualsAfter } from '../data/caseVisuals'
 import { VisualCaption } from '../components/VisualCaption'
 import { CaseMediaStage } from '../components/CaseMediaStage'
 import { CaseEditorialText } from '../components/CaseEditorialText'
+import { Footer } from '../components/Footer'
 import { audienceStatementLength, companionStart, isNarrativeLead } from '../lib/caseEditorial'
 import '../styles/caseEditorial.css'
 
@@ -246,6 +247,7 @@ export function ProjectPage() {
         {showThanks ? <CaseThanks /> : null}
         <CaseNavigation projectId={project.id} />
       </main>
+      <Footer />
     </div></Typography>
   )
 }

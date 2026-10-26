@@ -10,7 +10,6 @@ import { publicAsset } from '../lib/publicAsset'
 import { Footer } from './Footer'
 import { Typography } from './Typography'
 import { motionTokens, useMotionSystem, useInterfaceReady } from '../lib/motion'
-import { GreetingEyes } from './GreetingEyes'
 
 function ToolsStrip() {
   return (
@@ -116,8 +115,8 @@ export function ProfileHero() {
   }
   return <motion.section ref={heroRef} initial={heroVisible ? 'visible' : 'hidden'} animate={heroVisible ? 'visible' : 'hidden'} variants={adaptive ? mobileGroup() : undefined} className="profile-hero" data-canvas-panel aria-labelledby="hero-title">
     <motion.div className="hero-copy" initial={adaptive ? undefined : heroVisible ? 'visible' : 'hidden'} animate={adaptive ? undefined : heroVisible ? 'visible' : 'hidden'}>
-      <motion.div className="hero-identity" variants={adaptive ? mobileGroup(motionTokens.mobile.greeting.stagger) : variants('fade', .04)}>
-        <p className="hero-greeting"><motion.span variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.greeting) : neutralLine}>Привет</motion.span>{' '}<motion.span className="greeting-eye-reveal" variants={adaptive ? mobileEntrance(0, motionTokens.mobile.greeting.eyeScale) : neutralLine}><GreetingEyes /></motion.span>{' '}<motion.span variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.greeting) : neutralLine}>я — Соня</motion.span></p>
+      <motion.div className="hero-identity" variants={adaptive ? mobileGroup() : variants('fade', .04)}>
+        <motion.p className="hero-greeting" variants={adaptive ? mobileEntrance(motionTokens.mobile.hero.greeting) : neutralLine}>Привет, меня зовут Соня!</motion.p>
       </motion.div>
       <motion.h1 ref={headlineRef} id="hero-title" className="profile-role">
         <motion.span className="hero-headline-line" style={adaptive ? { overflow: 'hidden' } : undefined} variants={adaptive ? mobileGroup() : variants('left', 0.120)}><motion.span variants={adaptive ? mobileLine : neutralLine}>UX/UI &amp; Product Designer</motion.span></motion.span>{' '}
@@ -194,8 +193,8 @@ export function ProfileContact({ homepage = false }: { homepage?: boolean }) {
   return (
     <motion.section ref={contactRef} initial={contactVisible ? 'visible' : 'hidden'} animate={contactVisible ? 'visible' : 'hidden'} variants={adaptive ? mobileGroup() : undefined} className="contacts-section" id="contacts" data-canvas-panel aria-labelledby="contacts-title">
       <motion.div className="contact-copy">
-        <motion.h2 id="contacts-title" className={homepage ? 'contact-headline--intro' : undefined} variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.headline) : variants('fade')}><Typography>{homepage ? 'Кажется, мы сработаемся?' : 'Будем на связи!'}</Typography></motion.h2>
-        <motion.div className="contact-actions" variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.actions) : variants('soft', .12)}><TelegramLink location="contacts" label="Давайте знакомиться" showIcon={false} /><SocialIconLinks location="contacts" first="hh" /></motion.div>
+        <motion.h2 id="contacts-title" className={homepage ? 'contact-headline--intro' : undefined} variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.headline) : variants('fade')}><Typography>Хорошие продукты начинаются с диалога</Typography></motion.h2>
+        <motion.div className="contact-actions" variants={adaptive ? mobileEntrance(motionTokens.mobile.contact.actions) : variants('soft', .12)}><TelegramLink location="contacts" label="Связаться" showIcon={false} /><SocialIconLinks location="contacts" first="hh" /></motion.div>
       </motion.div>
       <motion.div className="contact-signature" variants={signatureReveal}>
         <span className="sr-only">@wsslxq</span>

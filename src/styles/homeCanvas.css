@@ -1,5 +1,14 @@
 /* The home page is one continuous sequence of large scenes. */
-.home-canvas { position: relative; width: 100%; }
+.home-canvas {
+  --home-panel-padding: 36px;
+  --home-panel-heading: clamp(30px, 2.6vw, 48px);
+  --home-panel-heading-line: 1.1;
+  --home-panel-body: 15px;
+  --home-panel-body-line: 1.5;
+  --home-copy-gap: calc(var(--space-6) + var(--space-1));
+  position: relative;
+  width: 100%;
+}
 .canvas-viewport { width: min(calc(100% - 48px), 1440px); margin-inline: auto; }
 .canvas-track { min-width: 0; }
 .site-header.site-header--home { position: fixed; width: 100%; }
@@ -8,14 +17,13 @@
 .home-canvas .hero-copy {
   --social-group-surface: var(--scene-light);
   container-type: inline-size;
-  padding: 36px;
+  padding: var(--home-panel-padding);
   border-radius: var(--radius-scene);
   background: var(--scene-light);
   justify-content: flex-start;
 }
 .home-canvas .hero-identity { font-size: 18px; color: var(--color-text); gap: 6px; }
-.hero-greeting { display: inline-flex; align-items: center; gap: .4em; white-space: nowrap; font-size: 18px; line-height: 1.5; }
-.greeting-eyes { display: block; flex: none; width: 1.7em; height: 1.14em; overflow: hidden; }
+.hero-greeting { font-size: 18px; line-height: 1.5; }
 .home-canvas .hero-location { margin-top: 18px; font-size: 18px; color: var(--color-muted); }
 .home-canvas .profile-role {
   font-size: clamp(24px, 8.5cqi, 56px);
@@ -42,7 +50,7 @@
 }
 .project-cover {
   --cover-top-padding: clamp(80px, calc(8dvh + 12px), 96px);
-  --cover-text-padding: 40px;
+  --cover-text-padding: var(--home-panel-padding);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
@@ -65,12 +73,7 @@
   pointer-events: none;
 }
 .project-scene { width: 100%; height: 100%; }
-.project-card[data-project='concepts'] .project-scene { --scene-fill: #8547e8; }
-.project-card[data-project='partner-portal'] .project-scene { --scene-fill: #34b8ff; }
-.project-card[data-project='skywallet'] .project-scene { --scene-fill: #34b8ff; }
-.project-card[data-project='astoria'] .project-scene { --scene-fill: #ff8a2a; }
-.project-card[data-project='womens-health'] .project-scene { --scene-fill: #b7a6ff; }
-.project-card[data-project='atlyx'] .project-scene { --scene-fill: #2f63ff; }
+.project-scene { --scene-fill: var(--color-surface); }
 .project-caption {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -87,8 +90,8 @@
 .home-canvas .project-labels { width: 100%; justify-content: center; }
 .home-canvas .project-tags { justify-content: center; column-gap: 8px; row-gap: 4px; max-width: 100%; }
 .project-caption h2 {
-  font-size: clamp(30px, 2.6vw, 48px);
-  line-height: 1.12;
+  font-size: var(--home-panel-heading);
+  line-height: var(--home-panel-heading-line);
   letter-spacing: -.05em;
   max-width: min(24ch, 100%);
   font-weight: var(--weight-regular);
@@ -112,20 +115,21 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr auto;
   align-items: start;
-  gap: 24px;
-  padding: 36px;
+  gap: var(--space-6);
+  padding: var(--home-panel-padding);
   margin-top: 16px;
   border-radius: var(--radius-scene);
   background: var(--scene-muted);
 }
 .home-canvas .contact-copy { position: relative; z-index: 1; }
-.home-canvas .contacts-section h2 { font-size: clamp(28px, 12cqi, 80px); white-space: nowrap; line-height: 1.02; letter-spacing: -.055em; margin-bottom: 28px; }
+.home-canvas .contacts-section h2 { font-size: var(--home-panel-heading); white-space: nowrap; line-height: var(--home-panel-heading-line); letter-spacing: -.05em; margin-bottom: var(--home-copy-gap); }
 .home-canvas .contacts-section h2.contact-headline--intro {
-  font-size: clamp(28px, 4.5cqi, 40px);
+  font-size: var(--home-panel-heading);
   white-space: normal;
   text-wrap: pretty;
 }
-.home-canvas .contact-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+.home-canvas .contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
+.home-canvas .contact-actions .social-icon-links { flex: none; }
 .home-canvas .contact-actions .contact-links { margin-top: 0; }
 .contact-signature { position: absolute; left: 36px; bottom: 100px; font-size: clamp(64px, 6.5vw, 124px); letter-spacing: -.065em; line-height: 1; color: var(--color-text); }
 .contact-portrait { position: absolute; right: 36px; bottom: 70px; width: 25%; height: 40%; object-fit: cover; object-position: 50% 40%; border-radius: var(--radius-media); }
@@ -134,21 +138,21 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
-  padding: 36px;
+  padding: var(--home-panel-padding);
   border-radius: var(--radius-scene);
   background: var(--color-dark);
   color: var(--color-on-dark);
 }
 .about-statement {
   max-width: 100%;
-  font-size: clamp(30px, 2.3vw, 44px);
+  font-size: var(--home-panel-heading);
   font-weight: var(--weight-regular);
-  line-height: 1.05;
+  line-height: var(--home-panel-heading-line);
   letter-spacing: -.045em;
   text-wrap: pretty;
 }
 .about-statement span { color: var(--color-muted-on-dark); }
-.about-intro { display: flex; flex-direction: column; gap: 28px; }
+.about-intro { display: flex; flex-direction: column; gap: var(--home-copy-gap); }
 .about-principles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -157,13 +161,13 @@
 }
 .about-principle { min-width: 0; }
 .about-principle h3 { font-size: 18px; font-weight: var(--weight-medium); line-height: 1.25; margin-bottom: 6px; }
-.about-principle p { max-width: 39ch; font-size: 15px; line-height: 1.5; color: var(--color-muted-on-dark); }
+.about-principle p { max-width: 39ch; font-size: var(--home-panel-body); line-height: var(--home-panel-body-line); color: var(--color-muted-on-dark); }
 .about-bottom { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; gap: var(--space-2); }
 .about-background {
   max-width: 58ch;
   margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--home-panel-body);
+  line-height: var(--home-panel-body-line);
   color: var(--color-muted-on-dark);
 }
 .about-tool-chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
@@ -259,19 +263,16 @@
 }
 
 @media (max-height: 700px) and (min-width: 1101px) {
+  .home-canvas { --home-panel-padding: 24px; --home-panel-heading: clamp(26px, 4.8vh, 40px); --home-copy-gap: var(--space-5); }
   .home-canvas[data-horizontal='true'] .canvas-viewport { --canvas-bottom-space: 8dvh; }
-  .home-canvas .hero-copy { padding: 24px; }
   .home-canvas .profile-role { padding-block: 12px; }
   .home-canvas .hero-identity { font-size: 16px; }
   .home-canvas .hero-links .social-icon-links { margin-top: 8px; }
   .project-cover { --cover-top-padding: 72px; --cover-text-padding: 24px; }
-  .home-canvas .project-caption h2 { font-size: clamp(28px, 4.8vh, 40px); }
-  .home-canvas .contacts-section { padding: 24px; gap: 16px; }
-  .home-canvas .contacts-section h2 { margin-bottom: 20px; }
+  .home-canvas .contacts-section { gap: 16px; }
   .contact-signature { font-size: 72px; bottom: 70px; }
   .contact-portrait { bottom: 60px; }
-  .profile-about { padding: 24px; gap: 16px; }
-  .about-statement { font-size: 26px; }
+  .profile-about { gap: 16px; }
   .about-tool-chips li { min-height: 32px; padding-block: 6px; }
   .home-canvas .about-tool-chips li { padding-block: 10px; }
   .about-principles { gap: 16px 24px; }
@@ -280,6 +281,7 @@
 
 }
 @media (max-width: 1100px), (prefers-reduced-motion: reduce) {
+  .home-canvas { --home-panel-heading: clamp(28px, 5vw, 40px); }
   .home-canvas .profile-hero { min-height: 520px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .home-canvas .profile-role { font-size: clamp(28px, 9cqi, 56px); }
   .home-canvas .hero-headline-line { white-space: normal; }
@@ -291,24 +293,23 @@
   .profile-about { min-height: 600px; }
 }
 @media (max-width: 760px) {
+  .home-canvas { --home-panel-padding: 24px; --home-panel-heading: clamp(28px, 7.5vw, 36px); --home-copy-gap: var(--space-6); }
   .canvas-viewport { width: calc(100% - 24px); }
   .home-canvas .profile-hero { min-height: 0; grid-template-columns: minmax(0, 1fr); }
-  .home-canvas .hero-copy { min-height: 440px; padding: 24px; }
+  .home-canvas .hero-copy { min-height: 440px; }
   .home-canvas .profile-role { font-size: clamp(28px, 9cqi, 44px); margin-block: 24px; padding: 0; }
   .home-canvas .hero-visual { aspect-ratio: 4 / 5; }
   .project-cover { --cover-top-padding: 64px; --cover-text-padding: 24px; }
   .home-canvas .project-cover { min-height: 0; grid-template-rows: auto auto; }
-  .home-canvas .project-caption h2 { font-size: clamp(28px, 7.5vw, 40px); }
   .home-canvas .project-artwork { height: auto; }
   .home-canvas .project-artwork img { height: auto; }
-  .home-canvas .contacts-section { min-height: 680px; padding: 24px; }
+  .home-canvas .contacts-section { min-height: 680px; }
   .contact-signature { left: 24px; bottom: 160px; font-size: 44px; }
   .contact-portrait { right: 24px; bottom: 100px; height: 140px; width: 100px; border-radius: var(--radius-content-card); }
   .home-canvas .contact-actions .contact-links { gap: 8px; }
   .home-canvas .contact-actions .contact-links a { padding-inline: 8px; gap: 4px; }
   .home-canvas .contact-actions .contact-links .icon { width: 18px; height: 18px; }
-  .profile-about { min-height: 0; padding: 28px 24px; gap: 24px; }
-  .about-statement { font-size: clamp(28px, 7.5vw, 36px); }
+  .profile-about { min-height: 0; gap: 24px; }
   .about-principles { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); margin-top: 8px; }
   .home-canvas .contacts-section .site-footer { flex-direction: row; align-items: center; gap: 12px; }
 }

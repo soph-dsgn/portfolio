@@ -14,6 +14,7 @@ import { withoutFinalPeriod } from '../data/caseContent'
 import { VisualCaption } from '../components/VisualCaption'
 import { CaseMediaStage } from '../components/CaseMediaStage'
 import { Typography } from '../components/Typography'
+import { Footer } from '../components/Footer'
 
 type Props = { project: Project }
 const emptyVideos: CaseVideo[] = []
@@ -227,6 +228,7 @@ export function ConceptCasePage({ project }: Props) {
         </div>
         <CaseNavigation projectId={project.id} />
       </main>
+      <Footer />
     </div></Typography>
   )
 }

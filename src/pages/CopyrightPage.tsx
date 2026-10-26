@@ -3,15 +3,19 @@ import { useEffect } from 'react'
 import { profile } from '../data/portfolio'
 import { trackEvent } from '../lib/analytics'
 import { Typography } from '../components/Typography'
+import { Footer } from '../components/Footer'
 
 export function CopyrightPage() {
   const { t } = useLocale()
   useEffect(() => { document.title = `${t('Авторские права')} — ${t(profile.name)}` }, [t])
 
   return (
-    <Typography><main className="copyright-page" id="main-content" tabIndex={-1}>
-      <article className="copyright-document">
-        <h1>Уведомление об авторских правах на материалы портфолио</h1>
+    <Typography><div className="copyright-shell">
+      <main className="copyright-page" id="main-content" tabIndex={-1}>
+        <article className="copyright-document">
+        <header className="copyright-intro">
+          <h1>Уведомление об авторских правах на материалы портфолио</h1>
+        </header>
 
         <section aria-labelledby="copyright-law">
           <h2 id="copyright-law">1. Правовая основа</h2>
@@ -55,11 +59,15 @@ export function CopyrightPage() {
           <p>В случае нарушения исключительного права Автор оставляет за собой право требовать компенсацию в размере от десяти тысяч до десяти миллионов рублей (ст. 1301 ГК РФ) или в двукратном размере стоимости права использования произведения.</p>
         </section>
 
-        <address className="copyright-contact">
-          <strong>Контакт для связи по вопросам прав:</strong> Email: <a href={profile.email} onClick={() => trackEvent('email_click', { location: 'copyright' })}>{profile.email.replace(/^mailto:/, '')}</a>
-        </address>
-        <p className="copyright-updated">Дата последнего обновления документа: 01.10.2026.</p>
-      </article>
-    </main></Typography>
+        <footer className="copyright-meta">
+          <address className="copyright-contact">
+            <strong>Контакт для связи по вопросам прав:</strong> Email: <a href={profile.email} onClick={() => trackEvent('email_click', { location: 'copyright' })}>{profile.email.replace(/^mailto:/, '')}</a>
+          </address>
+          <p className="copyright-updated">Дата последнего обновления документа: 01.10.2026.</p>
+        </footer>
+        </article>
+      </main>
+      <Footer />
+    </div></Typography>
   )
 }

@@ -136,7 +136,8 @@
     right: -60px;
     z-index: 5;
     display: grid;
-    gap: 4px;
+    gap: 0;
+    column-gap: 0;
     max-height: min(540px, calc(100dvh - 112px));
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -244,7 +245,7 @@
     flex: none;
     width: max-content;
     justify-content: center;
-    gap: 4px;
+    gap: 0;
     padding-inline: 10px;
   }
 }

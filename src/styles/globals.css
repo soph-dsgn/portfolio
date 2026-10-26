@@ -2106,6 +2106,7 @@ time.chip {
 }
 .site-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   gap: 16px;
@@ -2117,8 +2118,19 @@ time.chip {
 .site-footer-credit, .site-footer-copyright {
   display: flex;
   align-items: center;
+  min-width: 0;
   min-height: 44px;
   line-height: 1.4;
+}
+.site-footer-credit { gap: .35em; }
+.site-footer-separator { color: var(--color-meta-separator); }
+.case-shell > .site-footer { margin: 24px 0 28px; }
+.copyright-shell {
+  --copyright-content-width: 1200px;
+}
+.copyright-shell > .site-footer {
+  width: min(calc(100% - 48px), var(--copyright-content-width));
+  margin: 32px auto 28px;
 }
 .site-footer > a {
   transition: color 180ms ease;
@@ -2138,23 +2150,40 @@ time.chip {
   text-decoration-color: currentColor;
 }
 .copyright-page {
-  width: min(calc(100% - 40px), 720px);
-  margin: clamp(40px, 6vw, 80px) auto var(--page-bottom);
+  width: min(calc(100% - 48px), var(--copyright-content-width));
+  margin: clamp(40px, 6vw, 80px) auto 0;
 }
 .copyright-page > .back-button {
   margin-bottom: var(--space-8);
 }
+.copyright-document {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+.copyright-intro,
+.copyright-document section,
+.copyright-meta {
+  min-width: 0;
+  padding: clamp(var(--space-6), 3vw, 40px);
+  border-radius: var(--radius-scene);
+  background: var(--color-white);
+}
+.copyright-intro {
+  grid-column: 1 / -1;
+  padding-block: clamp(var(--space-8), 5vw, 64px);
+}
 .copyright-document h1 {
+  max-width: 24ch;
   font-size: clamp(32px, 3.6vw, 52px);
   font-weight: 400;
-  line-height: 1.18;
-  margin-bottom: var(--space-8);
+  line-height: 1.08;
+  letter-spacing: -.045em;
 }
-.copyright-document section + section {
-  margin-top: var(--space-8);
-}
+.copyright-document section:nth-of-type(3),
+.copyright-document section:nth-of-type(4) { grid-column: 1 / -1; }
 .copyright-document h2 {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
   color: var(--color-text);
   font-size: clamp(19px, 2vw, 22px);
   font-weight: 500;
@@ -2179,15 +2208,30 @@ time.chip {
   margin-top: var(--space-2);
 }
 .copyright-contact {
-  margin-top: var(--space-8);
+  margin: 0;
   color: var(--color-text);
   font-size: 16px;
   font-style: normal;
   line-height: 1.6;
 }
+.copyright-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
 .copyright-document .copyright-updated {
   margin-top: var(--space-3);
   font-size: 14px;
+}
+@media (max-width: 760px) {
+  .copyright-shell > .site-footer,
+  .copyright-page { width: calc(100% - 24px); }
+  .copyright-document { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .copyright-intro,
+  .copyright-document section,
+  .copyright-meta { grid-column: 1; padding: var(--space-6); }
+  .copyright-intro { padding-block: var(--space-8); }
 }
 .not-found {
   max-width: 600px;
@@ -2565,7 +2609,9 @@ time.chip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0;
+  column-gap: 0;
+  row-gap: 0;
   height: var(--action-height);
   width: max-content;
   max-width: calc(100% - 48px);
@@ -2577,9 +2623,10 @@ time.chip {
 .header-navigation, .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
   font-size: 15px;
 }
+.header-actions { gap: 0; column-gap: 0; margin: 0; }
+.desktop-header > :is(.header-navigation, .header-actions, .language-selector) { margin: 0; }
 .header-navigation a {
   padding-inline: 12px;
   color: var(--color-on-dark);
@@ -2587,12 +2634,15 @@ time.chip {
 .header-navigation {
   isolation: isolate;
   overflow: hidden;
-  gap: 4px;
+  gap: 0;
+  column-gap: 0;
+  justify-content: flex-start;
   padding: 0 20px;
   background: var(--color-dark);
   color: var(--color-on-dark);
   border-radius: var(--radius-navigation);
 }
+.header-navigation > a { margin: 0; }
 .header-navigation a, .header-actions > a {
   display: inline-flex;
   align-items: center;
@@ -2669,6 +2719,8 @@ time.chip {
   }
   .mobile-menu {
     display: grid;
+    gap: 0;
+    column-gap: 0;
     position: absolute;
     z-index: 2;
     top: 100%;
@@ -2684,6 +2736,7 @@ time.chip {
     transform-origin: top right;
     pointer-events: auto;
   }
+  .mobile-menu > a { margin: 0; }
   .mobile-menu[data-open='true'] {
     pointer-events: auto;
   }

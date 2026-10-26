@@ -28,7 +28,6 @@ export const motionTokens = {
   mobile: {
     mask: { duration: .62, closed: 'inset(100% 0% 0% 0%)', open: 'inset(0% 0% 0% 0%)', horizontal: 'inset(0% 100% 0% 0%)' },
     line: { duration: .55, hidden: 'translateY(105%)' },
-    greeting: { stagger: .065, eyeScale: .65 },
     photo: { duration: .7 },
     achievement: { trophy: .42, starsStart: .22, starStagger: .055, titleStart: .38, textStart: .48, scale: .94 },
     entrance: .5, distance: 16, groupStagger: .065, captionDelay: .08, toolsDelay: .32,
