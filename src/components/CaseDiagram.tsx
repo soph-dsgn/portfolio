@@ -281,7 +281,7 @@ export function CaseDiagram({ visual, mode }: { visual: CaseVisualSpec; mode: Di
   const onMeasured = useCallback(() => setMeasured(true), [])
   // Reveal once the complete desktop connection geometry exists. Never reset on resize.
   const visible = reduced || (inView && (adaptive || measured || !edges.length))
-  return <DiagramSequence><motion.div ref={ref} className={`case-diagram case-diagram--${mode}`}
+  return <DiagramSequence><motion.div ref={ref} className={`case-diagram case-diagram--${mode}`} data-diagram-id={visual.id}
     initial={reduced ? false : { opacity: 0, transform: `translateY(${motionTokens.diagram.revealDistance}px)` }}
     animate={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0px)' : `translateY(${motionTokens.diagram.revealDistance}px)` }}
     transition={{ duration: reduced ? 0 : motionTokens.diagram.revealDuration, ease: motionTokens.ease }}>

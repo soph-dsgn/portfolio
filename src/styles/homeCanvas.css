@@ -162,7 +162,7 @@
 .about-principle { min-width: 0; }
 .about-principle h3 { font-size: 18px; font-weight: var(--weight-medium); line-height: 1.25; margin-bottom: 6px; }
 .about-principle p { max-width: 39ch; font-size: var(--home-panel-body); line-height: var(--home-panel-body-line); color: var(--color-muted-on-dark); }
-.about-bottom { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; gap: var(--space-2); }
+.about-bottom { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; min-width: 0; gap: var(--space-2); }
 .about-background {
   max-width: 58ch;
   margin: 0;
@@ -180,6 +180,10 @@
   font-weight: var(--weight-medium);
   line-height: 1.4;
 }
+.about-tool-chips li[data-ai-tool='true'] {
+  background: linear-gradient(100deg, #f6c5e8 0%, #d8bbf4 50%, #a8e9ff 100%);
+  color: #202020;
+}
 @media (min-width: 1101px) {
   .home-canvas .about-tool-chips li { padding-block: 13px; }
 }
@@ -189,7 +193,7 @@
   top: 0;
   width: 100%;
   height: 100dvh;
-  --canvas-bottom-space: max(0px, calc(100dvh - var(--header-height) - var(--canvas-scene-height)));
+  --canvas-bottom-space: var(--space-1);
   padding: var(--header-height) 0 var(--canvas-bottom-space);
   margin: 0;
   overflow: clip;
@@ -264,7 +268,6 @@
 
 @media (max-height: 700px) and (min-width: 1101px) {
   .home-canvas { --home-panel-padding: 24px; --home-panel-heading: clamp(26px, 4.8vh, 40px); --home-copy-gap: var(--space-5); }
-  .home-canvas[data-horizontal='true'] .canvas-viewport { --canvas-bottom-space: 8dvh; }
   .home-canvas .profile-role { padding-block: 12px; }
   .home-canvas .hero-identity { font-size: 16px; }
   .home-canvas .hero-links .social-icon-links { margin-top: 8px; }
@@ -311,7 +314,7 @@
   .home-canvas .contact-actions .contact-links .icon { width: 18px; height: 18px; }
   .profile-about { min-height: 0; gap: 24px; }
   .about-principles { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); margin-top: 8px; }
-  .home-canvas .contacts-section .site-footer { flex-direction: row; align-items: center; gap: 12px; }
+  .home-canvas .contacts-section .site-footer { flex-direction: row; align-items: center; gap: 12px; grid-column: 1 / -1; }
 }
 
 /* Covers share one clipped interactive scene, including the hover movement. */

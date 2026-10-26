@@ -61,7 +61,8 @@ export function CopyrightPage() {
 
         <footer className="copyright-meta">
           <address className="copyright-contact">
-            <strong>Контакт для связи по вопросам прав:</strong> Email: <a href={profile.email} onClick={() => trackEvent('email_click', { location: 'copyright' })}>{profile.email.replace(/^mailto:/, '')}</a>
+            <strong>Вопросы об авторских правах</strong><br />
+            <a href={profile.email} onClick={() => trackEvent('email_click', { location: 'copyright' })}>{profile.email.replace(/^mailto:/, '')}</a>
           </address>
           <p className="copyright-updated">Дата последнего обновления документа: 01.10.2026.</p>
         </footer>

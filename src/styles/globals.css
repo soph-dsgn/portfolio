@@ -710,7 +710,7 @@ time.chip {
 .case-main {
   min-width: 0;
   max-width: var(--case-content-width);
-  padding-bottom: var(--section-padding);
+  padding-bottom: 0;
 }
 .case-main > * {
   width: min(100%, var(--case-reading-width));
@@ -1072,7 +1072,7 @@ time.chip {
   margin-top: var(--case-v-gap);
   padding: var(--case-v-padding);
   border-radius: var(--radius-content-card);
-  background: var(--case-v-surface);
+  background: var(--color-white);
   color: var(--color-text);
 }
 .case-diagram > :not(.case-diagram-wires) {
@@ -1133,14 +1133,14 @@ time.chip {
 .case-diagram-explanations {
   display: grid;
   gap: 0;
-  margin: 24px 0 0;
-  padding: 16px 0 0;
+  margin: var(--space-5) 0 0;
+  padding: 0;
 }
 .case-diagram-explanations > div {
   display: grid;
   grid-template-columns: minmax(120px, 28%) minmax(0, 1fr);
   gap: 16px;
-  padding: 8px 0;
+  padding: var(--space-2) 0;
 }
 .case-diagram-explanations dt {
   font-size: var(--case-v-card-title);
@@ -1162,7 +1162,7 @@ time.chip {
 .case-diagram-service-map {
   display: grid;
   grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(110px, 1fr));
-  gap: 48px;
+  gap: 32px;
   align-items: center;
 }
 .case-diagram-entry-points {
@@ -1175,12 +1175,12 @@ time.chip {
 .case-diagram-filter {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 36px;
+  gap: 28px;
   align-items: center;
 }
 .case-diagram-filter-controls, .case-diagram-filter-results {
   min-width: 0;
-  min-height: 230px;
+  min-height: 210px;
   padding: 18px;
   border-radius: var(--radius-content-card);
   background: transparent;
@@ -1257,7 +1257,7 @@ time.chip {
 }
 .case-diagram-route {
   display: grid;
-  gap: 34px;
+  gap: 24px;
   max-width: 520px;
   margin: 0 auto;
   padding: 0;
@@ -1272,9 +1272,14 @@ time.chip {
 }
 .case-diagram-branch-lead {
   display: grid;
-  gap: 34px;
+  gap: 24px;
   max-width: 520px;
-  margin: 0 auto 34px;
+  margin: 0 auto 24px;
+}
+.case-diagram[data-diagram-id='portal-flow'] .case-diagram-branch-lead {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: none;
+  margin-bottom: 64px;
 }
 .case-diagram-branch-step .case-diagram-node {
   width: 100%;
@@ -1287,7 +1292,7 @@ time.chip {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
-  margin-top: 148px;
+  margin-top: 88px;
 }
 .case-diagram-branches--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1326,7 +1331,7 @@ time.chip {
   display: grid;
   justify-items: center;
   max-width: 520px;
-  margin: 44px auto 0;
+  margin: 32px auto 0;
 }
 .case-diagram-branch-end .case-diagram-node {
   width: 100%;
@@ -1360,7 +1365,7 @@ time.chip {
   justify-items: center;
 }
 .case-diagram-architecture-end {
-  margin-top: 44px;
+  margin-top: 32px;
 }
 .case-diagram-architecture-end strong {
   font-size: var(--case-v-card-title);
@@ -1384,14 +1389,14 @@ time.chip {
   max-width: 210px;
 }
 .case-diagram-convergence .case-diagram-hub {
-  margin-top: 44px;
+  margin-top: 32px;
 }
 .case-diagram-hub-nodes {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 16px;
-  margin-top: 148px;
+  margin-top: 88px;
 }
 .case-diagram-hub-nodes .case-diagram-node {
   flex: 1 1 130px;
@@ -1400,7 +1405,7 @@ time.chip {
 .case-diagram-paired {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 36px;
+  gap: 28px;
   align-items: center;
 }
 .case-diagram-paired .case-diagram-node {
@@ -1425,7 +1430,7 @@ time.chip {
 .case-diagram-state-map {
   display: grid;
   grid-template-columns: minmax(140px, 27%) minmax(0, 1fr);
-  gap: 92px;
+  gap: 64px;
   align-items: center;
 }
 .case-diagram-state-root {
@@ -1578,7 +1583,7 @@ time.chip {
   line-height: var(--case-v-leading);
 }
 @media (min-width: 901px) {
-  .case-diagram-state-map { grid-template-columns: minmax(0, 1fr); gap: 148px; }
+  .case-diagram-state-map { grid-template-columns: minmax(0, 1fr); gap: 88px; }
   .case-diagram-state-root { width: 100%; max-width: 280px; margin-inline: auto; }
   .case-diagram-state-rail { grid-template-columns: repeat(var(--diagram-target-count, 4), minmax(0, 1fr)); gap: 16px; align-items: start; }
   .case-diagram-state-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
@@ -2109,8 +2114,9 @@ time.chip {
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
-  gap: 16px;
-  margin: 48px 0 28px;
+  column-gap: 16px;
+  row-gap: var(--space-1);
+  margin: var(--space-6) 0;
   padding-top: 0;
   color: var(--color-muted);
   font-size: 13px;
@@ -2119,18 +2125,20 @@ time.chip {
   display: flex;
   align-items: center;
   min-width: 0;
-  min-height: 44px;
   line-height: 1.4;
 }
-.site-footer-credit { gap: .35em; }
+.site-footer-credit { flex-wrap: wrap; column-gap: .35em; row-gap: 0; }
+.site-footer-mark { display: inline-flex; flex: none; align-items: center; gap: .35em; white-space: nowrap; }
+.site-footer-author { min-width: min(100%, 18ch); }
+.site-footer-copyright { min-height: 32px; }
 .site-footer-separator { color: var(--color-meta-separator); }
-.case-shell > .site-footer { margin: 24px 0 28px; }
+.case-shell > .site-footer { margin: var(--space-6) 0; }
 .copyright-shell {
   --copyright-content-width: 1200px;
 }
 .copyright-shell > .site-footer {
   width: min(calc(100% - 48px), var(--copyright-content-width));
-  margin: 32px auto 28px;
+  margin: var(--space-6) auto;
 }
 .site-footer > a {
   transition: color 180ms ease;
@@ -2460,8 +2468,8 @@ time.chip {
     gap: 12px;
   }
   .site-footer {
-    gap: 12px;
-    margin-top: 32px;
+    column-gap: 12px;
+    margin-block: var(--space-6);
     font-size: 12px;
   }
 }
@@ -2768,6 +2776,7 @@ time.chip {
     color: var(--color-muted);
     font-size: 12px;
   }
+  .mobile-menu-group-gap { display: block; height: var(--space-6); }
   .mobile-menu a[aria-current] .mobile-menu-link-label {
     z-index: 3;
     color: var(--color-text);
@@ -2860,6 +2869,46 @@ button, input, select, textarea, svg text, svg tspan {
   width: min(calc(100% - 48px), var(--case-content-width));
   margin: 24px auto 0;
 }
+.concept-nav-disclosure { position: relative; min-width: 0; }
+.concept-nav-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--action-height);
+  padding: 0 14px;
+  border: 0;
+  color: var(--color-on-dark);
+  background: transparent;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.concept-nav-trigger svg { flex: none; width: 18px; height: 18px; }
+.concept-nav-panel {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  left: 0;
+  z-index: 45;
+  display: grid;
+  width: max-content;
+  min-width: 280px;
+  max-width: min(420px, calc(100vw - 48px));
+  padding: var(--space-3);
+  border-radius: 24px;
+  background: var(--color-white);
+  color: var(--color-text);
+  transform-origin: top center;
+}
+.concept-nav-panel a {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  color: var(--color-muted);
+  font-size: 15px;
+  white-space: normal;
+}
+.concept-nav-panel a[aria-current] { color: var(--color-text); font-weight: var(--weight-medium); }
 .case-reading-progress {
   position: fixed;
   inset: 0 auto auto 0;
@@ -2937,6 +2986,7 @@ button, input, select, textarea, svg text, svg tspan {
   .case-header-controls > .button:hover { background: var(--color-surface); color: var(--color-text); }
 }
 @media (max-width: 1100px) {
+  .case-shell { margin-top: var(--space-8); }
   .case-header-controls { width: calc(100% - 32px); margin-top: 12px; gap: 8px; }
   .case-header-anchors { display: none; }
   .back-button,

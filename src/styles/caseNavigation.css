@@ -5,7 +5,7 @@
   gap: var(--space-8);
   width: 100%;
   margin-top: var(--section-padding);
-  padding-block: var(--space-8);
+  padding-block: var(--space-6);
 }
 .case-navigation-item {
   display: inline-flex;

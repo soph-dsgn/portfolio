@@ -43,8 +43,11 @@ function VerticalConnector() {
 
 export function MobileCaseDiagram({ visual, mode }: { visual: CaseVisualSpec; mode: DiagramMode }) {
   const groups = mobileGroups(visual, mode).filter(group => group.length)
-  return <div className="case-diagram-mobile">
-    {groups.map((group, index) => <div className={`case-diagram-mobile-step${mode === 'status-pairs' && index === 2 ? ' case-diagram-mobile-step--separate' : ''}`} key={index}>
+  const dominantIndex = mode === 'branch'
+    ? visual.id === 'portal-flow' ? 3 : 0
+    : mode === 'architecture' || mode === 'state-map' || mode === 'status-branch' ? 0 : -1
+  return <div className={`case-diagram-mobile case-diagram-mobile--${mode}`}>
+    {groups.map((group, index) => <div className={`case-diagram-mobile-step${mode === 'status-pairs' && index === 2 ? ' case-diagram-mobile-step--separate' : ''}${index === dominantIndex ? ' case-diagram-mobile-step--dominant' : ''}`} key={index}>
       {index > 0 && !(mode === 'status-pairs' && index === 2) && <VerticalConnector />}
       <div className="case-diagram-mobile-group">
         {group.map((item, itemIndex) => <div className="case-diagram-mobile-card" key={`${item.label}-${itemIndex}`}>

@@ -161,7 +161,7 @@ export function ProfileAbout() {
     </motion.div>
     <motion.footer ref={toolsRef} className="about-bottom" initial={toolsVisible ? 'visible' : 'hidden'} animate={toolsVisible ? 'visible' : 'hidden'} variants={adaptive ? mobileGroup(motionTokens.mobile.tools.stagger, motionTokens.mobile.toolsDelay) : variants('fade', .12)}>
       <ul className="about-tool-chips" aria-label="Инструменты">
-        {aboutTools.map(tool => <motion.li key={tool.id} {...(adaptive ? {} : hoverLift)} variants={adaptive ? mobileEntrance(motionTokens.mobile.tools.y) : undefined}>{tool.label}</motion.li>)}
+        {aboutTools.map(tool => <motion.li key={tool.id} data-ai-tool={tool.id === 'chatgpt' || tool.id === 'claude' ? 'true' : undefined} {...(adaptive ? {} : hoverLift)} variants={adaptive ? mobileEntrance(motionTokens.mobile.tools.y) : undefined}>{tool.label}</motion.li>)}
       </ul>
     </motion.footer>
   </motion.section></Typography>

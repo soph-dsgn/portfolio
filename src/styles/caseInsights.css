@@ -10,13 +10,21 @@
 .case-tone--problem { --case-tone: var(--case-problem); }
 .case-tone--solution { --case-tone: var(--case-positive); }
 .case-tone--neutral, .case-tone--hypothesis { --case-tone: var(--case-neutral); }
-.case-insight-pairs { display: grid; gap: var(--space-8); }
-.case-insight-row h4 { margin: 0 0 var(--space-3); font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading)5; }
+.case-insight-pairs { display: grid; gap: var(--space-6); }
+.case-insight-row {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-content-card);
+  background: var(--color-white);
+}
+.case-insight-row h4 { margin: 0; font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading); }
 .case-insight-pair {
   display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--space-4);
   border-radius: var(--radius-content-card); overflow: clip; background: var(--case-v-surface);
 }
-.case-insight-row .case-insight-pair { margin-top: 0; }
+.case-insight-row .case-insight-pair { margin-top: 0; background: transparent; border-radius: 0; overflow: visible; }
+.case-insight-row .case-insight-card { padding: 0; }
 .case-insight-card { min-width: 0; padding: var(--case-v-padding); }
 .case-insight-card dt, .case-insight-notes dt { display: flex; align-items: center; gap: var(--space-4); margin: 0 0 var(--space-4); color: var(--color-text); font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading); }
 .case-insight-marker { display: inline-grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; color: var(--case-tone,var(--case-neutral)); background: color-mix(in srgb,currentColor 16%,transparent); }
@@ -63,6 +71,8 @@
 .case-evidence-statement { margin: var(--space-8) 0 0; padding-top: var(--space-6);  font-size: var(--case-v-body); line-height: var(--case-v-leading); }
 @media (max-width: 760px) {
   .case-insight-pair, .case-insight-notes--risks, .case-insight-notes--states { grid-template-columns: minmax(0,1fr); gap: 0; }
+  .case-insight-row { gap: var(--space-4); }
+  .case-insight-row .case-insight-pair { gap: var(--space-6); }
   .case-insight-card dd { margin-left: 0; }
   .case-insight-card dt, .case-insight-notes dt { gap: var(--space-3); }
   .case-insight-notes dd { margin-left: 0; }

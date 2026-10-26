@@ -1,6 +1,5 @@
 import { captureHomeScroll } from '../lib/pageScroll'
 import { useActiveConcept } from '../lib/useActiveConcept'
-import { useLocale } from '../i18n/locale'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useId, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
@@ -25,8 +24,64 @@ const homeLinks = [
   { href: '/#about', label: 'Обо мне' },
 ]
 
+type HeaderSection = { id: string; label: string }
+
+function ConceptDesktopNavigation({ sections, active, onNavigate }: {
+  sections: HeaderSection[]; active: string; onNavigate: (id: string) => void
+}) {
+  const { navInteraction, variants } = useMotionSystem()
+  const reducedMotion = useReducedMotion()
+  const [open, setOpen] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const panelId = useId()
+  const current = sections.find(section => section.id === active) ?? sections[0]
+
+  useEffect(() => {
+    if (!open) return
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false)
+    }
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setOpen(false); trigger.current?.focus() }
+    }
+    document.addEventListener('pointerdown', closeOutside)
+    document.addEventListener('keydown', closeWithEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside)
+      document.removeEventListener('keydown', closeWithEscape)
+    }
+  }, [open])
+
+  return <div className="concept-nav-disclosure" ref={root}
+    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}>
+    <motion.button {...navInteraction} ref={trigger} type="button" className="concept-nav-trigger"
+      aria-label={`UI-концепты: ${current?.label ?? ''}`} aria-expanded={open} aria-controls={panelId}
+      onClick={() => setOpen(value => !value)}>
+      <NavigationLabel active>{current ? bindShortWords(current.label) : 'UI-концепты'}</NavigationLabel>
+      <motion.svg viewBox="0 0 20 20" fill="none" aria-hidden="true"
+        animate={{ transform: `rotate(${open ? 180 : 0}deg)` }}
+        transition={{ duration: reducedMotion ? 0 : motionTokens.navState }}>
+        <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </motion.svg>
+    </motion.button>
+    <AnimatePresence>{open && <motion.nav id={panelId} className="concept-nav-panel" aria-label="UI-концепты"
+      initial={{ opacity: 0, transform: reducedMotion ? 'none' : 'translateY(-6px)' }}
+      animate={{ opacity: 1, transform: 'translateY(0px)' }}
+      exit={{ opacity: 0, transform: reducedMotion ? 'none' : 'translateY(-4px)' }}
+      transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease }}>
+      {sections.map((section, index) => <motion.a key={section.id} href={`#${section.id}`}
+        aria-current={active === section.id ? 'location' : undefined}
+        initial="hidden" animate="visible" variants={variants('fade', index * motionTokens.staggerSmall)}
+        onClick={event => {
+          if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+          event.preventDefault(); setOpen(false); trigger.current?.focus(); onNavigate(section.id)
+        }}><NavigationLabel active={active === section.id}>{bindShortWords(section.label)}</NavigationLabel></motion.a>)}
+    </motion.nav>}</AnimatePresence>
+  </div>
+}
+
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
-  const { locale } = useLocale()
   const { transition, navInteraction } = useMotionSystem()
   const navScope = useId()
   const location = useLocation()
@@ -39,7 +94,6 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const menuKey = pathname + search
   const open = openFor === menuKey
   const headerRef = useRef<HTMLElement>(null)
-  const navRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isCase = pathname.startsWith('/projects/')
   const isConcept = projects.some(project => project.videos && pathname === `/projects/${project.id}`)
@@ -92,20 +146,6 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
       cancelAnimationFrame(frame)
     }
   }, [pathname, isCase, isConcept, sections])
-
-  // Reveal the active concept inside the pill, without moving the page.
-  useEffect(() => {
-    if (!isConcept) return
-    const nav = navRef.current
-    const link = nav?.querySelector<HTMLElement>('[aria-current="location"]')
-    if (!nav || !link || !nav.clientWidth) return
-    const bounds = nav.getBoundingClientRect()
-    const item = link.getBoundingClientRect()
-    const inset = parseFloat(getComputedStyle(nav).paddingLeft) || 0
-    if (item.left < bounds.left + inset || item.right > bounds.right - inset)
-      nav.scrollTo({ left: nav.scrollLeft + item.left - bounds.left - (bounds.width - item.width) / 2,
-        behavior: reducedMotion ? 'instant' : 'smooth' })
-  }, [isConcept, activeSection, locale, reducedMotion])
 
   useEffect(() => {
     if (!open) return
@@ -187,8 +227,8 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     <motion.header layoutRoot initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ` site-header--case${isConcept ? ' site-header--concept' : ''}` : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
         {showBack && <BackButton to={backTo} />}
-        <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll ref={navRef} className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
-          {isCase ? sections.map(section => <motion.a key={section.id} {...navInteraction}
+        <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
+          {isCase ? isConcept ? <ConceptDesktopNavigation sections={sections} active={activeSection} onNavigate={closeAtSection} /> : sections.map(section => <motion.a key={section.id} {...navInteraction}
             href={`#${section.id}`} aria-current={activeSection === section.id ? 'location' : undefined}
             onClick={event => {
               if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -247,7 +287,12 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             <MotionLink {...navInteraction} variants={menuItem} to="/#about" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 1 } as CSSProperties}>
               <NavigationLabel className="mobile-menu-link-label">Обо мне</NavigationLabel>
             </MotionLink>
-            {sections.length > 0 && <span className="mobile-menu-label" style={{ '--menu-order': 2 } as CSSProperties}>Разделы кейса</span>}
+            <motion.a {...navInteraction} variants={menuItem} href={profile.cv} aria-disabled={!profile.cv || undefined}
+              target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}
+              style={{ ...navInteraction.style, '--menu-order': 2 } as CSSProperties}>
+              <NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel>
+            </motion.a>
+            {sections.length > 0 && <span className="mobile-menu-group-gap" aria-hidden="true" />}
             {sections.map((section, index) => (
               <motion.a key={section.id} {...navInteraction} variants={menuItem}
                 href={`#${section.id}`}
@@ -256,14 +301,14 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
                   if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
                   event.preventDefault(); closeAtSection(section.id)
                 }}
-                style={{ ...navInteraction.style, '--menu-order': index + 3 } as CSSProperties}
+                style={{ ...navInteraction.style, '--menu-order': index + 4 } as CSSProperties}
               >
                 <NavigationLabel active={activeSection === section.id} className="mobile-menu-link-label">{bindShortWords(section.label)}</NavigationLabel>
               </motion.a>
             ))}
           </>
         ) : (
-          homeLinks.map((link, index) => (
+          <>{homeLinks.map((link, index) => (
             <MotionLink key={link.href} {...navInteraction} variants={menuItem}
               to={link.href}
               aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}
@@ -272,9 +317,13 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             >
               <NavigationLabel active={isActiveLink(link.href)} className="mobile-menu-link-label">{bindShortWords(link.label)}</NavigationLabel>
             </MotionLink>
-          ))
+          ))}
+          <motion.a {...navInteraction} variants={menuItem} href={profile.cv} aria-disabled={!profile.cv || undefined}
+            target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}
+            style={{ ...navInteraction.style, '--menu-order': 2 } as CSSProperties}>
+            <NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel>
+          </motion.a></>
         )}
-        <motion.a {...navInteraction} variants={menuItem} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'mobile-menu' }) : undefined}><NavigationLabel className="mobile-menu-link-label">CV</NavigationLabel></motion.a>
       </motion.nav>}</AnimatePresence></LayoutGroup>
     </motion.header>
   )

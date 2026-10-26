@@ -7,8 +7,26 @@
   --case-space-section: 128px;
   --case-body-color: #46464d;
   --case-caption-color: #6a6a72;
+  --case-card-surface: var(--color-white);
+  --case-card-radius: var(--radius-scene);
+  --case-card-padding: clamp(var(--space-6), 3vw, 40px);
+  --case-card-gap: var(--space-6);
 }
-.case-shell--editorial .case-content { gap: var(--case-space-section); }
+.case-shell--editorial .case-content { gap: var(--case-space-group); }
+.case-shell--editorial .case-document-group { display: grid; gap: var(--case-card-gap); min-width: 0; }
+.case-shell--editorial :is(.case-overview, .case-document-section) {
+  padding: var(--case-card-padding);
+  border-radius: var(--case-card-radius);
+  background: var(--case-card-surface);
+}
+.case-shell--editorial .case-overview .case-facts:not(.case-results) > div {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+.case-shell--editorial .case-document-section :is(.case-visual, .case-results) {
+  --case-v-surface: transparent;
+}
 .case-shell--editorial .case-document-section { gap: 28px; }
 .case-shell--editorial .case-document-section > h2 {
   width: min(100%, 920px);
@@ -101,7 +119,7 @@
   line-height: 1.6;
   margin-top: 16px;
 }
-.case-shell--editorial .case-image-gallery { gap: var(--case-space-group); margin-top: 20px; }
+.case-shell--editorial .case-image-gallery { gap: var(--case-space-group); margin-top: 0; }
 .case-shell--editorial .case-image-frame { width: 100%; justify-self: start; }
 .case-shell--editorial .case-image-frame.case-layout--medium,
 .case-shell--editorial .case-image-frame.case-layout--wide { max-width: none; }
@@ -111,7 +129,7 @@
   .case-layout--text-visual > .case-editorial-text { max-width: var(--case-reading-column); }
 }
 @media (max-width: 760px) {
-  .case-shell--editorial { --case-space-section: 88px; --case-space-group: 64px; --case-space-related: 40px; }
+  .case-shell--editorial { --case-space-section: 88px; --case-space-group: 48px; --case-space-related: 40px; --case-card-gap: var(--space-4); }
   .case-shell--editorial .case-document-section { gap: 24px; }
   .case-shell--editorial .case-document-section > h2 { font-size: 36px; }
   .case-shell--editorial .case-editorial-text :is(p, li) { font-size: 16px; line-height: 1.7; }
@@ -120,5 +138,5 @@
   .case-shell--editorial .case-editorial-text p.case-narrative-lead { font-size: 20px; }
   .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: 25px; }
   .case-shell--editorial .case-overview { gap: 28px; }
-  .case-shell--editorial .case-image-gallery { margin-top: 16px; }
+  .case-shell--editorial .case-image-gallery { margin-top: 0; }
 }

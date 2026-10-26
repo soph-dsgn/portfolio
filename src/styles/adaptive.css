@@ -21,6 +21,18 @@
   .case-diagram-mobile-card p { margin: var(--case-v-copy-gap) 0 0; font-size: var(--case-v-body); line-height: 1.6; color: var(--color-muted); }
   .case-diagram-mobile-card .case-diagram-mobile-note { font-size: var(--case-v-note); }
   .case-diagram-mobile-connector { display: block; margin: 8px auto; color: var(--color-muted); }
+  .case-diagram-mobile-step--dominant .case-diagram-mobile-card {
+    background: var(--color-text);
+    color: var(--color-page);
+    text-align: center;
+  }
+  .case-diagram-mobile-step--dominant .case-diagram-mobile-card :is(strong, p) { color: inherit; }
+  .case-diagram-mobile--branch .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--architecture .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--convergence .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--status-branch .case-diagram-mobile-group:has(> :nth-child(2)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .case-section-disclosure { display: none; }
@@ -90,7 +102,7 @@
     height: auto;
     aspect-ratio: 4 / 5;
   }
-  .home-canvas .contacts-section .site-footer { grid-column: 1 / -1; grid-row: 4; margin-top: 12px; }
+  .home-canvas .contacts-section .site-footer { grid-column: 1 / -1; grid-row: 4; margin-top: 0; }
 
   .case-header-controls {
     width: calc(100% - 24px);
@@ -155,12 +167,12 @@
   /* Narrow diagrams retain full-size labels and measured SVG connectors. */
   .case-diagram-node { min-height: 60px; padding: 14px 16px; }
   .case-diagram-service-map, .case-diagram-filter, .case-diagram-paired,
-  .case-diagram-status-aside { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .case-diagram-service-map { gap: 64px; }
+  .case-diagram-status-aside { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .case-diagram-service-map { gap: 40px; }
   .case-diagram-branches, .case-diagram-branches--three {
     grid-template-columns: minmax(0, 1fr);
     max-width: 560px;
-    margin: 48px auto 0;
+    margin: 36px auto 0;
     padding-inline: 12px;
     gap: 24px;
   }
@@ -172,9 +184,9 @@
     padding-inline: 12px;
     gap: 24px;
   }
-  .case-diagram-hub-nodes { margin-top: 48px; }
+  .case-diagram-hub-nodes { margin-top: 36px; }
   .case-diagram-hub-nodes .case-diagram-node, .case-diagram-convergence-entries .case-diagram-node { max-width: none; }
-  .case-diagram-state-map { grid-template-columns: minmax(0, 1fr); gap: 48px; padding-inline: 12px; }
+  .case-diagram-state-map { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-inline: 12px; }
   .case-diagram-state-root { max-width: 100%; width: 100%; }
   .case-diagram-state-rail { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .case-diagram-state-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
@@ -189,6 +201,10 @@
 @media (max-width: 760px) {
   .home-canvas .contacts-section { min-height: 560px; padding: 24px; }
   .case-diagram-entry-points { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .case-diagram-mobile--branch .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--architecture .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--convergence .case-diagram-mobile-group:has(> :nth-child(2)),
+  .case-diagram-mobile--status-branch .case-diagram-mobile-group:has(> :nth-child(2)) { grid-template-columns: minmax(0, 1fr); }
   .case-main > .version-switch { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); width: 100%; }
   .case-main > .version-switch button { min-width: 0; padding-inline: 10px; white-space: normal; line-height: 1.35; }
 }
@@ -267,26 +283,14 @@
 
 .copyright-page { margin-top: 32px; }
 @media (max-width: 1100px) {
-  .copyright-page { margin-top: calc(var(--header-height) + 24px); }
+  .copyright-page { margin-top: var(--space-8); }
 }
 
 @media (max-width: 760px) {
   .home-canvas .contact-portrait { grid-row: 3 / 5; }
-  .home-canvas .contacts-section .site-footer { grid-column: 1; }
+  .home-canvas .contacts-section .site-footer { grid-column: 1 / -1; }
 }
 
-/* Concepts use their real section list within the existing single-line pill. */
 @media (min-width: 1101px) {
-  .site-header--concept .header-navigation {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: 760px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-  }
-  .site-header--concept .header-navigation::-webkit-scrollbar { display: none; }
-  .site-header--concept .header-navigation a,
-  .site-header--concept .desktop-header > .back-button,
-  .site-header--concept .desktop-header > .header-actions { flex: none; }
+  .site-header--concept .header-navigation { overflow: visible; padding-inline: 6px; }
 }

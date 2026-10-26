@@ -237,11 +237,13 @@ export function ProjectPage() {
             <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
           </div>
           {groups.map((group) => (
-            <section className="case-section case-document-section" id={group.id} key={group.id} aria-labelledby={`${group.id}-title`}>
-              <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
-              <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
+            <div className="case-document-group" key={group.id}>
+              <section className="case-section case-document-section" id={group.id} aria-labelledby={`${group.id}-title`}>
+                <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
+                <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
+              </section>
               <CaseGallery images={project.images?.[group.id]} heightFill={project.id === 'astoria'} />
-            </section>
+            </div>
           ))}
         </div>
         {showThanks ? <CaseThanks /> : null}

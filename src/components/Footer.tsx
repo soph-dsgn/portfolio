@@ -5,9 +5,8 @@ export function Footer() {
   return (
     <footer className="site-footer" data-reveal>
       <span className="site-footer-credit">
-        <span>© 2026</span>
-        <span className="site-footer-separator" aria-hidden="true">×</span>
-        <span>Дизайнила и кодила Софья Стрельченко</span>
+        <span className="site-footer-mark"><span>© 2026</span><span className="site-footer-separator" aria-hidden="true">×</span></span>
+        <span className="site-footer-author">Дизайнила и кодила Софья Стрельченко</span>
       </span>
       {pathname === '/copyright' ? <span className="site-footer-copyright">Авторские права</span> : <Link className="site-footer-copyright" to="/copyright">Авторские права</Link>}
     </footer>
