@@ -16,7 +16,7 @@
   gap: var(--space-5);
   padding: var(--space-6);
   border-radius: var(--radius-content-card);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 .case-insight-row h4 { margin: 0; font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading); }
 .case-insight-pair {

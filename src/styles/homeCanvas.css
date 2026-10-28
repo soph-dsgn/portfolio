@@ -193,8 +193,8 @@
   top: 0;
   width: 100%;
   height: 100dvh;
-  --canvas-bottom-space: var(--space-1);
-  padding: var(--header-height) 0 var(--canvas-bottom-space);
+  --canvas-indicator-rail: 44px;
+  padding: var(--header-height) 0 var(--canvas-indicator-rail);
   margin: 0;
   overflow: clip;
 }
@@ -226,7 +226,7 @@
 .canvas-zone-indicator {
   position: absolute;
   left: 50%;
-  bottom: max(0px, calc(var(--canvas-bottom-space) - 48px));
+  bottom: var(--space-1);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
