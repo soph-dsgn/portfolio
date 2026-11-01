@@ -4,8 +4,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
 import { useLocation, useNavigationType } from 'react-router-dom'
 import { activateHomeScroll, captureHomeScroll, deactivateHomeScroll, savedPageScroll } from '../lib/pageScroll'
-import { ProfileContact, ProfileHero } from './ProfileSidebar'
-import { Work } from '../sections/Work'
+import { HomeContact, HomeHero, HomeWork } from './HomePanels'
 import { canvasPanelOffset, cancelSectionNavigation, navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
 import { useLocale } from '../i18n/locale'
 
@@ -344,7 +343,6 @@ export function HomeCanvas() {
       }
     }
   }, [initialization, height, horizontal, location.key, location.hash, start, distance, offset, updateActivePanel, reduced])
-
   return <HomeMotionContext.Provider value={{ restored: restoredMotion, ready: motionReady, entry: location.key, seen: settledProjects }}><main id="main-content" className="home-canvas" ref={root} tabIndex={-1}
     data-restored-home={restoredMotion || undefined} data-horizontal={horizontal} style={{ height, overflowAnchor: 'none' }} onFocusCapture={event => {
       if (keyboardNavigation.current && ready.current && horizontal && event.target instanceof Element && event.target.closest('[data-canvas-panel]') && !event.target.matches('[data-canvas-panel]'))
@@ -352,13 +350,13 @@ export function HomeCanvas() {
     }}>
     <div className="canvas-viewport">
       <motion.div className="canvas-track" ref={track} style={{ transform }}>
-        <ProfileHero />
-        <Work />
-        <ProfileContact homepage />
+        <HomeHero />
+        <HomeWork />
+        <HomeContact />
       </motion.div>
       {horizontal && <nav className="canvas-zone-indicator" aria-label="Экраны портфолио">
         {panels.map((panel, index) => <button key={index} type="button"
-          aria-label={`Перейти к экрану ${index + 1}: ${panel.label}`}
+          aria-label={`Перейти к разделу ${index + 1}: ${panel.label}`}
           aria-current={activePanel === index ? 'step' : undefined}
           onClick={() => navigateToSection(panel.element, reduced ? 'instant' : 'smooth')}>
           <span aria-hidden="true" />

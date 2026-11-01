@@ -227,6 +227,9 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     <motion.header layoutRoot initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className={`site-header mobile-header${pathname === '/' ? ' site-header--home' : isCase ? ` site-header--case${isConcept ? ' site-header--concept' : ''}` : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
         {showBack && <BackButton to={backTo} />}
+        {pathname === '/' && <Link className="home-desktop-brand" to="/" aria-label="На главную">
+          <img src={publicAsset('figma/home/logo.svg')} alt="" width="42" height="38" />
+        </Link>}
         <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll className="header-navigation" aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
           {isCase ? isConcept ? <ConceptDesktopNavigation sections={sections} active={activeSection} onNavigate={closeAtSection} /> : sections.map(section => <motion.a key={section.id} {...navInteraction}
             href={`#${section.id}`} aria-current={activeSection === section.id ? 'location' : undefined}
@@ -236,13 +239,13 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
             }}><NavigationLabel active={activeSection === section.id}>{bindShortWords(section.label)}</NavigationLabel></motion.a>) : <>
           {homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
             onClick={event => navigateHomeAnchor(event, link.href)}
-            aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel></MotionLink>)}
-          <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel></motion.a></>}
+            aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel>{pathname === '/' && <img className="home-nav-state-icon" src={publicAsset(`figma/home/${isActiveLink(link.href) ? 'nav-minus' : 'nav-add'}.svg`)} alt="" width="24" height="24" />}</MotionLink>)}
+          <motion.a {...navInteraction} href={profile.cv} aria-disabled={!profile.cv || undefined} target="_blank" rel="noreferrer" onClick={profile.cv ? () => trackEvent('resume_click', { location: 'header' }) : undefined}><NavigationLabel>CV</NavigationLabel>{pathname === '/' && <img className="home-nav-state-icon" src={publicAsset('figma/home/nav-add.svg')} alt="" width="24" height="24" />}</motion.a></>}
         </motion.nav></LayoutGroup>
         <div className="header-actions">
           <TelegramLink location="header" label="TG" />
         </div>
-        <LanguageSelector />
+        {pathname !== '/' && <LanguageSelector />}
       </div>
       <AnimatePresence>{open && <motion.div className="mobile-menu-backdrop" data-open="true" aria-hidden="true"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, ease: motionTokens.ease }} onClick={() => setOpenFor(null)} />}</AnimatePresence>
@@ -278,7 +281,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
         inert={!open}
         initial="hidden" animate="visible" exit="exit" variants={menuPanel}
       >
-        <LanguageSelector />
+        {pathname !== '/' && <LanguageSelector />}
         {isCase ? (
           <>
             <MotionLink {...navInteraction} variants={menuItem} to="/" onClick={() => setOpenFor(null)} style={{ ...navInteraction.style, '--menu-order': 0 } as CSSProperties}>
