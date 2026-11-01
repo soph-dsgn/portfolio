@@ -1,19 +1,30 @@
 :root {
   color-scheme: light;
-  --color-page: #f3f3f5;
+  --portfolio-page: #f4f4f6;
+  --portfolio-surface: #fff;
+  --portfolio-text: #171717;
+  --portfolio-muted: #8d8d98;
+  --portfolio-accent: #f96aea;
+  --portfolio-card-radius: 40px;
+  --portfolio-control-radius: 16px;
+  --portfolio-card-padding: clamp(24px, 3.35vw, 48px);
+  --portfolio-page-gutter: clamp(16px, 3.35vw, 48px);
+  --portfolio-layout-gap: clamp(16px, 2.25vw, 32px);
+  --portfolio-section-gap: clamp(56px, 7vw, 96px);
+  --color-page: var(--portfolio-page);
   --color-white: #fff;
   --header-height: max(104px, 13.3dvh);
-  --color-surface: #e9e9ec;
-  --color-tile: #ededf0;
-  --color-dark: #1d1d1b;
+  --color-surface: #eeeef1;
+  --color-tile: #f1f1f3;
+  --color-dark: var(--portfolio-text);
   --color-on-dark: #f7f7f5;
   --color-muted-on-dark: #b7b7b2;
-  --color-text: #202020;
-  --color-muted: #666666;
-  --color-meta-separator: #a0a0a0;
+  --color-text: var(--portfolio-text);
+  --color-muted: var(--portfolio-muted);
+  --color-meta-separator: var(--portfolio-muted);
   --color-avatar: #d8d8d6;
-  --color-border: #dcdcdf;
-  --color-action: #202020;
+  --color-border: #dedee3;
+  --color-action: var(--portfolio-text);
   --color-action-hover: #3c3c3c;
   --color-action-pressed: #505050;
   --color-social-telegram: #229ed9;
@@ -34,19 +45,19 @@
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-strong: 600;
-  --radius-surface-outer: 48px;
+  --radius-surface-outer: var(--portfolio-card-radius);
   --radius-surface-inner: calc(var(--radius-surface-outer) - var(--surface-inset));
   --radius-content-card: 24px;
-  --radius-media: 40px;
-  --radius-scene: 56px;
+  --radius-media: 32px;
+  --radius-scene: var(--portfolio-card-radius);
   --scene-light: var(--color-white);
   --scene-muted: var(--color-surface);
   --canvas-scene-width: 61vw;
   --canvas-gutter: 5vw;
   --canvas-scene-height: 74dvh;
   --radius-logo: 18px;
-  --section-padding: 56px;
-  --section-gap: 120px;
+  --section-padding: 48px;
+  --section-gap: var(--portfolio-section-gap);
   --case-content-width: 1120px;
   --case-reading-width: 800px;
   --case-group-gap: 32px;
@@ -55,15 +66,15 @@
   --diagram-arrow-size: 7;
   --surface-inset: 8px;
   --icon-size: 18px;
-  --action-height: 56px;
-  --action-radius: 28px;
-  --action-padding-y: 16px;
-  --action-padding-x: 24px;
-  --radius-navigation: 999px;
+  --action-height: 44px;
+  --action-radius: var(--portfolio-control-radius);
+  --action-padding-y: 10px;
+  --action-padding-x: 14px;
+  --radius-navigation: 24px;
   --radius-inner: 4px;
   --radius-small: 8px;
-  --radius-control: 16px;
-  --radius-group: 16px;
+  --radius-control: var(--portfolio-control-radius);
+  --radius-group: var(--portfolio-control-radius);
   --radius-card: 16px;
   --radius-shell: 24px;
   --space-1: 4px;
@@ -87,11 +98,15 @@
 }
 
 @media (max-width: 1100px) {
-  :root { --header-height: 68px; --radius-scene: 32px; }
+  :root { --header-height: 68px; --portfolio-card-radius: 32px; --radius-scene: 32px; }
 }
 @media (max-width: 760px) {
   :root {
     --radius-surface-outer: 32px;
+    --portfolio-card-radius: 28px;
+    --portfolio-card-padding: 24px;
+    --portfolio-page-gutter: 12px;
+    --portfolio-layout-gap: 12px;
     --radius-content-card: 20px;
     --radius-media: 24px;
     --type-section: 34px;

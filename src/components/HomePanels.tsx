@@ -11,23 +11,12 @@ import { useMotionSystem } from '../lib/motion'
 import { useArtworkParallax } from '../lib/useArtworkParallax'
 import { captureHomeScroll } from '../lib/pageScroll'
 import { rememberHomeProject, rememberHomeProjectView } from '../lib/HomeMotionContext'
+import { InteractiveToolCloud } from './InteractiveToolCloud'
 
-const toolCloud = [
-  ['Figma', 'figma'], ['Figma Motion', 'figma-motion'], ['FigJam', 'figjam'],
-  ['ProtoPie', 'protopie'], ['Principle', 'principle'], ['Miro', 'miro'],
-  ['Яндекс Метрика', 'metrica'], ['Google Analytics', 'analytics'], ['Notion', 'notion'],
-  ['Jira', 'jira'], ['Confluence', 'confluence'], ['ChatGPT', 'chatgpt'],
-  ['Codex', 'codex'], ['Claude', 'claude'], ['Cursor', 'cursor'],
-] as const
-
-const homeProjectPresentation: Record<string, { title: string; image: string }> = {
-  concepts: { title: 'UI-концепты', image: 'figma/home/concepts.png' },
-  'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png' },
-  skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png' },
-}
-
-function AddIcon() {
-  return <img className="home-pill-icon" src={publicAsset('figma/home/nav-add.svg')} alt="" width="24" height="24" />
+const homeProjectPresentation: Record<string, { title: string; image: string; parallax: number }> = {
+  concepts: { title: 'UI-концепты', image: 'figma/home/concepts.png', parallax: 6 },
+  'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png', parallax: 8 },
+  skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png', parallax: 5 },
 }
 
 function HomeAction({ children, href, event, disabled = false }: {
@@ -43,7 +32,7 @@ function HomeAction({ children, href, event, disabled = false }: {
       trackEvent(event, { location: 'home' })
     } : undefined,
   }
-  const content = <><Typography>{children}</Typography><AddIcon /></>
+  const content = <Typography>{children}</Typography>
   if (!href || disabled) return <motion.span {...props}>{content}</motion.span>
   return <motion.a {...props} href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'}>{content}</motion.a>
 }
@@ -85,12 +74,10 @@ export function HomeAbout() {
     <div className="home-card-canvas">
     <div className="home-about-copy">
       <h2 id="about-title">3+ года в цифровых продуктах</h2>
-      <p>В <span className="home-company"><img src={publicAsset('figma/home/yukki.svg')} alt="" />Юкки</span>, <span className="home-company"><img src={publicAsset('figma/home/make.svg')} alt="" />Make Difference</span> и <span className="home-company"><img src={publicAsset('figma/home/sky.svg')} alt="" />SkyCapital</span><br />проектировала интерфейсы, разбиралась<br />в сложных сценариях и развивала продукты</p>
-      <p>Училась продуктовому дизайну в <span className="home-company"><img src={publicAsset('figma/home/formfactor.svg')} alt="" />FormFactor</span><br />и UX/UI-дизайну в <span className="home-company"><img src={publicAsset('figma/home/contented.svg')} alt="" />Contented</span></p>
+      <p>В <span className="home-company"><img src={publicAsset('figma/home/yukki.svg')} alt="" />Юкки</span>, <span className="home-company"><img src={publicAsset('figma/home/make.svg')} alt="" />Make Difference</span> и <span className="home-company"><img src={publicAsset('figma/home/sky.svg')} alt="" />SkyCapital</span><br /> проектировала интерфейсы, разбиралась<br /> в сложных сценариях и развивала продукты</p>
+      <p>Училась продуктовому дизайну в <span className="home-company"><img src={publicAsset('figma/home/formfactor.svg')} alt="" />FormFactor</span><br /> и UX/UI-дизайну в <span className="home-company"><img src={publicAsset('figma/home/contented.svg')} alt="" />Contented</span></p>
     </div>
-    <ul className="home-tool-cloud" aria-label="Инструменты">
-      {toolCloud.map(([label, id]) => <li className={`home-tool home-tool--${id}`} data-ai={['chatgpt', 'codex', 'claude', 'cursor'].includes(id) || undefined} key={id}>{label}</li>)}
-    </ul>
+    <InteractiveToolCloud />
     </div>
   </motion.section></Typography>
 }
@@ -98,11 +85,12 @@ export function HomeAbout() {
 export function HomeProjectCard({ project }: { project: Project }) {
   const presentation = homeProjectPresentation[project.id]
   const location = useLocation()
-  const parallax = useArtworkParallax(true)
+  const { hover, reduced } = useMotionSystem()
+  const parallax = useArtworkParallax(hover && !reduced, presentation?.parallax)
   if (!presentation) return null
   const onLeave = () => parallax.reset()
   const onMove = (event: PointerEvent<HTMLAnchorElement>) => parallax.onPointerMove(event)
-  return <article className={`home-figma-card home-project-card home-project-card--${project.id}`} data-canvas-panel data-project={project.id}>
+  return <article id={project.id} className={`home-figma-card home-project-card home-project-card--${project.id}`} data-canvas-panel data-project={project.id}>
     <div className="home-card-canvas">
     <Link className="home-project-link" to={`/projects/${project.id}`} state={{ homeEntryKey: location.key, portal: true }}
       aria-labelledby={`${project.id}-title`} onPointerMove={onMove} onPointerLeave={onLeave} onMouseLeave={onLeave}

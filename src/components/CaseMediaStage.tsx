@@ -13,7 +13,7 @@ export function CaseMediaStage({ children, fill = false, multiScreen = false, co
     : heightFill ? ' case-media-stage--height-fill'
     : multiScreen ? ' case-media-stage--multi-screen'
     : contained ? ' case-media-stage--contained' : ''
-  return <SceneSurface className={`case-media-stage${variant}`}>
+  return <SceneSurface single className={`case-media-stage${variant}`}>
     {children}
   </SceneSurface>
 }

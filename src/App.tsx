@@ -19,6 +19,7 @@ import { CaseHeader } from './components/CaseHeader'
 import { CopyrightPage } from './pages/CopyrightPage'
 import { useCaseScrollTracking, usePageTracking } from './hooks/useAnalyticsTracking'
 import { useLocale } from './i18n/locale'
+import { UISoundProvider } from './lib/uiSound'
 
 function AnalyticsTracking() {
   usePageTracking()
@@ -71,6 +72,7 @@ function SiteHeader() {
 function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <UISoundProvider>
       <a className="skip-link" href="#main-content">
         Перейти к содержимому
       </a>
@@ -95,6 +97,7 @@ function App() {
           }
         />
       </Routes>
+      </UISoundProvider>
     </BrowserRouter>
   )
 }

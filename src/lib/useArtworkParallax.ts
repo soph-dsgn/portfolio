@@ -1,11 +1,12 @@
 import { useEffect, useRef, type PointerEvent } from 'react'
-import { useSpring } from 'framer-motion'
+import { useSpring, useTransform } from 'framer-motion'
 import { motionTokens } from './motion'
 
 /** Only artwork moves; hover reveal and the card's clipping remain independent. */
-export function useArtworkParallax(enabled: boolean) {
+export function useArtworkParallax(enabled: boolean, distance = motionTokens.signature.parallax.distance) {
   const x = useSpring(0, motionTokens.cursor)
   const y = useSpring(0, motionTokens.cursor)
+  const transform = useTransform([x, y], ([latestX, latestY]) => `translate3d(${Number(latestX).toFixed(2)}px, ${Number(latestY).toFixed(2)}px, 0px)`)
   const pointer = useRef<{ x: number; y: number } | null>(null)
   const reset = () => {
     pointer.current = null
@@ -32,8 +33,8 @@ export function useArtworkParallax(enabled: boolean) {
     const rect = event.currentTarget.getBoundingClientRect()
     if (!rect.width || !rect.height) return
     const clamp = (value: number) => Math.max(-1, Math.min(1, value))
-    x.set(clamp((event.clientX - rect.left) / rect.width * 2 - 1) * motionTokens.signature.parallax.distance)
-    y.set(clamp((event.clientY - rect.top) / rect.height * 2 - 1) * motionTokens.signature.parallax.distance)
+    x.set(clamp((event.clientX - rect.left) / rect.width * 2 - 1) * distance)
+    y.set(clamp((event.clientY - rect.top) / rect.height * 2 - 1) * distance)
   }
-  return { style: { x, y }, onPointerMove, reset }
+  return { style: enabled ? { transform } : undefined, onPointerMove, reset }
 }

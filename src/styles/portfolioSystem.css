@@ -1,0 +1,295 @@
+/* Shared visual system promoted from the Figma homepage.
+   Existing page components keep their semantic and product-specific structure. */
+
+:is(.case-shell, .copyright-shell) {
+  color: var(--portfolio-text);
+}
+
+.case-shell {
+  width: min(calc(100% - var(--portfolio-page-gutter) * 2), 1200px);
+  margin-top: var(--portfolio-layout-gap);
+}
+
+.case-main {
+  display: grid;
+  width: 100%;
+  max-width: none;
+  gap: var(--portfolio-layout-gap);
+}
+
+.case-main > * { width: 100%; }
+
+.case-header {
+  margin: 0;
+  padding: var(--portfolio-card-padding);
+  border-radius: var(--portfolio-card-radius);
+  background: var(--portfolio-surface);
+}
+
+.case-header h1 {
+  max-width: 16ch;
+  font-size: clamp(44px, 5.2vw, 72px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+.case-header .case-deck,
+.case-shell--editorial .case-deck {
+  max-width: 760px;
+  margin-top: clamp(20px, 2.5vw, 32px);
+  color: var(--portfolio-muted);
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+}
+
+.case-header .figma-button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--portfolio-control-radius);
+  background: var(--portfolio-page);
+  color: var(--portfolio-text);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.case-content,
+.case-shell--editorial .case-content {
+  gap: var(--portfolio-section-gap);
+}
+
+.case-shell--editorial {
+  --case-body-color: var(--portfolio-text);
+  --case-caption-color: var(--portfolio-muted);
+  --case-card-surface: var(--portfolio-surface);
+  --case-card-radius: var(--portfolio-card-radius);
+  --case-card-padding: var(--portfolio-card-padding);
+  --case-card-gap: var(--portfolio-layout-gap);
+  --case-space-group: clamp(48px, 5vw, 72px);
+  --case-space-related: clamp(32px, 4vw, 48px);
+}
+
+.case-shell--editorial :is(.case-overview, .case-document-section) {
+  padding: var(--portfolio-card-padding);
+  border-radius: var(--portfolio-card-radius);
+  background: var(--portfolio-surface);
+}
+
+.case-shell--editorial .case-document-section { gap: clamp(28px, 3vw, 40px); }
+
+.case-shell--editorial .case-document-section > h2 {
+  max-width: 18ch;
+  color: var(--portfolio-text);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.04em;
+}
+
+.case-shell--editorial .case-editorial-text :is(h3, h4) {
+  color: var(--portfolio-text);
+  font-weight: 500;
+  letter-spacing: -.025em;
+}
+
+.case-shell--editorial .case-editorial-text :is(p, li) {
+  color: var(--portfolio-text);
+  line-height: 1.65;
+}
+
+.case-shell--editorial .case-editorial-text p.case-narrative-lead,
+.case-shell--editorial .case-audience-intro > strong {
+  color: var(--portfolio-text);
+  font-weight: 500;
+}
+
+.case-shell--editorial .case-overview .case-facts:not(.case-results) > div {
+  padding: 20px;
+  border-radius: var(--radius-content-card);
+  background: var(--portfolio-page);
+}
+
+.case-facts dt {
+  color: var(--portfolio-muted);
+  font-size: 13px;
+}
+
+.case-facts dd { color: var(--portfolio-text); font-weight: 500; }
+
+.case-shell--editorial .case-document-section :is(.case-visual, .case-results) {
+  --case-v-surface: var(--portfolio-page);
+  --case-v-body-color: var(--portfolio-text);
+}
+
+.case-diagram {
+  border-radius: var(--radius-content-card);
+  background: var(--portfolio-page);
+}
+
+.case-diagram::before { display: none; }
+
+.case-insight-row,
+.case-diagram-mobile-card,
+.case-change-chart-track {
+  background: var(--portfolio-page);
+}
+
+.case-image-gallery { gap: var(--portfolio-section-gap); }
+
+.case-image-frame a,
+.case-media-stage {
+  border-radius: var(--radius-media);
+}
+
+.case-media-stage {
+  --scene-fill: var(--portfolio-page);
+  background: var(--portfolio-page);
+}
+
+.case-shell--editorial .visual-caption,
+.visual-caption { color: var(--portfolio-muted); }
+
+.concept-case .case-main { gap: var(--portfolio-layout-gap); }
+
+.concept-gallery {
+  gap: var(--portfolio-layout-gap);
+  margin-top: 0;
+}
+
+.concept-video-item {
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: var(--portfolio-card-radius);
+  background: var(--portfolio-surface);
+}
+
+.concept-video-item .case-media-stage { border-radius: calc(var(--portfolio-card-radius) - 12px); }
+.concept-video-item .visual-caption { margin-top: 14px; padding-inline: 4px; }
+.concept-video-action-visual { border-radius: 14px; background: var(--portfolio-page); }
+
+.case-thanks {
+  margin-top: 0;
+  padding: clamp(40px, 5vw, 64px) var(--portfolio-card-padding);
+  border-radius: var(--portfolio-card-radius);
+  background: var(--portfolio-surface);
+}
+
+.case-main > .case-navigation {
+  margin-top: 0;
+  padding: 0;
+}
+
+.case-navigation-item {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--portfolio-control-radius);
+  background: var(--portfolio-surface);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.case-navigation-item[aria-disabled='true'] {
+  background: transparent;
+  color: var(--color-border);
+}
+
+.site-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--portfolio-surface);
+  color: var(--portfolio-muted);
+  font-size: 13px;
+}
+
+.site-footer-credit { flex-wrap: nowrap; }
+.site-footer-author { min-width: 0; }
+.site-footer-copyright { min-height: 0; white-space: nowrap; }
+.case-shell > .site-footer { margin: var(--portfolio-layout-gap) 0; }
+
+.copyright-shell { --copyright-content-width: 1200px; }
+
+.copyright-page {
+  width: min(calc(100% - var(--portfolio-page-gutter) * 2), var(--copyright-content-width));
+  margin: var(--portfolio-layout-gap) auto 0;
+}
+
+.copyright-document { gap: var(--portfolio-layout-gap); }
+
+.copyright-intro,
+.copyright-document section,
+.copyright-meta {
+  padding: var(--portfolio-card-padding);
+  border-radius: var(--portfolio-card-radius);
+  background: var(--portfolio-surface);
+}
+
+.copyright-intro { padding-block: clamp(40px, 5vw, 64px); }
+
+.copyright-document h1 {
+  max-width: 22ch;
+  color: var(--portfolio-text);
+  font-size: clamp(36px, 4.4vw, 60px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -.045em;
+}
+
+.copyright-document h2 {
+  color: var(--portfolio-text);
+  font-weight: 500;
+}
+
+.copyright-document :is(p, li) {
+  color: var(--portfolio-text);
+  line-height: 1.65;
+}
+
+.copyright-shell > .site-footer {
+  width: min(calc(100% - var(--portfolio-page-gutter) * 2), var(--copyright-content-width));
+  margin: var(--portfolio-layout-gap) auto;
+}
+
+.copyright-document a { text-decoration-color: var(--portfolio-muted); }
+
+@media (hover: hover) and (pointer: fine) {
+  .case-navigation-item:hover,
+  .case-header .figma-button:hover { background: var(--color-surface); color: var(--portfolio-text); }
+}
+
+@media (max-width: 1100px) {
+  .case-shell { margin-top: var(--portfolio-layout-gap); }
+  .case-header h1 { font-size: clamp(38px, 7vw, 56px); }
+  .case-layout--text-visual { gap: var(--case-space-related); }
+}
+
+@media (max-width: 760px) {
+  .case-shell { width: calc(100% - 24px); }
+  .case-header { padding: 28px 24px; }
+  .case-header h1 { font-size: 36px; }
+  .case-header .case-deck,
+  .case-shell--editorial .case-deck { font-size: 20px; }
+  .case-shell--editorial .case-document-section > h2 { font-size: 34px; }
+  .case-shell--editorial :is(.case-overview, .case-document-section) { padding: 24px; }
+  .case-facts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .case-shell--editorial .case-overview .case-facts:not(.case-results) > div { padding: 16px; }
+  .concept-video-item { padding: 12px; }
+  .concept-video-item .case-media-stage { border-radius: 20px; }
+  .case-main > .case-navigation { gap: 8px; }
+  .case-navigation-item { padding-inline: 10px; font-size: 13px; }
+  .site-footer { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .site-footer-credit { flex-wrap: wrap; }
+  .site-footer-copyright { white-space: normal; }
+  .copyright-page,
+  .copyright-shell > .site-footer { width: calc(100% - 24px); }
+  .copyright-document { gap: 12px; }
+  .copyright-intro,
+  .copyright-document section,
+  .copyright-meta { padding: 24px; }
+}

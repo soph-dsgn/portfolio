@@ -10,6 +10,7 @@ import './styles/globals.css'
 import './styles/homeCanvas.css'
 import './styles/adaptive.css'
 import './styles/figmaHome.css'
+import './styles/portfolioSystem.css'
 
 // Set this before React mounts, before the browser can restore a stale canvas offset.
 window.history.scrollRestoration = 'manual'

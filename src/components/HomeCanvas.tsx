@@ -7,6 +7,7 @@ import { activateHomeScroll, captureHomeScroll, deactivateHomeScroll, savedPageS
 import { HomeContact, HomeHero, HomeWork } from './HomePanels'
 import { canvasPanelOffset, cancelSectionNavigation, navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
 import { useLocale } from '../i18n/locale'
+import { ProgressCat } from './ProgressCat'
 
 type CanvasPanel = { element: HTMLElement; label: string; offset: number }
 
@@ -355,6 +356,7 @@ export function HomeCanvas() {
         <HomeContact />
       </motion.div>
       {horizontal && <nav className="canvas-zone-indicator" aria-label="Экраны портфолио">
+        <ProgressCat />
         {panels.map((panel, index) => <button key={index} type="button"
           aria-label={`Перейти к разделу ${index + 1}: ${panel.label}`}
           aria-current={activePanel === index ? 'step' : undefined}
