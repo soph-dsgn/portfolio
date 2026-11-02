@@ -8,8 +8,10 @@ import { HomeContact, HomeHero, HomeWork } from './HomePanels'
 import { canvasPanelOffset, cancelSectionNavigation, navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
 import { useLocale } from '../i18n/locale'
 import { ProgressCat } from './ProgressCat'
+import { homeSectionIds, setHomeActiveSection, type HomeSectionId } from '../lib/homeSectionNavigation'
 
 type CanvasPanel = { element: HTMLElement; label: string; offset: number }
+type HomeSectionPosition = { id: HomeSectionId; element: HTMLElement; activation: number }
 
 function homeHashTarget(canvas: HTMLElement | null, hash: string) {
   if (!canvas || !hash) return null
@@ -35,6 +37,7 @@ export function HomeCanvas() {
   const activePanelIndex = useRef(0)
   const [panels, setPanels] = useState<CanvasPanel[]>([])
   const panelPositions = useRef<CanvasPanel[]>([])
+  const sectionPositions = useRef<HomeSectionPosition[]>([])
   const reduced = useReducedMotion()
   const location = useLocation()
   const navigationType = useNavigationType()
@@ -57,6 +60,7 @@ export function HomeCanvas() {
   // subscription cannot overwrite the vertical layout's transform.
   const layoutMode = useMotionValue(horizontal && !reduced ? 1 : 0)
   useLayoutEffect(() => { layoutMode.set(horizontal && !reduced ? 1 : 0) }, [horizontal, reduced, layoutMode])
+  useLayoutEffect(() => () => setHomeActiveSection(''), [])
   const transform = useTransform([offset, layoutMode], ([travel, mode]) => mode ? `translate3d(${-Number(travel)}px, 0, 0)` : 'none')
   const updateActivePanel = useCallback((index: number) => {
     if (activePanelIndex.current === index) return
@@ -144,6 +148,22 @@ export function HomeCanvas() {
       revealPanels(travel)
       revealAbout(travel)
       updateActivePanel(nearestPanel(panelPositions.current, travel))
+      if (horizontal) {
+        let section: HomeSectionId | '' = ''
+        for (const position of sectionPositions.current) {
+          if (travel + 1 >= position.activation) section = position.id
+        }
+        setHomeActiveSection(section)
+      } else {
+        const line = (document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0) + 36
+        let section: HomeSectionId | '' = ''
+        for (const position of sectionPositions.current) {
+          if (position.element.getBoundingClientRect().top <= line) section = position.id
+        }
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2)
+          section = 'contacts'
+        setHomeActiveSection(section)
+      }
     }
     const sync = () => {
       if (!current() || !ready.current) return
@@ -173,6 +193,14 @@ export function HomeCanvas() {
       const destinations = measured.filter((_, index) =>
         index === 0 || index === Math.floor((measured.length - 1) / 2) || index === measured.length - 1)
       panelPositions.current = destinations
+      sectionPositions.current = homeSectionIds.flatMap(id => {
+        const section = element.querySelector<HTMLElement>(`#${id}`)
+        if (!section) return []
+        const activation = id === 'contacts'
+          ? travel
+          : Math.max(0, Math.min(section.offsetLeft - viewportWidth / 2, travel))
+        return [{ id, element: section, activation }]
+      })
       setPanels(destinations)
       setHeight(horizontal ? travel + window.innerHeight : undefined)
       return true

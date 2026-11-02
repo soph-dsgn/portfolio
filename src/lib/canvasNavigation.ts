@@ -18,7 +18,10 @@ export function scrollToCanvasTarget(target: Element, behavior: ScrollBehavior =
   if (canvas.dataset.positioned !== 'true' && canvas.dataset.positioningPhase !== 'positioning') return true
   if (!track.scrollWidth || !document.documentElement.clientWidth) return true
   const panel = target.closest<HTMLElement>('[data-canvas-panel]') ?? target.querySelector<HTMLElement>('[data-canvas-panel]')
-  const offset = panel ? canvasPanelOffset(panel, track) : 0
+  const panels = Array.from(track.querySelectorAll<HTMLElement>('[data-canvas-panel]'))
+  const offset = panel && panel === panels.at(-1)
+    ? Math.max(0, track.scrollWidth - document.documentElement.clientWidth)
+    : panel ? canvasPanelOffset(panel, track) : 0
   const top = window.scrollY + canvas.getBoundingClientRect().top + offset
   scrollToPosition(top, behavior)
   return true

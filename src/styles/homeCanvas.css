@@ -253,17 +253,17 @@
   background: transparent;
   cursor: pointer;
 }
-.canvas-zone-indicator span {
+.canvas-zone-indicator button > span {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--color-meta-separator);
   transition: background var(--duration-feedback) var(--ease-out);
 }
-.canvas-zone-indicator button[aria-current='step'] span { background: var(--color-text); }
+.canvas-zone-indicator button[aria-current='step'] > span { background: var(--color-text); }
 .canvas-zone-indicator button:focus-visible { outline: 2px solid var(--color-text); outline-offset: -2px; }
 @media (hover: hover) and (pointer: fine) {
-  .canvas-zone-indicator button:not([aria-current]):hover span { background: var(--color-muted); }
+  .canvas-zone-indicator button:not([aria-current]):hover > span { background: var(--color-muted); }
 }
 
 @media (max-height: 700px) and (min-width: 1101px) {

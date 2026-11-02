@@ -2,6 +2,7 @@ import { ArrowIcon } from './ArrowIcon'
 
 export type IconName =
   | 'external'
+  | 'arrow-up-right'
   | 'back'
   | 'forward'
   | 'chevron-down'
@@ -28,7 +29,7 @@ export type IconName =
   | 'arrow-left'
 
 // Rounded, filled silhouettes share a single optical size.
-const paths: Record<Exclude<IconName, 'external'>, string> = {
+const paths: Record<Exclude<IconName, 'external' | 'arrow-up-right'>, string> = {
   back: 'M10.4 4.4a1.5 1.5 0 0 1 0 2.2L6.5 10.5H20a1.5 1.5 0 0 1 0 3H6.5l3.9 3.9a1.5 1.5 0 0 1-2.1 2.2l-6.5-6.5a1.5 1.5 0 0 1 0-2.2l6.5-6.5a1.5 1.5 0 0 1 2.1 0Z',
   forward: 'M13.6 4.4a1.5 1.5 0 0 0 0 2.2l3.9 3.9H4a1.5 1.5 0 0 0 0 3h13.5l-3.9 3.9a1.5 1.5 0 0 0 2.1 2.2l6.5-6.5a1.5 1.5 0 0 0 0-2.2l-6.5-6.5a1.5 1.5 0 0 0-2.1 0Z',
   'chevron-down': 'M5 8a1.5 1.5 0 0 1 2.1 0l4.9 4.9L16.9 8a1.5 1.5 0 0 1 2.1 2.1l-6 6a1.5 1.5 0 0 1-2.1 0l-6-6A1.5 1.5 0 0 1 5 8Z',
@@ -70,6 +71,10 @@ export function Icon({
   className?: string
 }) {
   if (name === 'external') return <ArrowIcon direction="up-right" decorative className={`icon ${className}`} />
+  if (name === 'arrow-up-right') return <svg className={`icon ${className}`} width="20" height="20" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    <path d="M4.5 19.5 19.5 4.5M8 4.5h11.5V16" />
+  </svg>
   const isStroke = name === 'menu' || name === 'close' || name === 'arrow-left'
   return (
     <svg

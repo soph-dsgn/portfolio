@@ -1,17 +1,27 @@
+const catPath = 'M3.89438 5.34058e-05C4.56946 0.197588 5.70932 2.08381 6.00151 2.18932C7.97606 2.90216 8.79406 3.78379 9.34105 5.79908C9.76894 5.40418 10.903 4.99149 11.4882 4.79726C14.2772 3.87159 17.3207 4.11654 19.949 5.41029C21.9361 6.36672 23.4565 8.08041 24.1694 10.1673C24.52 11.2047 24.6867 12.9 24.6607 14.0046C24.5608 18.2601 22.9995 23.9744 18.5761 25.6127C16.3647 26.4318 13.4921 25.3333 12.7322 22.9879C12.436 22.1041 12.5089 21.1382 12.9344 20.3089C14.2313 17.7712 16.7272 18.6311 15.7715 20.3191C15.4148 20.7642 14.9742 21.2169 14.9736 21.821C14.9727 22.8811 16.0287 23.5204 16.9997 23.5103C17.9381 23.5004 18.7889 22.9758 19.4382 22.3326C21.1818 20.5248 21.9363 17.8316 22.1778 15.3842C22.223 14.8846 22.2009 14.1112 22.1972 13.5994C21.4348 13.6124 20.6721 13.6049 19.9093 13.6069C15.1069 13.6192 10.5603 13.5779 5.75796 13.6127C5.2529 13.6164 3.97647 13.6127 3.97647 13.6127C3.96016 13.4328 3.97831 13.1786 3.97647 12.9855C2.08695 12.8879 2.89295 13.402 2.19967 14.6614C1.94083 15.1316 0.996357 15.3151 0.540337 14.935C-0.415648 14.1382 0.0687181 12.6831 0.724381 11.8426C1.34045 11.0472 2.07895 10.7409 3.05876 10.6123C1.93552 10.2774 1.15227 9.87013 0.550752 8.83596C-0.0615806 7.76264 -0.168896 6.47377 0.257505 5.31396C0.416279 4.88844 0.692652 4.34018 0.728775 3.90534C0.78208 3.26286 0.593336 1.86623 0.743585 1.2964C1.0327 0.989745 2.104 2.35034 2.34157 2.61388C2.76762 2.37899 3.33812 2.23309 3.8122 2.09624C3.79321 1.64941 3.753 0.368139 3.89438 5.34058e-05Z'
+const leftEyePath = 'M5.42129 4.7915L5.45095 4.79748C5.5878 4.91938 5.44686 5.35818 5.52509 5.50254C6.03951 6.45207 6.12318 5.7449 6.20295 5.235L6.23436 5.24177C6.41199 5.64031 6.36488 5.78748 6.15544 6.16484C5.86131 6.45017 5.46791 6.59208 5.0826 6.39322C4.87224 6.28393 4.71614 6.0929 4.65093 5.865C4.5905 5.66013 4.61595 5.43952 4.72133 5.25372C4.88296 4.97141 5.1258 4.87175 5.42129 4.7915Z'
+const rightEyePath = 'M2.20305 5.96927C2.30447 5.96386 2.31062 5.96035 2.3946 6.01062L2.3932 6.0376C2.38107 6.28317 2.40981 7.18352 2.84403 7.11932C3.22596 7.0628 3.00144 6.62981 3.13341 6.42177C3.3302 6.64326 3.19089 7.14621 3.01872 7.37214C2.75619 7.58944 2.43969 7.70647 2.10228 7.60474C1.87706 7.53601 1.68937 7.37873 1.58232 7.16898C1.28898 6.58657 1.71613 6.20108 2.20305 5.96927Z'
+
 export function ProgressCat() {
-  return <span className="canvas-progress-cat" aria-hidden="true">
-    <span className="canvas-progress-cat__tail" />
-    <span className="canvas-progress-cat__body">
-      <span className="canvas-progress-cat__paw canvas-progress-cat__paw--left" />
-      <span className="canvas-progress-cat__paw canvas-progress-cat__paw--right" />
-    </span>
-    <span className="canvas-progress-cat__head">
-      <span className="canvas-progress-cat__ear canvas-progress-cat__ear--left" />
-      <span className="canvas-progress-cat__ear canvas-progress-cat__ear--right" />
-      <span className="canvas-progress-cat__eyes">
-        <span className="canvas-progress-cat__eye" />
-        <span className="canvas-progress-cat__eye" />
-      </span>
-    </span>
-  </span>
+  return <svg className="canvas-progress-cat" width="24.6634" height="25.8821" viewBox="0 0 24.6634 25.8821"
+    preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true">
+    <defs>
+      <clipPath id="progress-cat-tail-clip" clipPathUnits="userSpaceOnUse">
+        <rect x="10.75" y="13.2" width="13.9134" height="12.6821" />
+      </clipPath>
+      <clipPath id="progress-cat-body-clip" clipPathUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="24.6634" height="17.2" />
+      </clipPath>
+    </defs>
+    <g className="canvas-progress-cat__tail" clipPath="url(#progress-cat-tail-clip)">
+      <path d={catPath} fill="#F96AEA" />
+    </g>
+    <g className="canvas-progress-cat__body" clipPath="url(#progress-cat-body-clip)">
+      <path d={catPath} fill="#F96AEA" />
+    </g>
+    <g className="canvas-progress-cat__eyes">
+      <path d={leftEyePath} fill="#FEFEFE" />
+      <path d={rightEyePath} fill="#FEFEFE" />
+    </g>
+  </svg>
 }

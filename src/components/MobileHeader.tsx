@@ -14,6 +14,7 @@ import { navigateToSection } from '../lib/canvasNavigation'
 import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
+import { useHomeActiveSection } from '../lib/homeSectionNavigation'
 
 const MotionLink = motion.create(Link)
 
@@ -32,6 +33,7 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const navigate = useNavigate()
   const [openFor, setOpenFor] = useState<string | null>(null)
   const [activePageSection, setActiveSection] = useState('')
+  const activeHomeSection = useHomeActiveSection()
   const reducedMotion = useReducedMotion()
   const press = navInteraction
   const menuKey = pathname + search
@@ -45,34 +47,19 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
     return project ? getCaseNavigationSections(project) : []
   }, [pathname])
   const activeConcept = useActiveConcept(isConcept ? sections.map(section => section.id) : [])
-  const activeSection = isConcept ? activeConcept : activePageSection
+  const activeSection = isConcept ? activeConcept : pathname === '/' ? activeHomeSection : activePageSection
   const isActiveLink = (href: string) => href.includes('#')
     ? pathname === '/' && activeSection === href.split('#')[1]
     : pathname === href
 
   useEffect(() => {
-    if (isConcept) return
+    if (isConcept || pathname === '/') return
     const ids = isCase
       ? sections.map(({ id }) => id)
       : homeLinks.filter(({ href }) => href.includes('#')).map(({ href }) => href.split('#')[1])
     let frame = 0
     const update = () => {
       frame = 0
-      const canvas = document.querySelector('.home-canvas[data-horizontal="true"]')
-      if (!isCase && canvas) {
-        const center = document.documentElement.clientWidth / 2
-        const concepts = canvas.querySelector<HTMLElement>('#concepts')
-        const about = canvas.querySelector<HTMLElement>('#about')
-        const cases = canvas.querySelector<HTMLElement>('#partner-portal')
-        const contacts = canvas.querySelector<HTMLElement>('#contacts')
-        setActiveSection(
-          contacts && contacts.getBoundingClientRect().left <= center ? 'contacts'
-            : cases && cases.getBoundingClientRect().left <= center ? 'partner-portal'
-              : about && about.getBoundingClientRect().left <= center ? 'about'
-                : concepts && concepts.getBoundingClientRect().left <= center ? 'concepts' : '',
-        )
-        return
-      }
       const line = (headerRef.current?.getBoundingClientRect().bottom ?? 0) + 36
       const targets = ids.flatMap((id) => {
         const element = document.getElementById(id)

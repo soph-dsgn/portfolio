@@ -2,6 +2,7 @@ import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent, ReactNode } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { Icon } from './Icon'
 
 /** The entire cover owns one continuous hover zone, including its caption and whitespace. */
 export function CaseCursor({ children, enabled = true, requirePointerMovement = false }: { children: ReactNode; enabled?: boolean; requirePointerMovement?: boolean }) {
@@ -51,7 +52,10 @@ export function CaseCursor({ children, enabled = true, requirePointerMovement = 
     } : undefined} onPointerLeave={hide} onPointerCancel={cancel}>
     {children}
     <motion.span className="case-cursor" aria-hidden="true" style={{ transform: position, visibility: tracking && !requirePointerMovement ? 'visible' : 'hidden' }}>
-      <motion.span initial={false} animate={{ opacity: visible ? 1 : 0, transform: reduced ? 'scale(1)' : `scale(${visible ? 1 : .94})` }} transition={{ duration: tracking && !requirePointerMovement ? motionTokens.micro : 0, ease: motionTokens.ease }}>Смотреть кейс</motion.span>
+      <motion.span initial={false} animate={{ opacity: visible ? 1 : 0, transform: reduced ? 'scale(1)' : `scale(${visible ? 1 : .94})` }} transition={{ duration: tracking && !requirePointerMovement ? motionTokens.micro : 0, ease: motionTokens.ease }}>
+        <span>Смотреть кейс</span>
+        <Icon name="arrow-up-right" className="case-cursor-icon" />
+      </motion.span>
     </motion.span>
   </div>
 }

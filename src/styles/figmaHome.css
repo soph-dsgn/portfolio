@@ -268,128 +268,50 @@
 .canvas-zone-indicator { gap: 0; padding: 7px 10px; border-radius: 12px; background: #fff; }
 .canvas-zone-indicator::before { display: none; }
 .canvas-zone-indicator button { width: 28px; height: 16px; border-radius: 0; }
-.canvas-zone-indicator span { width: 20px; height: 10px; border-radius: 20px; background: var(--figma-page); }
-.canvas-zone-indicator button[aria-current='step'] span { background: var(--figma-text); }
-.canvas-progress-cat {
+.canvas-zone-indicator button > span { width: 20px; height: 10px; border-radius: 20px; background: var(--figma-page); }
+.canvas-zone-indicator button[aria-current='step'] > span { background: var(--figma-text); }
+.canvas-zone-indicator .canvas-progress-cat {
   position: absolute;
   z-index: 1;
-  top: -25px;
-  left: 40px;
+  top: -14px;
+  left: 44px;
   display: block;
-  width: 38px;
-  height: 34px;
-  color: var(--figma-text);
+  width: 25px;
+  height: 26px;
   background: transparent;
   border-radius: 0;
   pointer-events: none;
-  contain: layout paint;
-}
-.canvas-progress-cat :is(.canvas-progress-cat__tail, .canvas-progress-cat__body, .canvas-progress-cat__head, .canvas-progress-cat__ear, .canvas-progress-cat__eyes, .canvas-progress-cat__eye, .canvas-progress-cat__paw) {
-  position: absolute;
-  display: block;
-  box-sizing: border-box;
-  background: currentColor;
+  contain: layout;
 }
 .canvas-progress-cat__tail {
-  z-index: 0;
-  left: 23px;
-  top: 14px;
-  width: 15px;
-  height: 17px;
-  border: 4px solid currentColor;
-  border-left-color: transparent;
-  border-radius: 5px 12px 12px 8px;
-  background: transparent !important;
-  transform: rotate(-8deg);
-  transform-origin: 2px 13px;
-  animation: canvas-cat-tail 2.8s var(--ease-in-out) infinite;
+  transform-box: view-box;
+  transform-origin: 22.15px 13.65px;
+  animation: canvas-cat-tail 5.2s var(--ease-in-out) infinite;
   will-change: transform;
 }
-.canvas-progress-cat__tail::after {
-  content: '';
-  position: absolute;
-  right: -4px;
-  top: -4px;
-  width: 7px;
-  height: 5px;
-  border-radius: 4px;
-  background: currentColor;
-}
-.canvas-progress-cat__body {
-  z-index: 1;
-  left: 9px;
-  top: 13px;
-  width: 21px;
-  height: 20px;
-  border-radius: 48% 48% 34% 34%;
-}
-.canvas-progress-cat__head {
-  z-index: 2;
-  left: 6px;
-  top: 5px;
-  width: 24px;
-  height: 17px;
-  border-radius: 48% 48% 45% 45%;
-}
-.canvas-progress-cat__ear {
-  top: -3px;
-  width: 9px;
-  height: 10px;
-  border-radius: 2px 7px 1px 5px;
-  transform-origin: 50% 100%;
-  transition: transform 160ms var(--ease-out);
-}
-.canvas-progress-cat__ear--left { left: 1px; transform: rotate(-24deg) skewY(12deg); }
-.canvas-progress-cat__ear--right { right: 1px; transform: rotate(24deg) scaleX(-1) skewY(12deg); }
 .canvas-progress-cat__eyes {
-  left: 6px;
-  top: 7px;
-  width: 12px;
-  height: 3px;
-  background: transparent !important;
-  transition: transform 160ms var(--ease-out);
+  transform-box: view-box;
+  transform-origin: 4.2px 6.2px;
+  animation: canvas-cat-blink 5.6s linear infinite;
 }
-.canvas-progress-cat__eye {
-  top: 0;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #fff !important;
-  transform-origin: center;
-  animation: canvas-cat-blink 5.2s linear infinite;
-}
-.canvas-progress-cat__eye:first-child { left: 0; }
-.canvas-progress-cat__eye:last-child { right: 0; }
-.canvas-progress-cat__paw {
-  z-index: 3;
-  bottom: -1px;
-  width: 8px;
-  height: 5px;
-  border-radius: 5px 5px 3px 3px;
-}
-.canvas-progress-cat__paw--left { left: -2px; }
-.canvas-progress-cat__paw--right { right: -2px; }
 @keyframes canvas-cat-tail {
-  0%, 100% { transform: rotate(-8deg); }
-  50% { transform: rotate(9deg); }
+  0%, 20%, 72%, 100% { transform: rotate(0deg); }
+  33% { transform: rotate(5deg); }
+  46% { transform: rotate(-3deg); }
+  59% { transform: rotate(4deg); }
 }
 @keyframes canvas-cat-blink {
-  0%, 46%, 50%, 100% { transform: scaleY(1); }
-  48% { transform: scaleY(.12); }
+  0%, 47%, 50%, 55%, 58%, 100% { transform: scaleY(1); }
+  48.5%, 56.5% { transform: scaleY(.12); }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .canvas-zone-indicator:is(:hover, :focus-within) .canvas-progress-cat__eyes { transform: translate3d(1px, 0, 0); }
-  .canvas-zone-indicator:is(:hover, :focus-within) .canvas-progress-cat__ear--left { transform: rotate(-20deg) skewY(12deg); }
-  .canvas-zone-indicator:is(:hover, :focus-within) .canvas-progress-cat__ear--right { transform: rotate(29deg) scaleX(-1) skewY(12deg); }
-  .canvas-zone-indicator:is(:hover, :focus-within) .canvas-progress-cat__tail { animation-duration: 1.4s; }
+  .canvas-zone-indicator:is(:hover, :focus-within) .canvas-progress-cat__tail { animation-duration: 2.8s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .canvas-progress-cat__tail { animation: none; }
-  .canvas-progress-cat__eye { animation: none; }
-  .canvas-progress-cat__ear,
-  .canvas-progress-cat__eyes { transition-duration: 100ms; }
+  .canvas-progress-cat__tail,
+  .canvas-progress-cat__eyes { animation: none; }
 }
 
 @media (max-width: 1100px), (prefers-reduced-motion: reduce) {
