@@ -9,6 +9,7 @@ import { canvasPanelOffset, cancelSectionNavigation, navigateToSection, scrollTo
 import { useLocale } from '../i18n/locale'
 import { ProgressCat } from './ProgressCat'
 import { homeSectionIds, setHomeActiveSection, type HomeSectionId } from '../lib/homeSectionNavigation'
+import { waitAtMost, waitForPrimaryFont, waitForReactLayout } from '../lib/criticalReadiness'
 
 type CanvasPanel = { element: HTMLElement; label: string; offset: number }
 type HomeSectionPosition = { id: HomeSectionId; element: HTMLElement; activation: number }
@@ -104,7 +105,6 @@ export function HomeCanvas() {
     const needsPosition = positioned.current !== entry
     const interactiveAnchor = needsPosition && navigationType === 'PUSH' && location.state?.sectionNavigation === 'interactive' && Boolean(target)
     const mountedAnchor = interactiveAnchor && location.state?.anchorOriginPath === '/' && positioned.current !== null
-    const controller = new AbortController()
     const saved = navigationType === 'POP' && needsPosition && (!location.hash || target)
       ? savedPageScroll(location.key, location.hash) : undefined
     const restored = saved !== undefined && Number.isFinite(saved) && saved >= 0 ? saved : undefined
@@ -289,18 +289,19 @@ export function HomeCanvas() {
       updateActivePanel(0)
       window.history.scrollRestoration = 'manual'
       // Do not consume native or Motion scroll samples before the real range
-      // exists. Fonts and the first image are the same bootstrap as the loader.
+      // exists. Typography and the committed React layout define that range.
       if (restored === undefined && (!target || interactiveAnchor))
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-      const images = Array.from(element.querySelectorAll<HTMLImageElement>('.profile-hero img'))
-      // Native focus/restoration completes with document load/pageshow. Font
-      // readiness alone can precede it; never enable tracking in that interval.
-      const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise<void>(resolve =>
-        window.addEventListener('load', () => resolve(), { once: true, signal: controller.signal }))
-      void Promise.all([loaded, document.fonts.ready, ...images.map(image => image.decode().catch(() => undefined))]).then(() => {
+      // The canvas needs stable typography and a committed React layout, not the
+      // page load event or offscreen image decoding. The bound keeps positioning
+      // usable even when the font request is unusually slow or unavailable.
+      void Promise.race([
+        Promise.all([waitForReactLayout(), waitForPrimaryFont()]),
+        waitAtMost(1800),
+      ]).then(() => {
         if (!current()) return
         assetsReady = true
-        // One layout boundary after document/fonts/images; no polling timeout.
+        // One layout boundary after the critical readiness signal.
         frame = requestAnimationFrame(() => {
           if (!current()) return
           if (restored === undefined && (!target || interactiveAnchor))
@@ -317,7 +318,6 @@ export function HomeCanvas() {
     }
     return () => {
       invalidateMeasurement()
-      controller.abort()
       ready.current = false
       deactivateHomeScroll(location.key)
       cancelAnimationFrame(frame)

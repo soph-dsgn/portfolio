@@ -6,7 +6,6 @@ import type { CSSProperties, MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { projects, profile } from '../data/portfolio'
-import { getCaseNavigationSections } from '../data/caseContent'
 import { bindShortWords } from '../lib/typography'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
@@ -44,7 +43,13 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const isConcept = projects.some(project => project.videos && pathname === `/projects/${project.id}`)
   const sections = useMemo(() => {
     const project = projects.find(project => pathname === `/projects/${project.id}`)
-    return project ? getCaseNavigationSections(project) : []
+    if (!project) return []
+    if (project.videos) return project.videos.map(video => ({ id: video.id, label: video.shortTitle }))
+    return [
+      { id: 'context', label: 'Контекст' },
+      { id: 'concept', label: 'UX/UI-решение' },
+      { id: 'final', label: 'Результаты и выводы' },
+    ]
   }, [pathname])
   const activeConcept = useActiveConcept(isConcept ? sections.map(section => section.id) : [])
   const activeSection = isConcept ? activeConcept : pathname === '/' ? activeHomeSection : activePageSection

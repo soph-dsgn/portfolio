@@ -129,7 +129,8 @@
 .home-contact-main { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; min-height: 0; }
 .home-hero-main { gap: clamp(22px, 3.6dvh, 30px); }
 .home-greeting { display: flex; align-items: center; justify-content: center; gap: 20px; min-height: 117px; font-size: 26px; font-weight: 500; line-height: 1.15; }
-.home-inline-portrait { display: block; flex: none; width: 109px; height: 117px; overflow: hidden; border-radius: 33px; transform-origin: center; }
+.home-inline-portrait { display: block; flex: none; width: 109px; height: 117px; overflow: hidden; border-radius: 33px; transform: rotate(5.09deg); transform-origin: center; }
+.home-inline-portrait picture { display: contents; }
 .home-inline-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .home-hero-card h1,
 .home-contact-card h2 {
@@ -154,8 +155,7 @@
 .home-locale { display: flex; align-items: center; gap: 8px; }
 .home-locale button { position: relative; padding: 0; border: 0; background: none; color: var(--figma-muted); font: inherit; }
 .home-locale button[aria-pressed='true'] { color: var(--figma-text); }
-.home-locale button[aria-pressed='true']::after,
-.home-contact-footer a::after {
+.home-locale button[aria-pressed='true']::after {
   position: absolute;
   right: 0;
   bottom: -5px;
@@ -180,6 +180,9 @@
 .home-tool { position: absolute; padding: 10px 14px; border-radius: 16px; background: var(--figma-page); cursor: grab; font-size: 18px; font-weight: 500; line-height: 1.3; outline-offset: 3px; touch-action: pan-y; user-select: none; white-space: nowrap; will-change: transform; }
 .home-tool[data-dragging='true'] { z-index: 4; cursor: grabbing; }
 .home-tool[data-ai='true'] { background: linear-gradient(90deg, #f96aea 0%, #b56bff 50%, #687bff 100%); color: #fff; }
+.home-tool-action { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; line-height: inherit; cursor: grab; }
+.home-tool[data-dragging='true'] .home-tool-action { cursor: grabbing; }
+.home-tool-action:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
 .home-tool--figma { left: 0; top: 110px; }
 .home-tool--figma-motion { left: 84px; top: 103px; transform: rotate(-4.02deg); }
 .home-tool--figjam { left: 206px; top: 52px; transform: rotate(11.17deg); }
@@ -199,16 +202,16 @@
 .home-project-link,
 .home-project-link > .case-cursor-surface { position: relative; display: block; width: 100%; height: 100%; border-radius: inherit; }
 .home-project-card h2 { position: absolute; z-index: 2; top: 46px; left: 50%; width: max-content; max-width: calc(100% - 48px); margin: 0; color: var(--figma-text); font-size: 26px; font-weight: 500; line-height: 1.15; text-align: center; transform: translateX(-50%); }
-.home-project-card .case-cursor-surface > img { position: absolute; display: block; max-width: none; object-fit: cover; pointer-events: none; }
-.home-project-card--concepts .case-cursor-surface > img { left: 13.467%; top: 20.182%; width: 73.067%; height: 72.545%; }
-.home-project-card--partner-portal .case-cursor-surface > img { left: 8.267%; top: 19.636%; width: 83.6%; height: 73.091%; }
-.home-project-card--skywallet .case-cursor-surface > img { left: 23.467%; top: 18.545%; width: 53.067%; height: 74.182%; }
+.home-project-card .case-cursor-surface > picture { display: contents; }
+.home-project-card .home-project-art { position: absolute; display: block; max-width: none; object-fit: cover; pointer-events: none; }
+.home-project-card--concepts .home-project-art { left: 13.467%; top: 20.182%; width: 73.067%; height: 72.545%; }
+.home-project-card--partner-portal .home-project-art { left: 8.267%; top: 19.636%; width: 83.6%; height: 73.091%; }
+.home-project-card--skywallet .home-project-art { left: 23.467%; top: 18.545%; width: 53.067%; height: 74.182%; }
 
 .home-contact-main { gap: clamp(18px, 3.6dvh, 30px); }
 .home-availability { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 26px; font-weight: 500; line-height: 1.15; }
 .home-availability img { width: 16px; height: 16px; }
 .home-inline-portrait--contact { margin-top: 0; }
-.home-contact-footer a { position: relative; color: var(--figma-text); }
 
 @media (min-width: 1101px) and (prefers-reduced-motion: no-preference) {
   .home-canvas[data-horizontal='true'] {
@@ -344,14 +347,12 @@
 }
 
 @media (max-width: 1100px) and (prefers-reduced-motion: no-preference) {
-  .home-project-art { animation: home-project-mobile-drift 6.4s cubic-bezier(.77, 0, .175, 1) infinite alternate; }
-  .home-project-card--partner-portal .home-project-art { animation-duration: 7.2s; animation-direction: alternate-reverse; }
-  .home-project-card--skywallet .home-project-art { animation-duration: 5.8s; }
+  .home-project-art { animation: home-project-mobile-enter 500ms var(--ease-out) both; }
 }
 
-@keyframes home-project-mobile-drift {
-  from { transform: translate3d(-2px, 1px, 0); }
-  to { transform: translate3d(2px, -1px, 0); }
+@keyframes home-project-mobile-enter {
+  from { opacity: .92; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @media (max-width: 760px) {
@@ -379,6 +380,4 @@
   .home-tool { padding: 8px 10px; border-radius: 14px; font-size: 14px; }
   .home-project-card h2 { top: 22px; font-size: clamp(17px, 4.8vw, 20px); }
   .home-availability { font-size: 18px; }
-  .home-contact-footer { align-items: flex-end; }
-  .home-contact-footer p { max-width: 20ch; }
 }

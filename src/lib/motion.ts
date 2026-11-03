@@ -18,7 +18,7 @@ export const motionTokens = {
   maxRevealDelay: .24,
   signature: {
     portal: { pressDuration: .09, pressScale: .99, duration: .25, entryDuration: .35, scale: 1.025, mobileScale: 1.015, entryScale: .975, entryOpacity: .88, entryY: 8 },
-    concept: { duration: .4, inactiveScale: .982, distantScale: .975, mobileScale: .99, inactiveOpacity: .84, distantOpacity: .79, mobileOpacity: .92, blur: 1, distantBlur: 1.5 },
+    concept: { duration: .4, inactiveScale: .982, distantScale: .975, mobileScale: .99, inactiveOpacity: .84, distantOpacity: .79, mobileOpacity: .92 },
     type: { duration: 8, minimum: .996, maximum: 1.006, returnScale: 1.003, opacity: [1, .92, 1, .96, 1] },
     metrics: { desktopScale: .9, mobileScale: .9, desktopY: 14, groupStagger: .11, captionStart: .16, valueDuration: .36, captionDuration: .25 },
     title: { duration: .55, deckDelay: .1 },

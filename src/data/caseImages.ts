@@ -34,8 +34,14 @@ export function caseCoverDimensions(caseId: keyof typeof sizes) {
 
 function image(caseId: keyof typeof sizes, file: string, caption: string): CaseImage {
   const [width, height] = (sizes[caseId] as Record<string, number[]>)[file]
+  const stem = file.replace(/\.[^.]+$/, '')
+  const optimized = (format: 'avif' | 'webp') => [960, 1600]
+    .map(size => `${encodeURI(publicAsset(`optimized/cases/${caseId}/${stem}-${size}.${format}`))} ${Math.min(size, width)}w`)
+    .join(', ')
   return {
     src: publicAsset(`cases/${caseId}/${file}`),
+    avifSrcSet: optimized('avif'),
+    webpSrcSet: optimized('webp'),
     alt: caption,
     caption,
     width,

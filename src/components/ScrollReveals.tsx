@@ -15,7 +15,7 @@ export function ScrollReveals() {
 
   useLayoutEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
+    let blocks: HTMLElement[] = []
     const observed = new Map<Element, HTMLElement>()
     const targetsByBlock = new Map<HTMLElement, Element[]>()
     const markers: HTMLElement[] = []
@@ -59,6 +59,7 @@ export function ScrollReveals() {
     }
 
     const start = () => {
+      blocks = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
       observer?.disconnect()
       animations.forEach(animation => animation.stop())
       blocks.filter(block => block.dataset.motionManaged && block.dataset.revealState === 'visible').forEach(block => { block.style.opacity = '1'; block.style.transform = 'none' })
@@ -192,6 +193,7 @@ export function ScrollReveals() {
 
     start()
     media.addEventListener('change', start)
+    document.addEventListener('reveal-content-ready', start)
     document.addEventListener('focusin', revealFocus)
     document.addEventListener('click', revealAnchorClick, true)
     window.addEventListener('hashchange', revealHash)
@@ -206,6 +208,7 @@ export function ScrollReveals() {
       cancelAnimationFrame(passedFrame)
       markers.forEach((marker) => marker.remove())
       media.removeEventListener('change', start)
+      document.removeEventListener('reveal-content-ready', start)
       document.removeEventListener('focusin', revealFocus)
       document.removeEventListener('click', revealAnchorClick, true)
       window.removeEventListener('hashchange', revealHash)

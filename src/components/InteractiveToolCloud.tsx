@@ -1,5 +1,5 @@
 /* oxlint-disable react/immutability, react/purity -- this isolated rAF physics engine mutates ref-owned bodies without React renders. */
-import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { Fragment, useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import { useMotionSystem } from '../lib/motion'
 
 const tools = [
@@ -144,7 +144,7 @@ export function InteractiveToolCloud() {
   }
 
   const bodyFor = (index: number) => bodiesRef.current[index]
-  const onPointerDown = (index: number, event: PointerEvent<HTMLLIElement>) => {
+  const onPointerDown = (index: number, event: PointerEvent<HTMLButtonElement>) => {
     if (event.button !== 0) return
     const body = bodyFor(index)
     if (!body) return
@@ -155,10 +155,10 @@ export function InteractiveToolCloud() {
     body.lastTime = performance.now()
     body.vx = 0; body.vy = 0; body.angularVelocity = 0
     event.currentTarget.setPointerCapture(event.pointerId)
-    event.currentTarget.dataset.dragging = 'true'
+    body.element.dataset.dragging = 'true'
     ensureAnimation()
   }
-  const onPointerMove = (index: number, event: PointerEvent<HTMLLIElement>) => {
+  const onPointerMove = (index: number, event: PointerEvent<HTMLButtonElement>) => {
     const body = bodyFor(index)
     if (!body?.dragging || body.pointerId !== event.pointerId) return
     const now = performance.now()
@@ -174,16 +174,16 @@ export function InteractiveToolCloud() {
     if (!reduced) resolveCollisions()
     bodiesRef.current.forEach(paint)
   }
-  const release = (index: number, event: PointerEvent<HTMLLIElement>) => {
+  const release = (index: number, event: PointerEvent<HTMLButtonElement>) => {
     const body = bodyFor(index)
     if (!body?.dragging || body.pointerId !== event.pointerId) return
     body.dragging = false
     body.pointerId = null
-    delete event.currentTarget.dataset.dragging
+    delete body.element.dataset.dragging
     if (reduced) { body.vx = 0; body.vy = 0; body.angularVelocity = 0 }
     ensureAnimation()
   }
-  const onKeyDown = (index: number, event: KeyboardEvent<HTMLLIElement>) => {
+  const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {
     const body = bodyFor(index)
     if (!body || !event.key.startsWith('Arrow')) return
     event.preventDefault()
@@ -196,9 +196,15 @@ export function InteractiveToolCloud() {
     paint(body)
   }
 
-  return <ul ref={containerRef} className="home-tool-cloud" aria-label="Инструменты. Чипсы можно перетаскивать; с клавиатуры используйте стрелки.">
-    {tools.map(([label, id], index) => <li className={`home-tool home-tool--${id}`} data-ai={['chatgpt', 'codex', 'claude', 'cursor'].includes(id) || undefined}
-      key={id} tabIndex={0} onKeyDown={event => onKeyDown(index, event)} onPointerDown={event => onPointerDown(index, event)}
-      onPointerMove={event => onPointerMove(index, event)} onPointerUp={event => release(index, event)} onPointerCancel={event => release(index, event)}>{label}</li>)}
-  </ul>
+  return <Fragment>
+    <p className="sr-only" id="tool-cloud-instructions">Инструменты можно перетаскивать мышью или пальцем. Для перемещения с клавиатуры используйте стрелки; Shift увеличивает шаг.</p>
+    <ul ref={containerRef} className="home-tool-cloud" aria-label="Инструменты" aria-describedby="tool-cloud-instructions">
+      {tools.map(([label, id], index) => <li className={`home-tool home-tool--${id}`} data-ai={['chatgpt', 'codex', 'claude', 'cursor'].includes(id) || undefined} key={id}>
+        <button type="button" className="home-tool-action" aria-label={`${label}. Перетаскиваемый инструмент`}
+          aria-describedby="tool-cloud-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
+          onKeyDown={event => onKeyDown(index, event)} onPointerDown={event => onPointerDown(index, event)}
+          onPointerMove={event => onPointerMove(index, event)} onPointerUp={event => release(index, event)} onPointerCancel={event => release(index, event)}>{label}</button>
+      </li>)}
+    </ul>
+  </Fragment>
 }

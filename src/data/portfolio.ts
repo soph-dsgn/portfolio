@@ -1,6 +1,10 @@
-import caseDocuments from './caseDocuments.json'
-import { caseCoverDimensions, caseImages } from './caseImages'
+import caseImageSizes from './caseImageSizes.json'
 import { publicAsset } from '../lib/publicAsset'
+
+const caseCoverDimensions = (caseId: keyof typeof caseImageSizes) => {
+  const [width, height] = (caseImageSizes[caseId] as Record<string, number[]>)['Обложка.png']
+  return { width, height }
+}
 
 export const profile = {
   name: 'Софья Стрельченко',
@@ -122,6 +126,8 @@ export type CaseBlock = {
 
 export type CaseImage = {
   src: string
+  avifSrcSet?: string
+  webpSrcSet?: string
   alt: string
   caption: string
   width: number
@@ -169,13 +175,13 @@ export const projects: Project[] = [
     cover: '/cases/concept/Обложка.png?v=6bad2b766e49',
     coverDimensions: { width: 4584, height: 3438 },
     videos: [
-      { id: 'crypto-wallet', title: 'Криптокошелёк', shortTitle: 'Криптокошелёк', src: '/cases/concept/3.mp4?v=462cab3cd9d6', poster: '/optimized/concepts/poster-3.webp?v=af7125f89aa3', width: 2800, height: 2100 },
-      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/cases/concept/7.mp4?v=47339e11983b', poster: '/optimized/concepts/poster-7.webp?v=b2c2ae29097c', width: 2800, height: 2100 },
-      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/cases/concept/8.mp4?v=805abfba7d0c', poster: '/optimized/concepts/poster-8.webp?v=4211dcc657a6', width: 2800, height: 2100 },
-      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 2800, height: 2100 },
-      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 2800, height: 2100 },
-      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 2800, height: 2100 },
-      { id: 'crypto-portfolio', title: 'Криптопортфель', shortTitle: 'Криптопортфель', src: '/cases/concept/5.mp4?v=4f9a91800fc1', poster: '/optimized/concepts/poster-5.webp?v=c6bc07e2437a', width: 2800, height: 2100 },
+      { id: 'crypto-wallet', title: 'Криптокошелёк', shortTitle: 'Криптокошелёк', src: '/optimized/concepts/videos/3.mp4', poster: '/optimized/concepts/poster-3.webp?v=af7125f89aa3', width: 1600, height: 1200 },
+      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/optimized/concepts/videos/7.mp4', poster: '/optimized/concepts/poster-7.webp?v=b2c2ae29097c', width: 1600, height: 1200 },
+      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/optimized/concepts/videos/8.mp4', poster: '/optimized/concepts/poster-8.webp?v=4211dcc657a6', width: 1600, height: 1200 },
+      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/optimized/concepts/videos/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 1600, height: 1200 },
+      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/optimized/concepts/videos/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 1600, height: 1200 },
+      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/optimized/concepts/videos/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 1600, height: 1200 },
+      { id: 'crypto-portfolio', title: 'Криптопортфель', shortTitle: 'Криптопортфель', src: '/optimized/concepts/videos/5.mp4', poster: '/optimized/concepts/poster-5.webp?v=c6bc07e2437a', width: 1600, height: 1200 },
     ],
   },
   {
@@ -187,10 +193,9 @@ export const projects: Project[] = [
     discipline: 'Product дизайнер',
     platform: 'Web · Mobile',
     niche: 'FinTech / Crypto',
-    document: caseDocuments['partner-portal'],
+    document: [],
     cover: '/cases/partner-portal/Обложка.png?v=b4b1f39522d9',
     coverDimensions: caseCoverDimensions('partner-portal'),
-    images: caseImages['partner-portal'],
   },
   {
     id: 'skywallet',
@@ -201,10 +206,9 @@ export const projects: Project[] = [
     discipline: 'Product дизайнер',
     platform: 'Mobile app',
     niche: 'Fintech / Crypto',
-    document: caseDocuments.skywallet,
+    document: [],
     cover: '/cases/skywallet/Обложка.png?v=1cf91a9bd5c6',
     coverDimensions: caseCoverDimensions('skywallet'),
-    images: caseImages.skywallet,
   },
   {
     id: 'astoria',
@@ -215,10 +219,9 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'Web · Mobile',
     niche: 'TravelTech',
-    document: caseDocuments.astoria,
+    document: [],
     cover: '/cases/astoria/Обложка.png?v=7bdf0731c28e',
     coverDimensions: caseCoverDimensions('astoria'),
-    images: caseImages.astoria,
   },
   {
     id: 'womens-health',
@@ -229,10 +232,9 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'mobile app · landing',
     niche: 'FemTech / HealthTech',
-    document: caseDocuments['womens-health'],
+    document: [],
     cover: '/cases/womens-health/Обложка.png?v=a1b38781be77',
     coverDimensions: caseCoverDimensions('womens-health'),
-    images: caseImages['womens-health'],
   },
   {
     id: 'atlyx',
@@ -243,10 +245,9 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'Mobile app',
     niche: 'TravelTech',
-    document: caseDocuments.atlyx,
+    document: [],
     cover: '/cases/atlyx/Обложка.png?v=963cfe6f81c1',
     coverDimensions: caseCoverDimensions('atlyx'),
-    images: caseImages.atlyx,
   },
 ].map((project) => ({
   ...project,

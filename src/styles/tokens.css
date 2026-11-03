@@ -4,13 +4,19 @@
   --portfolio-surface: #fff;
   --portfolio-text: #171717;
   --portfolio-muted: #8d8d98;
+  --muted-strong: #6f6f78;
   --portfolio-accent: #f96aea;
-  --portfolio-card-radius: 40px;
+  --page-max-width: 1200px;
+  --page-gutter: clamp(16px, 3.35vw, 48px);
+  --section-gap: clamp(56px, 7vw, 96px);
+  --card-radius: 40px;
+  --card-padding: clamp(24px, 3.35vw, 48px);
+  --portfolio-card-radius: var(--card-radius);
   --portfolio-control-radius: 16px;
-  --portfolio-card-padding: clamp(24px, 3.35vw, 48px);
-  --portfolio-page-gutter: clamp(16px, 3.35vw, 48px);
+  --portfolio-card-padding: var(--card-padding);
+  --portfolio-page-gutter: var(--page-gutter);
   --portfolio-layout-gap: clamp(16px, 2.25vw, 32px);
-  --portfolio-section-gap: clamp(56px, 7vw, 96px);
+  --portfolio-section-gap: var(--section-gap);
   --color-page: var(--portfolio-page);
   --color-white: #fff;
   --header-height: max(104px, 13.3dvh);
@@ -21,7 +27,7 @@
   --color-muted-on-dark: #b7b7b2;
   --color-text: var(--portfolio-text);
   --color-muted: var(--portfolio-muted);
-  --color-meta-separator: var(--portfolio-muted);
+  --color-meta-separator: var(--muted-strong);
   --color-avatar: #d8d8d6;
   --color-border: #dedee3;
   --color-action: var(--portfolio-text);
@@ -57,7 +63,6 @@
   --canvas-scene-height: 74dvh;
   --radius-logo: 18px;
   --section-padding: 48px;
-  --section-gap: var(--portfolio-section-gap);
   --case-content-width: 1120px;
   --case-reading-width: 800px;
   --case-group-gap: 32px;
@@ -99,20 +104,20 @@
 }
 
 @media (max-width: 1100px) {
-  :root { --header-height: 68px; --portfolio-card-radius: 32px; --radius-scene: 32px; }
+  :root { --header-height: 68px; --card-radius: 32px; --radius-scene: 32px; }
 }
 @media (max-width: 760px) {
   :root {
     --radius-surface-outer: 32px;
-    --portfolio-card-radius: 28px;
-    --portfolio-card-padding: 24px;
-    --portfolio-page-gutter: 12px;
+    --card-radius: 28px;
+    --card-padding: 24px;
+    --page-gutter: 12px;
     --portfolio-layout-gap: 12px;
     --radius-content-card: 20px;
     --radius-media: 24px;
     --type-section: 34px;
     --type-body: 16px;
     --section-padding: 24px;
-    --section-gap: 64px;
+    --section-gap: 40px;
   }
 }

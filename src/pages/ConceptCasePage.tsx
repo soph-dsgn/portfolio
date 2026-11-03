@@ -200,11 +200,10 @@ export function ConceptCasePage({ project }: Props) {
                 <MediaEntrance><motion.div className="concept-focus-layer" initial={false}
                   data-concept-active={activeConcept === item.id}
                   animate={reduced || activeConcept === item.id
-                    ? { transform: 'scale(1)', opacity: 1, filter: 'blur(0px)' }
+                    ? { transform: 'scale(1)', opacity: 1 }
                     : { transform: `scale(${adaptive ? motionTokens.signature.concept.mobileScale : (distant ? motionTokens.signature.concept.distantScale : motionTokens.signature.concept.inactiveScale)})`,
-                      opacity: adaptive ? motionTokens.signature.concept.mobileOpacity : (distant ? motionTokens.signature.concept.distantOpacity : motionTokens.signature.concept.inactiveOpacity),
-                      filter: `blur(${adaptive ? 0 : (distant ? motionTokens.signature.concept.distantBlur : motionTokens.signature.concept.blur)}px)` }}
-                  transition={{ duration: reduced ? 0 : motionTokens.signature.concept.duration, ease: motionTokens.easeFloat, filter: { duration: adaptive || reduced ? 0 : motionTokens.signature.concept.duration } }}>
+                      opacity: adaptive ? motionTokens.signature.concept.mobileOpacity : (distant ? motionTokens.signature.concept.distantOpacity : motionTokens.signature.concept.inactiveOpacity) }}
+                  transition={{ duration: reduced ? 0 : motionTokens.signature.concept.duration, ease: motionTokens.easeFloat }}>
                 <CaseMediaStage fill><video
                   ref={(node) => { elements.current[index] = node }}
                   src={item.src}

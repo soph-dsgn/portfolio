@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { MotionConfig } from 'framer-motion'
 import App from './App.tsx'
 import { InitialLoader } from './components/InitialLoader'
 import { LocaleProvider } from './i18n/LocaleContext.tsx'
@@ -17,9 +18,11 @@ window.history.scrollRestoration = 'manual'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LocaleProvider>
-      <App />
-      <InitialLoader />
-    </LocaleProvider>
+    <MotionConfig reducedMotion="user">
+      <LocaleProvider>
+        <App />
+        <InitialLoader />
+      </LocaleProvider>
+    </MotionConfig>
   </StrictMode>,
 )

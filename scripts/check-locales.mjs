@@ -3,18 +3,30 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import vm from 'node:vm'
 import ts from 'typescript'
+
 const root = new URL('../', import.meta.url)
-const english = JSON.parse(fs.readFileSync(new URL('src/i18n/en.json', root), 'utf8'))
-const russian = JSON.parse(fs.readFileSync(new URL('src/i18n/ru.json', root), 'utf8'))
+const englishSource = fs.readFileSync(new URL('src/i18n/en.json', root), 'utf8')
+const russianSource = fs.readFileSync(new URL('src/i18n/ru.json', root), 'utf8')
+const english = JSON.parse(englishSource)
+const russian = JSON.parse(russianSource)
+const sourceKeys = englishSource.split('\n').flatMap(line => {
+  const match = /^\s*"((?:\\.|[^"\\])*)"\s*:/.exec(line)
+  return match ? [JSON.parse(`"${match[1]}"`)] : []
+})
+const duplicates = values => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))]
 const numbers = text => (text.replace(/(\d) (?=\d{3}\b)/g, '$1').replace(/(\d),(?=\d{3}\b)/g, '$1').match(/\d+(?:[.,]\d+)?/g) ?? []).sort()
-assert.equal(new Set(russian).size, russian.length)
-assert.equal(Object.keys(english).length, russian.length)
+
+assert.deepEqual(duplicates(russian), [], 'Duplicate RU keys')
+assert.deepEqual(duplicates(sourceKeys), [], 'Duplicate EN keys')
+assert.equal(Object.keys(english).length, russian.length, 'RU/EN key counts differ')
+assert.deepEqual(new Set(Object.keys(english)), new Set(russian), 'RU/EN keys differ')
 for (const source of russian) {
   assert.ok(english[source]?.trim(), `Missing translation: ${source}`)
   // Brand spelling explicitly retained in English portfolio copy.
   assert.ok(!/[А-Яа-яЁё]/.test(english[source].replace(/Юкки/g, '')), `Mixed language: ${source}`)
   assert.deepEqual(numbers(english[source]), numbers(source), `Changed numbers: ${source}`)
 }
+
 const path = new URL('src/i18n/translate.ts', root)
 const compiled = ts.transpileModule(fs.readFileSync(path, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText
 const result = { exports: {} }
@@ -28,4 +40,4 @@ assert.equal(translate('Перейти к экрану 2: Обо мне', 'en'),
 assert.equal(translate('01.10.2026', 'en'), '01.10.2026')
 assert.equal(translate('Figma', 'en'), 'Figma')
 assert.equal(translate('В опыте — Юкки', 'ru'), 'В опыте — Юкки')
-console.log(`Localization: ${russian.length} entries checked; numbers and dynamic labels preserved`)
+console.log(`Localization: ${russian.length} entries checked; keys, numbers and dynamic labels preserved`)

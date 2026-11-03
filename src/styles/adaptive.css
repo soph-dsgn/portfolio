@@ -281,11 +281,6 @@
   .case-facts:not(.case-results) > div { min-height: 0; padding: 16px 20px; }
 }
 
-.copyright-page { margin-top: 32px; }
-@media (max-width: 1100px) {
-  .copyright-page { margin-top: var(--space-8); }
-}
-
 @media (max-width: 760px) {
   .home-canvas .contact-portrait { grid-row: 3 / 5; }
   .home-canvas .contacts-section .site-footer { grid-column: 1 / -1; }

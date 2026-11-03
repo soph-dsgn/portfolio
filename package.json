@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint",
+    "check:locales": "node scripts/check-locales.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

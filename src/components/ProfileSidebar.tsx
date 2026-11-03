@@ -102,7 +102,7 @@ export function ProfileHero() {
     return () => document.removeEventListener('visibilitychange', update)
   }, [])
   const uiReady = useInterfaceReady()
-  const breathe = !reduced && uiReady && headlineVisible && documentVisible
+  const breathe = !adaptive && !reduced && uiReady && headlineVisible && documentVisible
   const breath = {
     initial: false as const,
     animate: { transform: breathe
@@ -128,7 +128,7 @@ export function ProfileHero() {
     </motion.div>
     <div className="hero-visual">
       <motion.div className="profile-avatar" initial={adaptive ? undefined : heroVisible ? 'visible' : 'hidden'} animate={adaptive ? undefined : heroVisible ? 'visible' : 'hidden'} variants={photoReveal}>
-        <img src={publicAsset('optimized/home/avatar-1200.webp')} srcSet={`${publicAsset('optimized/home/avatar-640.webp')} 640w, ${publicAsset('optimized/home/avatar-1200.webp')} 1200w`} sizes="(min-width: 1101px) 30.5vw, (min-width: 761px) 45vw, calc(100vw - 32px)" alt={`Фото ${profile.name}`} width="1200" height="1500" loading="eager" decoding="async" fetchPriority="high" />
+        <img src={publicAsset('optimized/home/avatar-1200.webp')} srcSet={`${publicAsset('optimized/home/avatar-640.webp')} 640w, ${publicAsset('optimized/home/avatar-1200.webp')} 1200w`} sizes="(min-width: 1101px) 30.5vw, (min-width: 761px) 45vw, calc(100vw - 32px)" alt={`Фото ${profile.name}`} width="1200" height="1500" loading="eager" decoding="async" />
       </motion.div>
     </div>
   </motion.section>

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { lazy, Suspense, useLayoutEffect, useRef } from 'react'
 import {
   BrowserRouter,
   Link,
@@ -11,7 +11,6 @@ import { HomeCanvas } from './components/HomeCanvas'
 import { savedPageScroll, savePageScroll } from './lib/pageScroll'
 import { ExperiencePage } from './pages/ExperiencePage'
 import { cancelSectionNavigation, navigateToSection } from './lib/canvasNavigation'
-import { ProjectPage } from './pages/ProjectPage'
 import { profile } from './data/portfolio'
 import { ScrollReveals } from './components/ScrollReveals'
 import { MobileHeader } from './components/MobileHeader'
@@ -20,6 +19,8 @@ import { CopyrightPage } from './pages/CopyrightPage'
 import { useCaseScrollTracking, usePageTracking } from './hooks/useAnalyticsTracking'
 import { useLocale } from './i18n/locale'
 import { UISoundProvider } from './lib/uiSound'
+
+const ProjectPage = lazy(() => import('./pages/ProjectPage').then(module => ({ default: module.ProjectPage })))
 
 function AnalyticsTracking() {
   usePageTracking()
@@ -80,7 +81,7 @@ function App() {
       <AnalyticsTracking />
       <ScrollReveals />
       <SiteHeader />
-      <Routes>
+      <Suspense fallback={null}><Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/projects/:slug" element={<ProjectPage />} />
@@ -96,7 +97,7 @@ function App() {
             </main>
           }
         />
-      </Routes>
+      </Routes></Suspense>
       </UISoundProvider>
     </BrowserRouter>
   )

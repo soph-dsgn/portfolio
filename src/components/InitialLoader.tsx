@@ -1,52 +1,51 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { motionTokens } from '../lib/motion'
+import { waitForPrimaryFont, waitForReactLayout } from '../lib/criticalReadiness'
+
+const loaderFailSafe = 2500
+
+function waitForHeroImage() {
+  const image = document.querySelector<HTMLImageElement>('[data-lcp-image]')
+  if (!image) return Promise.resolve()
+  const loaded = image.complete
+    ? Promise.resolve()
+    : new Promise<void>(resolve => {
+      image.addEventListener('load', () => resolve(), { once: true })
+      image.addEventListener('error', () => resolve(), { once: true })
+    })
+  return loaded.then(() => image.decode().catch(() => undefined))
+}
 
 /** One document bootstrap, outside the router: page navigation never restarts it. */
 export function InitialLoader() {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => {
+    const root = document.getElementById('root')
+    return Boolean(root?.hasAttribute('data-initial-loading') && !root.hasAttribute('data-loader-failsafe'))
+  })
   const reduced = useReducedMotion()
 
   useEffect(() => {
     let cancelled = false
     let frame = 0
-    // Only visible images participate. Lazy case galleries and offscreen covers
-    // must not delay the first screen, nor should the window's full load event.
-    const firstPanel = document.querySelector('.home-canvas [data-canvas-panel]')
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>('#root img'))
-      .filter(image => {
-        const panel = image.closest('[data-canvas-panel]')
-        if (firstPanel && panel && panel !== firstPanel) return false
-        const rect = image.getBoundingClientRect()
-        return rect.width > 0 && rect.height > 0 && rect.bottom > 0 &&
-          rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth
-      })
-    // Home owns scroll positioning; don't expose a bootstrap frame before its
-    // measured range and native position have been synchronized.
-    const canvas = document.querySelector('.home-canvas')
-    let observer: MutationObserver | undefined
-    const positioned = !canvas || canvas.getAttribute('data-positioned') === 'true'
-      ? Promise.resolve()
-      : new Promise<void>(resolve => {
-        observer = new MutationObserver(() => {
-          if (canvas.getAttribute('data-positioned') !== 'true') return
-          observer?.disconnect()
-          resolve()
-        })
-        observer.observe(canvas, { attributes: true, attributeFilter: ['data-positioned'] })
-      })
-    const ready = [positioned, document.fonts.ready, ...images.map(image => image.decode().catch(() => undefined))]
-    void Promise.all(ready).then(() => {
+    let finished = false
+    const finish = () => {
+      if (cancelled || finished) return
+      finished = true
+      window.clearTimeout(failSafe)
+      document.getElementById('root')?.removeAttribute('data-initial-loading')
+      document.dispatchEvent(new Event('initial-ui-ready'))
+      setLoading(false)
+    }
+    // The loader is allowed to wait for the committed layout, the one font used
+    // above the fold and the actual hero image. Canvas positioning and offscreen
+    // media continue independently after the interface becomes interactive.
+    const failSafe = window.setTimeout(finish, loaderFailSafe)
+    void Promise.all([waitForReactLayout(), waitForPrimaryFont(), waitForHeroImage()]).then(() => {
       if (cancelled) return
-      // Let fonts/images and the canvas's ResizeObserver finish their layout.
-      frame = requestAnimationFrame(() => {
-        if (cancelled) return
-        document.getElementById('root')?.removeAttribute('data-initial-loading')
-        document.dispatchEvent(new Event('initial-ui-ready'))
-        setLoading(false)
-      })
+      frame = requestAnimationFrame(finish)
     })
-    return () => { cancelled = true; observer?.disconnect(); cancelAnimationFrame(frame) }
+    return () => { cancelled = true; window.clearTimeout(failSafe); cancelAnimationFrame(frame) }
   }, [])
 
   return <AnimatePresence>

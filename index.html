@@ -74,6 +74,7 @@
       @keyframes loading-dot-two { 0%, 49.99% { opacity: 0; } 50%, 100% { opacity: 1; } }
       @keyframes loading-dot-three { 0%, 74.99% { opacity: 0; } 75%, 100% { opacity: 1; } }
       @media (prefers-reduced-motion: reduce) { .loading-dots > span { animation: none; opacity: 1; } }
+      #root[data-loader-failsafe] > .initial-loader { display: none; }
       #root[data-initial-loading] > :not(.initial-loader) { visibility: hidden; }
     </style>
     <div id="root" data-initial-loading>
@@ -89,6 +90,15 @@
           document.getElementById('initial-loading-copy').textContent = 'Just a moment, getting everything in place';
         }
       } catch { /* Use Russian when storage is unavailable. */ }
+      // Never let the static loader block the interface when the application
+      // bundle or a critical request is unusually slow.
+      window.setTimeout(() => {
+        const root = document.getElementById('root');
+        if (!root?.hasAttribute('data-initial-loading')) return;
+        root.setAttribute('data-loader-failsafe', 'true');
+        root.removeAttribute('data-initial-loading');
+        document.dispatchEvent(new Event('initial-ui-ready'));
+      }, 2500);
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

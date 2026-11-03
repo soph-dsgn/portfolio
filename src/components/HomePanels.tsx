@@ -12,11 +12,12 @@ import { useArtworkParallax } from '../lib/useArtworkParallax'
 import { captureHomeScroll } from '../lib/pageScroll'
 import { rememberHomeProject, rememberHomeProjectView } from '../lib/HomeMotionContext'
 import { InteractiveToolCloud } from './InteractiveToolCloud'
+import { Footer } from './Footer'
 
-const homeProjectPresentation: Record<string, { title: string; image: string; parallax: number }> = {
-  concepts: { title: 'UI-концепты', image: 'figma/home/concepts.png', parallax: 6 },
-  'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png', parallax: 8 },
-  skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png', parallax: 5 },
+const homeProjectPresentation: Record<string, { title: string; image: string; optimized: string; width: number; height: number; parallax: number }> = {
+  concepts: { title: 'UI-концепты', image: 'figma/home/concepts.png', optimized: 'concepts-art', width: 2961, height: 2154, parallax: 6 },
+  'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png', optimized: 'partner-portal-art', width: 3379, height: 2166, parallax: 8 },
+  skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png', optimized: 'skywallet-art', width: 3133, height: 3210, parallax: 5 },
 }
 
 function HomeAction({ children, href, event, disabled = false }: {
@@ -38,9 +39,16 @@ function HomeAction({ children, href, event, disabled = false }: {
 }
 
 function Portrait({ kind }: { kind: 'hero' | 'contact' }) {
-  return <motion.span className={`home-inline-portrait home-inline-portrait--${kind}`} initial={{ opacity: 0, rotate: 0 }} animate={{ opacity: 1, rotate: '5.09deg' }} transition={{ duration: .5 }}>
-    <img src={publicAsset(`figma/home/${kind}-portrait.png`)} alt="" width="100" height="109" />
-  </motion.span>
+  const optimized = kind === 'hero' ? 'hero-portrait' : 'contact-portrait-inline'
+  const original = `figma/home/${kind}-portrait.png`
+  return <span className={`home-inline-portrait home-inline-portrait--${kind}`}>
+    <picture>
+      <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${optimized}-160.avif`)} 160w, ${publicAsset(`optimized/home/${optimized}-320.avif`)} 320w`} sizes="(min-width: 1101px) 116px, (min-width: 761px) 90px, 70px" />
+      <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${optimized}-160.webp`)} 160w, ${publicAsset(`optimized/home/${optimized}-320.webp`)} 320w`} sizes="(min-width: 1101px) 116px, (min-width: 761px) 90px, 70px" />
+      <img src={publicAsset(original)} alt="" width={kind === 'hero' ? 3024 : 1388} height={kind === 'hero' ? 3582 : 1133}
+        loading={kind === 'hero' ? 'eager' : 'lazy'} decoding="async" fetchPriority={kind === 'hero' ? 'high' : 'auto'} data-lcp-image={kind === 'hero' || undefined} />
+    </picture>
+  </span>
 }
 
 export function HomeHero() {
@@ -102,7 +110,12 @@ export function HomeProjectCard({ project }: { project: Project }) {
       }}>
       <CaseCursor enabled>
         <h2 id={`${project.id}-title`}><Typography>{presentation.title}</Typography></h2>
-        <motion.img className="home-project-art" style={parallax.style} src={publicAsset(presentation.image)} alt="" draggable={false} loading={project.id === 'concepts' ? 'eager' : 'lazy'} decoding="async" />
+        <picture>
+          <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />
+          <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.webp`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.webp`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />
+          <motion.img className="home-project-art" style={parallax.style} src={publicAsset(presentation.image)} alt="" width={presentation.width} height={presentation.height}
+            draggable={false} loading="lazy" decoding="async" fetchPriority="low" />
+        </picture>
       </CaseCursor>
     </Link>
     </div>
@@ -133,10 +146,7 @@ export function HomeContact() {
         <HomeAction href={profile.email} event="email_click">Mail</HomeAction>
       </nav>
     </div>
-    <footer className="home-card-footer home-contact-footer">
-      <p><span>@ 2026, дизайнила Софья Стрельченко</span></p>
-      <Link to="/copyright">Авторские права</Link>
-    </footer>
+    <Footer variant="home" />
     </div>
   </motion.section></Typography>
 }

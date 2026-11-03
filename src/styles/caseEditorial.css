@@ -5,39 +5,9 @@
   --case-space-related: 48px;
   --case-space-group: 80px;
   --case-space-section: 128px;
-  --case-body-color: #46464d;
-  --case-caption-color: #6a6a72;
-  --case-card-surface: var(--color-white);
-  --case-card-radius: var(--radius-scene);
-  --case-card-padding: clamp(var(--space-6), 3vw, 40px);
-  --case-card-gap: var(--space-6);
 }
 .case-shell--editorial .case-content { gap: var(--case-space-group); }
 .case-shell--editorial .case-document-group { display: grid; gap: var(--case-card-gap); min-width: 0; }
-.case-shell--editorial :is(.case-overview, .case-document-section) {
-  padding: var(--case-card-padding);
-  border-radius: var(--case-card-radius);
-  background: var(--case-card-surface);
-}
-.case-shell--editorial .case-overview .case-facts:not(.case-results) > div {
-  min-height: 0;
-  padding: 0;
-  background: transparent;
-}
-.case-shell--editorial .case-document-section :is(.case-visual, .case-results) {
-  --case-v-surface: transparent;
-}
-.case-shell--editorial .case-document-section { gap: 28px; }
-.case-shell--editorial .case-document-section > h2 {
-  width: min(100%, 920px);
-  margin: 0;
-  color: var(--color-text);
-  font-size: clamp(38px, 4vw, 56px);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -.035em;
-  text-wrap: balance;
-}
 .case-editorial-flow { display: grid; gap: var(--case-space-group); min-width: 0; }
 .case-editorial-text { width: 100%; max-width: var(--case-reading-column); min-width: 0; justify-self: start; }
 @media (min-width: 1101px) {
@@ -62,22 +32,6 @@
   align-items: start;
 }
 .case-layout--text-visual > .case-editorial-text { max-width: none; }
-.case-shell--editorial .case-editorial-text :is(h3, h4) {
-  color: var(--color-text);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -.025em;
-  margin: 0 0 16px;
-  text-wrap: balance;
-}
-.case-shell--editorial .case-editorial-text h3 { font-size: clamp(27px, 2.3vw, 32px); }
-.case-shell--editorial .case-editorial-text h4 { font-size: clamp(23px, 1.9vw, 27px); }
-.case-shell--editorial .case-editorial-text :is(p, li) {
-  color: var(--case-body-color);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.7;
-}
 .case-shell--editorial .case-editorial-text p + p { margin-top: 20px; }
 .case-shell--editorial .case-editorial-text li + li { margin-top: 10px; }
 .case-shell--editorial .case-editorial-text p.case-narrative-lead {
@@ -103,18 +57,9 @@
   line-height: 1.45;
   letter-spacing: -.02em;
 }
-.case-shell--editorial .case-deck {
-  max-width: var(--case-reading-column);
-  margin-top: 8px;
-  font-size: clamp(24px, 2.3vw, 32px);
-  line-height: 1.4;
-  color: var(--color-text);
-  letter-spacing: -.025em;
-}
 .case-shell--editorial .case-overview { gap: 32px; }
 .case-shell--editorial .visual-caption {
   max-width: var(--case-reading-column);
-  color: var(--case-caption-color);
   font-size: 14px;
   line-height: 1.6;
   margin-top: 16px;
@@ -129,12 +74,8 @@
   .case-layout--text-visual > .case-editorial-text { max-width: var(--case-reading-column); }
 }
 @media (max-width: 760px) {
-  .case-shell--editorial { --case-space-section: 88px; --case-space-group: 48px; --case-space-related: 40px; --case-card-gap: var(--space-4); }
+  .case-shell--editorial { --case-space-section: 88px; --case-space-group: 40px; --case-space-related: 40px; --case-card-gap: var(--space-4); }
   .case-shell--editorial .case-document-section { gap: 24px; }
-  .case-shell--editorial .case-document-section > h2 { font-size: 36px; }
-  .case-shell--editorial .case-editorial-text :is(p, li) { font-size: 16px; line-height: 1.7; }
-  .case-shell--editorial .case-editorial-text h3 { font-size: 27px; }
-  .case-shell--editorial .case-editorial-text h4 { font-size: 23px; }
   .case-shell--editorial .case-editorial-text p.case-narrative-lead { font-size: 20px; }
   .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: 25px; }
   .case-shell--editorial .case-overview { gap: 28px; }

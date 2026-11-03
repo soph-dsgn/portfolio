@@ -5,16 +5,16 @@ import { usePortalEntry } from '../lib/usePortalEntry'
 import { motionTokens } from '../lib/motion'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { profile, projects } from '../data/portfolio'
+import { profile } from '../data/portfolio'
+import { caseProjects as projects } from '../data/caseProjects'
 import type { CaseImage } from '../data/portfolio'
 import { getCaseGroups, withoutFinalPeriod } from '../data/caseContent'
 import type { CaseNode } from '../data/caseContent'
 import { Icon } from '../components/Icon'
-import { ConceptCasePage } from './ConceptCasePage'
 import { CaseVisual } from '../components/CaseVisual'
 import type { CaseVisualSpec } from '../components/CaseVisual'
 import { diagramModeFor } from '../data/caseDiagramModes'
@@ -29,6 +29,8 @@ import { CaseEditorialText } from '../components/CaseEditorialText'
 import { Footer } from '../components/Footer'
 import { audienceStatementLength, companionStart, isNarrativeLead } from '../lib/caseEditorial'
 import '../styles/caseEditorial.css'
+
+const ConceptCasePage = lazy(() => import('./ConceptCasePage').then(module => ({ default: module.ConceptCasePage })))
 
 function CaseNodeView({ node }: { node: CaseNode }) {
   if (node.kind === 'heading') {
@@ -172,6 +174,9 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
               contained={image.width * 3 !== image.height * 4}
             ><SceneImage
               src={image.src}
+              avifSrcSet={image.avifSrcSet}
+              webpSrcSet={image.webpSrcSet}
+              sizes="(min-width: 1201px) 1120px, calc(100vw - 48px)"
               alt={image.alt}
               width={image.width}
               height={image.height}
@@ -197,6 +202,9 @@ export function ProjectPage() {
       ? `${t(project.title)} — ${t(profile.name)}`
       : `${t('Проект не найден')} — ${t(profile.name)}`
   }, [project, t])
+  useEffect(() => {
+    document.dispatchEvent(new Event('reveal-content-ready'))
+  }, [project?.id])
 
   if (!project)
     return (
@@ -208,7 +216,7 @@ export function ProjectPage() {
     )
 
   if (project.videos)
-    return <ConceptCasePage project={project} />
+    return <Suspense fallback={null}><ConceptCasePage project={project} /></Suspense>
 
   const groups = getCaseGroups(project)
   const ordinaryCases = projects.filter(item => !item.videos)
