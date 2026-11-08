@@ -15,10 +15,30 @@ import { InteractiveToolCloud } from './InteractiveToolCloud'
 import { Footer } from './Footer'
 import { ContactLinks } from './ContactLinks'
 
-const homeProjectPresentation: Record<string, { title: string; image: string; optimized?: string; width: number; height: number; parallax: number }> = {
-  concepts: { title: 'UI-концепты', image: '/cases/concept/cover.png?v=d8a462700318', width: 4441, height: 3231, parallax: 6 },
-  'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png', optimized: 'partner-portal-art', width: 3379, height: 2166, parallax: 8 },
-  skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png', optimized: 'skywallet-art', width: 3133, height: 3210, parallax: 5 },
+const homeProjectPresentation: Record<string, { title: string; image: string; srcSet?: string; optimized?: string; width: number; height: number; parallax: number }> = {
+  concepts: {
+    title: 'UI-концепты',
+    image: 'optimized/concepts/cover-1600.png?v=90356d747719',
+    width: 1600,
+    height: 1177,
+    parallax: 6,
+  },
+  'partner-portal': {
+    title: 'Partner Portal: −20% обращений в поддержку',
+    image: 'cases/partner-portal/Cover.png?v=20261109a',
+    srcSet: `${publicAsset('optimized/home/partner-portal-960.jpg')}?v=20261109a 960w, ${publicAsset('optimized/home/partner-portal-1920.jpg')}?v=20261109a 1920w`,
+    width: 6872,
+    height: 5504,
+    parallax: 8,
+  },
+  skywallet: {
+    title: 'SkyWallet: риск ошибок −30%',
+    image: 'cases/skywallet/Cover.png?v=27d645c8f479',
+    srcSet: `${publicAsset('optimized/home/skywallet-cover-640.jpg')}?v=27d645c8f479 640w, ${publicAsset('optimized/home/skywallet-cover-1280.jpg')}?v=27d645c8f479 1280w`,
+    width: 3133,
+    height: 3210,
+    parallax: 5,
+  },
 }
 
 function Portrait({ kind }: { kind: 'hero' | 'contact' }) {
@@ -93,7 +113,7 @@ export function HomeProjectCard({ project }: { project: Project }) {
         <picture>
           {presentation.optimized && <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
           {presentation.optimized && <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.webp`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.webp`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
-          <motion.img className="home-project-art" style={parallax.style} src={publicAsset(presentation.image)} alt="" width={presentation.width} height={presentation.height}
+          <motion.img className="home-project-art" style={parallax.style} src={publicAsset(presentation.image)} srcSet={presentation.srcSet} sizes={presentation.srcSet ? '(min-width: 1101px) 28vw, (min-width: 761px) 44vw, 46vw' : undefined} alt="" width={presentation.width} height={presentation.height}
             draggable={false} loading="lazy" decoding="async" fetchPriority="low" />
         </picture>
       </CaseCursor>

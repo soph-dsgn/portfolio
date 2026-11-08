@@ -240,8 +240,14 @@
 .home-project-card h2 { position: absolute; z-index: 2; top: var(--home-card-padding-top); left: 50%; width: max-content; max-width: calc(100% - var(--home-card-padding-inline) * 2); margin: 0; color: var(--figma-text); font-size: 26px; font-weight: 500; line-height: 1.15; text-align: center; transform: translateX(-50%); }
 .home-project-card .case-cursor-surface > picture { display: contents; }
 .home-project-card .home-project-art { position: absolute; display: block; max-width: none; object-fit: cover; pointer-events: none; }
-.home-project-card--concepts .home-project-art { left: 13.467%; top: 20.182%; width: 73.067%; height: 72.545%; }
-.home-project-card--partner-portal .home-project-art { left: 8.267%; top: 19.636%; width: 83.6%; height: 73.091%; }
+.home-project-card--concepts .home-project-art { left: 13.467%; top: 20.182%; width: 73.067%; height: 72.545%; object-fit: contain; }
+.home-project-card--partner-portal .home-project-art {
+  left: -2%;
+  top: 18.5%;
+  width: 104%;
+  height: 86%;
+  object-position: 50% 0;
+}
 .home-project-card--skywallet .home-project-art { left: 23.467%; top: 18.545%; width: 53.067%; height: 74.182%; }
 
 .home-availability { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 26px; font-weight: 500; line-height: 1.15; }

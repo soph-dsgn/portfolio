@@ -126,6 +126,7 @@ export type CaseBlock = {
 
 export type CaseImage = {
   src: string
+  srcSet?: string
   avifSrcSet?: string
   webpSrcSet?: string
   alt: string
@@ -172,16 +173,16 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'Web · Mobile',
     document: [],
-    cover: '/cases/concept/cover.png?v=d8a462700318',
-    coverDimensions: { width: 4441, height: 3231 },
+    cover: '/cases/concept/cover.png?v=90356d747719',
+    coverDimensions: { width: 4390, height: 3231 },
     videos: [
-      { id: 'uglycash', title: 'UglyCash', shortTitle: 'UglyCash', src: '/cases/concept/1.mp4?v=846c2ee788dc', poster: '/cases/concept/image_1.png?v=da84ca416341', width: 2902, height: 2176 },
+      { id: 'uglycash', title: 'UglyCash', shortTitle: 'UglyCash', src: '/cases/concept/1.mp4?v=846c2ee788dc', poster: '/optimized/concepts/poster-1-1600.avif?v=5ec0b152feec', width: 2902, height: 2176 },
       { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/2.mp4?v=5df23a1de127', width: 2902, height: 2176 },
-      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/cases/concept/3.mp4?v=9ecbd1e26363', poster: '/cases/concept/image_3.png?v=ca8084e8e618', width: 2902, height: 2176 },
-      { id: 'visual-collection', title: 'Коллекция изображений', shortTitle: 'Коллекция', src: '/cases/concept/4.mp4?v=0e58d82bad5d', poster: '/cases/concept/image_4.png?v=4ab6c217bd7a', width: 2902, height: 2176 },
-      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/cases/concept/5.mp4?v=ac25441510f7', poster: '/cases/concept/image_5.png?v=ca1c61f515f3', width: 2902, height: 2176 },
-      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/6.mp4?v=6517d7d3aea5', poster: '/cases/concept/image_6.png?v=55d90c967a0d', width: 2902, height: 2176 },
-      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/7.mp4?v=50f9e7305690', poster: '/cases/concept/image_7.png?v=5d3a04858311', width: 2902, height: 2176 },
+      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/cases/concept/3.mp4?v=9ecbd1e26363', poster: '/optimized/concepts/poster-3-1600.avif?v=56004dae01e6', width: 2902, height: 2176 },
+      { id: 'visual-collection', title: 'Коллекция изображений', shortTitle: 'Коллекция', src: '/cases/concept/4.mp4?v=63a25aa4e851', poster: '/optimized/concepts/poster-4-1600.avif?v=3fd7acf1a716', width: 2902, height: 2176 },
+      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/cases/concept/5.mp4?v=ac25441510f7', poster: '/optimized/concepts/poster-5-1600.avif?v=e5611821ed23', width: 2902, height: 2176 },
+      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/6.mp4?v=6ead4bd87265', poster: '/optimized/concepts/poster-6-1600.avif?v=e4a8c5800030', width: 2902, height: 2176 },
+      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/7.mp4?v=50f9e7305690', poster: '/optimized/concepts/poster-7-1600.avif?v=94e7f32ed4d7', width: 2902, height: 2176 },
     ],
   },
   {
@@ -194,8 +195,8 @@ export const projects: Project[] = [
     platform: 'Web · Mobile',
     niche: 'FinTech / Crypto',
     document: [],
-    cover: '/cases/partner-portal/Обложка.png?v=b4b1f39522d9',
-    coverDimensions: caseCoverDimensions('partner-portal'),
+    cover: '/cases/partner-portal/Cover.png?v=20261109a',
+    coverDimensions: { width: 6872, height: 5504 },
   },
   {
     id: 'skywallet',
@@ -207,7 +208,7 @@ export const projects: Project[] = [
     platform: 'Mobile app',
     niche: 'Fintech / Crypto',
     document: [],
-    cover: '/cases/skywallet/Обложка.png?v=1cf91a9bd5c6',
+    cover: '/cases/skywallet/Cover.png?v=27d645c8f479',
     coverDimensions: caseCoverDimensions('skywallet'),
   },
   {
@@ -251,8 +252,12 @@ export const projects: Project[] = [
   },
 ].map((project) => ({
   ...project,
-  cover: project.id === 'concepts' ? publicAsset(project.cover) : project.cover ? publicAsset(`/optimized/home/${project.id}-1920.webp`) : undefined,
-  coverSrcSet: project.id === 'concepts' ? undefined : project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
+  cover: project.id === 'concepts' || project.id === 'partner-portal'
+    ? publicAsset(project.cover)
+    : project.cover ? publicAsset(`/optimized/home/${project.id}-1920.webp`) : undefined,
+  coverSrcSet: project.id === 'concepts' ? undefined : project.id === 'partner-portal'
+    ? [960, 1920].map(width => `${publicAsset(`/optimized/home/partner-portal-${width}.jpg`)}?v=20261109a ${width}w`).join(', ')
+    : project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
   videos: project.videos?.map((video) => ({
     ...video,
     src: publicAsset(video.src),

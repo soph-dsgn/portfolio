@@ -2720,7 +2720,7 @@ button, input, select, textarea, svg text, svg tspan {
   z-index: 100;
   width: 100%;
   height: 3px;
-  background: #202020;
+  background: var(--portfolio-accent);
   transform-origin: left;
   pointer-events: none;
 }

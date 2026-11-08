@@ -26,9 +26,29 @@ export function ConceptCasePage({ project }: Props) {
   const videos = project.videos ?? emptyVideos
   const activeConcept = useActiveConcept(videos.map(video => video.id))
   const elements = useRef<(HTMLVideoElement | null)[]>([])
+  const shells = useRef<(HTMLElement | null)[]>([])
   const control = useRef<(index: number) => void>(() => {})
   const [playing, setPlaying] = useState<number | null>(null)
   const [completed, setCompleted] = useState<number[]>([])
+  const [prepared, setPrepared] = useState<Set<number>>(() => new Set())
+
+  useEffect(() => {
+    const nodes = shells.current.slice(0, videos.length)
+    const indexByNode = new Map(nodes.flatMap((node, index) => node ? [[node, index] as const] : []))
+    const observer = new IntersectionObserver((entries) => {
+      const incoming = entries.flatMap((entry) => entry.isIntersecting ? [indexByNode.get(entry.target as HTMLElement)] : [])
+        .filter((index): index is number => index !== undefined)
+      if (!incoming.length) return
+      setPrepared((current) => {
+        const next = new Set(current)
+        incoming.forEach(index => next.add(index))
+        return next.size === current.size ? current : next
+      })
+      entries.forEach((entry) => { if (entry.isIntersecting) observer.unobserve(entry.target) })
+    }, { rootMargin: '800px 0px', threshold: 0 })
+    nodes.forEach(node => { if (node) observer.observe(node) })
+    return () => observer.disconnect()
+  }, [videos])
 
   useEffect(() => {
     const nodes = elements.current.slice(0, videos.length)
@@ -196,7 +216,8 @@ export function ConceptCasePage({ project }: Props) {
             const hasEnded = completed.includes(index)
             const label = hasEnded && !isPlaying ? 'Повторить' : isPlaying ? 'Пауза' : 'Воспроизвести'
             return (
-              <figure className="concept-video-item" id={item.id} key={item.id}>
+              <figure className="concept-video-item" id={item.id} key={item.id}
+                ref={(node) => { shells.current[index] = node }}>
                 <MediaEntrance><motion.div className="concept-focus-layer" initial={false}
                   data-concept-active={activeConcept === item.id}
                   animate={reduced || activeConcept === item.id
@@ -212,7 +233,7 @@ export function ConceptCasePage({ project }: Props) {
                   height={item.height}
                   muted
                   playsInline
-                  preload={item.poster ? 'none' : 'metadata'}
+                  preload={prepared.has(index) ? 'metadata' : 'none'}
                   aria-label={item.title}
                 /></CaseMediaStage>
                 </motion.div></MediaEntrance>

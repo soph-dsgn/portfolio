@@ -24,8 +24,11 @@ import { MetaSeparatedText } from '../components/MetaSeparatedText'
 import { visualsAfter } from '../data/caseVisuals'
 import { CaseMediaStage } from '../components/CaseMediaStage'
 import { CaseEditorialText } from '../components/CaseEditorialText'
+import { CaseInlineMedia } from '../components/CaseInlineMedia'
 import { Footer } from '../components/Footer'
 import { audienceStatementLength, companionStart, isNarrativeLead } from '../lib/caseEditorial'
+import { skywalletMediaAfter } from '../data/skywalletMedia'
+import { partnerPortalMediaAfter } from '../data/partnerPortalMedia'
 import '../styles/caseEditorial.css'
 
 const ConceptCasePage = lazy(() => import('./ConceptCasePage').then(module => ({ default: module.ConceptCasePage })))
@@ -109,6 +112,14 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
     for (const visual of visualsAfter(projectId, groupId, text)) {
       flushText()
       blocks.push({ key: visual.id, visual, content: <CaseVisual visual={visual} precedingHeading={precedingHeading} /> })
+    }
+    for (const placement of skywalletMediaAfter(projectId, groupId, text)) {
+      flushText()
+      blocks.push({ key: placement.id, content: <CaseInlineMedia placement={placement} /> })
+    }
+    for (const placement of partnerPortalMediaAfter(projectId, groupId, text)) {
+      flushText()
+      blocks.push({ key: placement.id, content: <CaseInlineMedia placement={placement} /> })
     }
   })
   flushText()
@@ -243,7 +254,7 @@ export function ProjectPage() {
                 <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
                 <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
               </section>
-              <CaseGallery images={project.images?.[group.id]} heightFill={project.id === 'astoria'} />
+              {!['skywallet', 'partner-portal'].includes(project.id) ? <CaseGallery images={project.images?.[group.id]} heightFill={project.id === 'astoria'} /> : null}
             </div>
           ))}
         </div>

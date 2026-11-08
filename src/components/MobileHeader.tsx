@@ -4,8 +4,7 @@ import { useId, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { profile } from '../data/portfolio'
-import { caseProjects } from '../data/caseProjects'
+import { profile, projects } from '../data/portfolio'
 import { bindShortWords } from '../lib/typography'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
@@ -14,7 +13,6 @@ import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
 import { useHomeActiveSection } from '../lib/homeSectionNavigation'
-import { getCaseNavigationSections } from '../data/caseContent'
 
 const MotionLink = motion.create(Link)
 
@@ -23,6 +21,13 @@ const homeLinks = [
   { href: '/#about', label: 'Обо мне' },
   { href: '/#partner-portal', label: 'Кейсы' },
   { href: '/#contacts', label: 'Контакты' },
+]
+
+const standardCaseSections = [
+  { id: 'context', label: 'Контекст' },
+  { id: 'structure', label: 'Стратегия и сценарии' },
+  { id: 'concept', label: 'UX/UI-решения' },
+  { id: 'final', label: 'Результаты и выводы' },
 ]
 
 export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: boolean; backTo?: string }) {
@@ -42,8 +47,11 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isCase = pathname.startsWith('/projects/')
   const sections = useMemo(() => {
-    const project = caseProjects.find(project => pathname === `/projects/${project.id}`)
-    return project ? getCaseNavigationSections(project) : []
+    const project = projects.find(project => pathname === `/projects/${project.id}`)
+    if (!project) return []
+    return project.videos
+      ? project.videos.slice(0, 4).map(video => ({ id: video.id, label: video.shortTitle }))
+      : standardCaseSections
   }, [pathname])
   const activeSection = pathname === '/' ? activeHomeSection : activePageSection
   const isActiveLink = (href: string) => href.includes('#')
