@@ -1623,7 +1623,7 @@ time.chip {
   overflow-wrap: normal;
   word-break: normal;
   font-size: var(--case-v-body);
-  font-weight: 400;
+  font-weight: var(--weight-medium);
   line-height: var(--case-v-leading);
 }
 .case-visual-table thead th {
@@ -1786,6 +1786,14 @@ time.chip {
   width: 100%;
   height: auto;
 }
+.case-image-frame .case-media-stage > img,
+.case-image-frame .case-media-stage > picture > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .case-image-frame a {
   display: block;
   border-radius: var(--radius-scene);
@@ -1827,30 +1835,40 @@ time.chip {
   margin: 0;
 }
 .step-list {
+  --step-marker-size: 28px;
+  --step-marker-font-size: 14px;
   list-style: none;
   padding: 0;
   margin: 0;
   counter-reset: step;
 }
 .step-list > li {
-  position: relative;
+  display: grid;
+  grid-template-columns: var(--step-marker-size) minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
   counter-increment: step;
-  padding-left: 36px;
+  padding-left: 0;
 }
 .step-list > li::before {
   content: counter(step);
-  position: absolute;
-  left: 0;
-  top: calc((1lh - 24px) / 2);
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: var(--step-marker-size);
+  height: var(--step-marker-size);
+  margin-top: 1px;
   border-radius: 8px;
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 13px;
+  font-size: var(--step-marker-font-size);
   font-weight: var(--weight-medium);
+  line-height: 1;
+}
+@media (max-width: 760px) {
+  .step-list {
+    --step-marker-size: 26px;
+    --step-marker-font-size: 13px;
+  }
 }
 .star-list {
   --list-marker-size: 12px;
@@ -2050,39 +2068,6 @@ time.chip {
   font-weight: 500;
   margin-top: var(--space-4);
 }
-.case-thanks {
-  display: grid;
-  justify-items: center;
-  gap: 0;
-  width: 100%;
-  margin: var(--space-6) auto 0;
-  padding: 48px 24px;
-  border-radius: var(--radius-surface-outer);
-  background: var(--color-surface);
-  color: var(--color-text);
-  text-align: center;
-}
-.case-thanks :is(img, svg) {
-  display: block;
-  width: 112px;
-  height: auto;
-}
-.case-thanks h2 {
-  margin-top: var(--space-2);
-  font-size: 32px;
-  font-weight: var(--weight-medium);
-  line-height: 1.3;
-}
-.case-thanks p {
-  width: 100%;
-  margin-top: var(--space-2);
-  color: var(--color-muted);
-  font-size: 16px;
-  line-height: var(--leading-body);
-}
-.case-thanks strong {
-  font-weight: 500;
-}
 .not-found {
   max-width: 600px;
   margin: 100px auto;
@@ -2280,15 +2265,6 @@ time.chip {
   }
   .case-text-card h3, .case-standalone-heading h3 {
     font-size: 20px;
-  }
-  .case-thanks {
-    padding: 32px 24px;
-  }
-  .case-thanks :is(img, svg) {
-    width: 100px;
-  }
-  .case-thanks h2 {
-    font-size: 26px;
   }
   .resume-entries > li {
     padding: 24px 0;

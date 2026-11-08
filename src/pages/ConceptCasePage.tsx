@@ -212,7 +212,7 @@ export function ConceptCasePage({ project }: Props) {
                   height={item.height}
                   muted
                   playsInline
-                  preload="none"
+                  preload={item.poster ? 'none' : 'metadata'}
                   aria-label={item.title}
                 /></CaseMediaStage>
                 </motion.div></MediaEntrance>
@@ -227,7 +227,7 @@ export function ConceptCasePage({ project }: Props) {
         </div>
         <CaseNavigation projectId={project.id} />
       </main>
-      <Footer />
+      <Footer variant="case" />
     </div></Typography>
   )
 }

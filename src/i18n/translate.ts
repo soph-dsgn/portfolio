@@ -12,11 +12,14 @@ export function translate(text: string, locale: Locale): string {
     if (key.startsWith(prefix)) return translate(prefix.slice(0, -1), locale) + ': ' + translate(key.slice(prefix.length).trim(), locale)
   }
   if (key.startsWith('Фото ')) return 'Photo of ' + translate(key.slice(5), locale)
-  if (key.startsWith('Перейти к экрану ')) {
-    const label = key.slice('Перейти к экрану '.length)
+  for (const prefix of ['Перейти к экрану', 'Перейти к разделу']) if (key.startsWith(prefix + ' ')) {
+    const label = key.slice(prefix.length + 1)
     const numbered = /^(\d+:\s*)(.*)$/.exec(label)
-    return 'Go to screen ' + (numbered ? numbered[1] + translate(numbered[2], locale) : translate(label, locale))
+    return translate(prefix, locale) + ' ' + (numbered ? numbered[1] + translate(numbered[2], locale) : translate(label, locale))
   }
+  const draggableSuffix = '. Перетаскиваемый инструмент'
+  if (key.endsWith(draggableSuffix))
+    return translate(key.slice(0, -draggableSuffix.length), locale) + '. ' + translate('Перетаскиваемый инструмент', locale)
   if (key.includes(' — ')) return key.split(' — ').map(part => translate(part, locale)).join(' — ')
   if (/[→←↑↓↗]/.test(key)) return key.split(/([→←↑↓↗])/).map(part => translate(part, locale)).join('')
   return text

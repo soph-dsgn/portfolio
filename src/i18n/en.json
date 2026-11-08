@@ -1860,6 +1860,8 @@
   "Аналитика": "Analytics",
   "Мессенджер": "Messenger",
   "Криптокошелёк": "Crypto Wallet",
+  "Коллекция изображений": "Image collection",
+  "Коллекция": "Collection",
   "Figma-файл": "Figma file",
   "Профили и контакты": "Profiles and contact details",
   "Продуктовая стратегия": "Product strategy",
@@ -2110,7 +2112,7 @@
   "цифровые продукты для B2B/B2C": "digital products for B2B and B2C",
   "Хорошие продукты начинаются с диалога": "Great products start with a conversation",
   "Вы добрались до конца кейса — не каждый доходит так далеко!": "You made it to the end — not everyone gets this far!",
-  "Дизайнила и кодила Софья Стрельченко": "Designed & coded by Sophie Strelchenko",
+  "Дизайнила Софья Стрельченко": "Designed by Sophie Strelchenko",
   "Предыдущий кейс": "Previous case",
   "Следующий кейс": "Next case",
   "Навигация между кейсами": "Case navigation",
@@ -2536,5 +2538,12 @@
   "в сложных сценариях и развивала продукты": "complex journeys and evolved products",
   "Училась продуктовому дизайну в": "Studied product design at",
   "и UX/UI-дизайну в": "and UX/UI design at",
-  "и": "and"
+  "и": "and",
+  "Концепты": "Concepts",
+  "Контакты": "Contacts",
+  "Инструменты можно перетаскивать мышью или пальцем. Для перемещения с клавиатуры используйте стрелки; Shift увеличивает шаг": "Drag tools with a mouse or touch. Use the arrow keys to move them with the keyboard; hold Shift for a larger step",
+  "Перетаскиваемый инструмент": "Draggable tool",
+  "Перейти к разделу": "Go to section",
+  "Обсудим ваш проект?": "Shall we discuss your project?",
+  "Наверх": "Back to top"
 }

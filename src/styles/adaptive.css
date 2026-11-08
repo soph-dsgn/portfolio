@@ -52,7 +52,7 @@
   .mobile-header-inner--back .back-button-label { display: none; }
   .mobile-header-spacer { flex: 1; }
   .mobile-header-inner {
-    width: calc(100% - 24px);
+    width: min(calc(100% - var(--page-gutter) * 2), var(--page-max-width));
     height: 64px;
     margin: 12px auto;
     padding: 11px 13px;
@@ -63,11 +63,11 @@
   .mobile-brand { min-width: 0; }
   .mobile-brand img { object-fit: contain; object-position: center; border-radius: 0; flex: none; }
   .mobile-brand span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .home-canvas[data-horizontal='false'] { padding-top: 100px; }
+  .home-canvas[data-horizontal='false'] { padding-top: calc(var(--header-height) + 16px); }
   .mobile-menu {
     top: calc(100% + 16px);
-    left: 12px;
-    right: 12px;
+    left: var(--page-gutter);
+    right: var(--page-gutter);
     padding: 13px;
     border: 0;
     border-radius: 24px;

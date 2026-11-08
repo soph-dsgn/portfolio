@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import type { PointerEvent } from 'react'
 import { CaseCursor } from './CaseCursor'
 import { Typography } from './Typography'
-import { projects, profile, type Project } from '../data/portfolio'
+import { projects, type Project } from '../data/portfolio'
 import { publicAsset } from '../lib/publicAsset'
 import { trackEvent } from '../lib/analytics'
 import { useLocale } from '../i18n/locale'
@@ -13,29 +13,12 @@ import { captureHomeScroll } from '../lib/pageScroll'
 import { rememberHomeProject, rememberHomeProjectView } from '../lib/HomeMotionContext'
 import { InteractiveToolCloud } from './InteractiveToolCloud'
 import { Footer } from './Footer'
+import { ContactLinks } from './ContactLinks'
 
-const homeProjectPresentation: Record<string, { title: string; image: string; optimized: string; width: number; height: number; parallax: number }> = {
-  concepts: { title: 'UI-концепты', image: 'figma/home/concepts.png', optimized: 'concepts-art', width: 2961, height: 2154, parallax: 6 },
+const homeProjectPresentation: Record<string, { title: string; image: string; optimized?: string; width: number; height: number; parallax: number }> = {
+  concepts: { title: 'UI-концепты', image: '/cases/concept/cover.png?v=d8a462700318', width: 4441, height: 3231, parallax: 6 },
   'partner-portal': { title: 'Partner Portal: −20% обращений в поддержку', image: 'figma/home/partner-portal.png', optimized: 'partner-portal-art', width: 3379, height: 2166, parallax: 8 },
   skywallet: { title: 'SkyWallet: риск ошибок −30%', image: 'figma/home/skywallet.png', optimized: 'skywallet-art', width: 3133, height: 3210, parallax: 5 },
-}
-
-function HomeAction({ children, href, event, disabled = false }: {
-  children: string; href?: string; event?: 'telegram_click' | 'resume_click' | 'linkedin_click' | 'email_click'; disabled?: boolean
-}) {
-  const { navInteraction } = useMotionSystem()
-  const props = {
-    ...navInteraction,
-    className: 'home-pill',
-    'aria-disabled': disabled || undefined,
-    onClick: event && !disabled ? () => {
-      if (event === 'telegram_click') trackEvent('contact_click', { location: 'home' })
-      trackEvent(event, { location: 'home' })
-    } : undefined,
-  }
-  const content = <Typography>{children}</Typography>
-  if (!href || disabled) return <motion.span {...props}>{content}</motion.span>
-  return <motion.a {...props} href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'}>{content}</motion.a>
 }
 
 function Portrait({ kind }: { kind: 'hero' | 'contact' }) {
@@ -58,13 +41,10 @@ export function HomeHero() {
     <div className="home-card-canvas">
     <div className="home-hero-main">
       <div className="home-greeting"><span>Привет</span><Portrait kind="hero" /><span>я — Соня!</span></div>
-      <h1 id="hero-title"><span>Продуктовый &amp; UX/UI дизайнер</span><strong>с опытом B2B/B2C, запуском</strong><strong>и развитием цифровых продуктов</strong></h1>
-      <nav className="home-pill-row" aria-label="Контакты">
-        <HomeAction href={profile.telegram} event="telegram_click">Telegram</HomeAction>
-        <HomeAction href={profile.cv} event="resume_click" disabled={!profile.cv}>CV</HomeAction>
-        <HomeAction href={profile.linkedin} event="linkedin_click">Linkedin</HomeAction>
-        <HomeAction href={profile.email} event="email_click">Mail</HomeAction>
-      </nav>
+      <div className="home-card-message">
+        <h1 id="hero-title"><span>Продуктовый &amp; UX/UI дизайнер</span><strong>с опытом B2B/B2C, запуском</strong><strong>и развитием цифровых продуктов</strong></h1>
+        <ContactLinks location="home" variant="pill" className="home-pill-row" />
+      </div>
     </div>
     <div className="home-card-footer">
       <p><span>Москва</span><b aria-hidden="true">×</b><span>GMT +3</span></p>
@@ -111,8 +91,8 @@ export function HomeProjectCard({ project }: { project: Project }) {
       <CaseCursor enabled>
         <h2 id={`${project.id}-title`}><Typography>{presentation.title}</Typography></h2>
         <picture>
-          <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />
-          <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.webp`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.webp`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />
+          {presentation.optimized && <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
+          {presentation.optimized && <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.webp`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.webp`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
           <motion.img className="home-project-art" style={parallax.style} src={publicAsset(presentation.image)} alt="" width={presentation.width} height={presentation.height}
             draggable={false} loading="lazy" decoding="async" fetchPriority="low" />
         </picture>
@@ -136,15 +116,14 @@ export function HomeContact() {
     initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .5 }}>
     <div className="home-card-canvas">
     <div className="home-contact-main">
-      <p className="home-availability"><img src={publicAsset('figma/home/status.svg')} alt="" width="16" height="16" />Открыта к предложениям</p>
-      <Portrait kind="contact" />
-      <h2 id="contacts-title"><span>Это конец сайта, но,</span><strong>может, начало</strong><strong>чего-то классного?</strong></h2>
-      <nav className="home-pill-row" aria-label="Контакты">
-        <HomeAction href={profile.telegram} event="telegram_click">Telegram</HomeAction>
-        <HomeAction href={profile.cv} event="resume_click" disabled={!profile.cv}>CV</HomeAction>
-        <HomeAction href={profile.linkedin} event="linkedin_click">Linkedin</HomeAction>
-        <HomeAction href={profile.email} event="email_click">Mail</HomeAction>
-      </nav>
+      <div className="home-contact-intro">
+        <p className="home-availability"><img src={publicAsset('figma/home/status.svg')} alt="" width="16" height="16" />Открыта к предложениям</p>
+        <Portrait kind="contact" />
+      </div>
+      <div className="home-card-message">
+        <h2 id="contacts-title"><span>Это конец сайта, но,</span><strong>может, начало</strong><strong>чего-то классного?</strong></h2>
+        <ContactLinks location="home" variant="pill" className="home-pill-row" />
+      </div>
     </div>
     <Footer variant="home" />
     </div>

@@ -1,7 +1,7 @@
 /* Three patterns: reading column, related text + visual, and full visual.
    All narrative returns to the same left edge. Concepts are outside this scope. */
 .case-shell--editorial {
-  --case-reading-column: 740px;
+  --case-reading-column: 900px;
   --case-space-related: 48px;
   --case-space-group: 80px;
   --case-space-section: 128px;
@@ -9,16 +9,23 @@
 .case-shell--editorial .case-content { gap: var(--case-space-group); }
 .case-shell--editorial .case-document-group { display: grid; gap: var(--case-card-gap); min-width: 0; }
 .case-editorial-flow { display: grid; gap: var(--case-space-group); min-width: 0; }
-.case-editorial-text { width: 100%; max-width: var(--case-reading-column); min-width: 0; justify-self: start; }
+.case-editorial-text { width: 100%; max-width: none; min-width: 0; justify-self: start; }
+.case-shell--editorial .case-document-section > .case-editorial-text { width: 100%; max-width: none; }
+.case-shell--editorial .case-editorial-text > :is(p, ul, ol, .case-audience-intro) {
+  max-width: var(--case-reading-column);
+}
+.case-shell--editorial .case-editorial-text > :is(h3, h4) {
+  max-width: 32ch;
+}
 @media (min-width: 1101px) {
   .case-shell--editorial {
     --case-text-narrow: 660px;
     --case-text-regular: 820px;
     --case-text-wide: 900px;
   }
-  .case-editorial-text.case-text--narrow { max-width: var(--case-text-narrow); }
-  .case-editorial-text.case-text--regular { max-width: var(--case-text-regular); }
-  .case-editorial-text.case-text--wide { max-width: var(--case-text-wide); }
+  .case-editorial-text.case-text--narrow,
+  .case-editorial-text.case-text--regular,
+  .case-editorial-text.case-text--wide { max-width: none; }
 }
 .case-editorial-text + :is(.case-editorial-visual, .case-layout--text-visual),
 :is(.case-editorial-visual, .case-layout--text-visual) + .case-editorial-text {
@@ -32,8 +39,8 @@
   align-items: start;
 }
 .case-layout--text-visual > .case-editorial-text { max-width: none; }
-.case-shell--editorial .case-editorial-text p + p { margin-top: 20px; }
-.case-shell--editorial .case-editorial-text li + li { margin-top: 10px; }
+.case-shell--editorial .case-editorial-text p + p { margin-top: 24px; }
+.case-shell--editorial .case-editorial-text li + li { margin-top: 12px; }
 .case-shell--editorial .case-editorial-text p.case-narrative-lead {
   color: var(--color-text);
   font-size: 21px;
@@ -54,6 +61,7 @@
 .case-shell--editorial .case-layout--statement > p:first-of-type {
   color: var(--color-text);
   font-size: clamp(24px, 2.3vw, 32px);
+  font-weight: var(--weight-strong);
   line-height: 1.45;
   letter-spacing: -.02em;
 }
@@ -61,6 +69,7 @@
 .case-shell--editorial .visual-caption {
   max-width: var(--case-reading-column);
   font-size: 14px;
+  font-weight: var(--weight-medium);
   line-height: 1.6;
   margin-top: 16px;
 }

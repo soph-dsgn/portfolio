@@ -14,7 +14,7 @@
   --case-v-body-color: var(--case-body-color, #46464d);
   font-family: var(--font-sans);
   font-size: var(--case-v-body);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-medium);
   line-height: var(--case-v-leading);
 }
 @media (max-width: 760px) {

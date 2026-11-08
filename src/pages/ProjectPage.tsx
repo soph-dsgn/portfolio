@@ -18,12 +18,10 @@ import { Icon } from '../components/Icon'
 import { CaseVisual } from '../components/CaseVisual'
 import type { CaseVisualSpec } from '../components/CaseVisual'
 import { diagramModeFor } from '../data/caseDiagramModes'
-import { CaseThanks } from '../components/CaseThanks'
 import { InlineArrows } from '../components/ArrowIcon'
 import { Typography } from '../components/Typography'
 import { MetaSeparatedText } from '../components/MetaSeparatedText'
 import { visualsAfter } from '../data/caseVisuals'
-import { VisualCaption } from '../components/VisualCaption'
 import { CaseMediaStage } from '../components/CaseMediaStage'
 import { CaseEditorialText } from '../components/CaseEditorialText'
 import { Footer } from '../components/Footer'
@@ -169,9 +167,8 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
           transition={{ duration: reduced ? motionTokens.reduced : motionTokens.adaptiveReveal, ease: motionTokens.ease }}>
           <a href={image.src} target="_blank" rel="noreferrer" aria-label={`Открыть изображение в полном размере: ${image.caption}`}>
             <CaseMediaStage
+              fill
               heightFill={heightFill}
-              multiScreen={(image.screenCount ?? 0) >= 3}
-              contained={image.width * 3 !== image.height * 4}
             ><SceneImage
               src={image.src}
               avifSrcSet={image.avifSrcSet}
@@ -184,7 +181,6 @@ function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | und
               decoding="async"
             /></CaseMediaStage>
           </a>
-          <VisualCaption>{withoutFinalPeriod(image.caption)}</VisualCaption>
         </motion.figure>
       ))}
     </div>
@@ -219,9 +215,6 @@ export function ProjectPage() {
     return <Suspense fallback={null}><ConceptCasePage project={project} /></Suspense>
 
   const groups = getCaseGroups(project)
-  const ordinaryCases = projects.filter(item => !item.videos)
-  const showThanks = ordinaryCases.indexOf(project) % 2 === 0
-
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
@@ -254,10 +247,9 @@ export function ProjectPage() {
             </div>
           ))}
         </div>
-        {showThanks ? <CaseThanks /> : null}
         <CaseNavigation projectId={project.id} />
       </main>
-      <Footer />
+      <Footer variant="case" />
     </div></Typography>
   )
 }

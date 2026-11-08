@@ -1,25 +1,26 @@
 import { savedPageScroll } from '../lib/pageScroll'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowIcon } from './ArrowIcon'
 import { useMotionSystem } from '../lib/motion'
+import { useLocale } from '../i18n/locale'
 
-const MotionLink = motion.create(Link)
-
-export function BackButton({ to = '/#work' }: { to?: string }) {
+export function BackButton({ to = '/' }: { to?: string }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { t } = useLocale()
   const homeKey = (location.state as { homeEntryKey?: string } | null)?.homeEntryKey
   const { navInteraction: press } = useMotionSystem()
-  return <MotionLink {...press} className="button back-button" to={to} aria-label="Назад"
-    onClick={event => {
-      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-      if (homeKey && savedPageScroll(homeKey) !== undefined) {
-        event.preventDefault()
+  return <motion.button {...press} type="button" className="button back-button" aria-label={t('Назад')}
+    onClick={() => {
+      const historyIndex = Number(window.history.state?.idx)
+      if ((homeKey && savedPageScroll(homeKey) !== undefined) || (Number.isFinite(historyIndex) && historyIndex > 0)) {
         navigate(-1)
+      } else {
+        navigate(to, { replace: true })
       }
     }}
     whileHover={press.whileHover ? { ...press.whileHover, backgroundColor: 'var(--color-surface)' } : undefined}>
-    <ArrowIcon direction="left" decorative /><span className="back-button-label">Назад</span>
-  </MotionLink>
+    <ArrowIcon direction="left" decorative />
+  </motion.button>
 }

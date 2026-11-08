@@ -146,10 +146,10 @@ export function getCaseGroups(project: Project): CaseGroup[] {
 }
 
 export function getCaseNavigationSections(project: Project) {
-  if (project.videos) return project.videos.map(video => ({
-    id: video.id, label: video.shortTitle,
-  }))
-  return getCaseGroups(project)
-    .filter(group => ['context', 'concept', 'final'].includes(group.id))
-    .map(group => ({ id: group.id, label: group.id === 'concept' ? 'UX/UI-решение' : group.title }))
+  const sections = project.videos
+    ? project.videos.map(video => ({ id: video.id, label: video.shortTitle }))
+    : getCaseGroups(project).map(group => ({ id: group.id, label: group.title }))
+  return sections
+    .filter(section => section.id !== 'system')
+    .slice(0, 4)
 }

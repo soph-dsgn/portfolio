@@ -1,11 +1,11 @@
 import { captureHomeScroll } from '../lib/pageScroll'
-import { useActiveConcept } from '../lib/useActiveConcept'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useId, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { projects, profile } from '../data/portfolio'
+import { profile } from '../data/portfolio'
+import { caseProjects } from '../data/caseProjects'
 import { bindShortWords } from '../lib/typography'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
@@ -14,6 +14,7 @@ import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
 import { useHomeActiveSection } from '../lib/homeSectionNavigation'
+import { getCaseNavigationSections } from '../data/caseContent'
 
 const MotionLink = motion.create(Link)
 
@@ -40,25 +41,17 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const headerRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isCase = pathname.startsWith('/projects/')
-  const isConcept = projects.some(project => project.videos && pathname === `/projects/${project.id}`)
   const sections = useMemo(() => {
-    const project = projects.find(project => pathname === `/projects/${project.id}`)
-    if (!project) return []
-    if (project.videos) return project.videos.map(video => ({ id: video.id, label: video.shortTitle }))
-    return [
-      { id: 'context', label: 'Контекст' },
-      { id: 'concept', label: 'UX/UI-решение' },
-      { id: 'final', label: 'Результаты и выводы' },
-    ]
+    const project = caseProjects.find(project => pathname === `/projects/${project.id}`)
+    return project ? getCaseNavigationSections(project) : []
   }, [pathname])
-  const activeConcept = useActiveConcept(isConcept ? sections.map(section => section.id) : [])
-  const activeSection = isConcept ? activeConcept : pathname === '/' ? activeHomeSection : activePageSection
+  const activeSection = pathname === '/' ? activeHomeSection : activePageSection
   const isActiveLink = (href: string) => href.includes('#')
     ? pathname === '/' && activeSection === href.split('#')[1]
     : pathname === href
 
   useEffect(() => {
-    if (isConcept || pathname === '/') return
+    if (pathname === '/') return
     const ids = isCase
       ? sections.map(({ id }) => id)
       : homeLinks.filter(({ href }) => href.includes('#')).map(({ href }) => href.split('#')[1])
@@ -77,15 +70,18 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
       setActiveSection(next)
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    const contentObserver = new ResizeObserver(schedule)
+    contentObserver.observe(document.body)
     update()
     window.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('resize', schedule)
     return () => {
       window.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
+      contentObserver.disconnect()
       cancelAnimationFrame(frame)
     }
-  }, [pathname, isCase, isConcept, sections])
+  }, [pathname, isCase, sections])
 
   useEffect(() => {
     if (!open) return
@@ -148,6 +144,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     requestAnimationFrame(() => {
       const section = document.getElementById(id)
       if (!section) return
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}#${id}`)
       section.tabIndex = -1
       section.focus({ preventScroll: true })
       navigateToSection(section, reducedMotion ? 'instant' : 'smooth')
@@ -164,15 +161,22 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
     visible: { opacity: 1, transform: 'translateY(0px)', transition: { duration: reducedMotion ? motionTokens.reduced : motionTokens.menu, ease: motionTokens.ease } },
   }
   return (
-    <motion.header layoutRoot initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className={`site-header mobile-header site-header--portfolio-nav${pathname === '/' ? ' site-header--home' : isCase ? ` site-header--case${isConcept ? ' site-header--concept' : ''}` : ''}`} ref={headerRef}>
-      <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}`}>
+    <motion.header layoutRoot initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className={`site-header mobile-header site-header--portfolio-nav${pathname === '/' ? ' site-header--home' : isCase ? ' site-header--case' : ''}`} ref={headerRef}>
+      <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}${isCase ? ' desktop-header--case' : ''}`}>
+        {showBack ? <div className="desktop-header-back"><BackButton to={backTo} /></div> : null}
         <Link className="home-desktop-brand" to="/" aria-label="На главную">
           <img src={publicAsset('figma/home/logo.svg')} alt="" width="42" height="38" />
         </Link>
-        <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll className="header-navigation" aria-label="Главная навигация">
-          {homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
-            onClick={event => navigateHomeAnchor(event, link.href)}
-            aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel><img className="home-nav-state-icon" src={publicAsset(`figma/home/${isActiveLink(link.href) ? 'nav-minus' : 'nav-add'}.svg`)} alt="" width="24" height="24" /></MotionLink>)}
+        <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll className={`header-navigation${isCase ? ' header-navigation--case' : ''}`} aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
+          {isCase ? sections.map(section => <motion.a key={section.id} {...navInteraction} href={`#${section.id}`}
+            aria-current={activeSection === section.id ? 'location' : undefined}
+            onClick={event => {
+              if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+              event.preventDefault(); closeAtSection(section.id)
+            }}><NavigationLabel active={activeSection === section.id}>{bindShortWords(section.label)}</NavigationLabel><img className="home-nav-state-icon" src={publicAsset(`figma/home/${activeSection === section.id ? 'nav-minus' : 'nav-add'}.svg`)} alt="" width="24" height="24" /></motion.a>)
+            : homeLinks.map(link => <MotionLink key={link.href} {...navInteraction} to={link.href}
+              onClick={event => navigateHomeAnchor(event, link.href)}
+              aria-current={isActiveLink(link.href) ? (link.href.includes('#') ? 'location' : 'page') : undefined}><NavigationLabel active={isActiveLink(link.href)}>{bindShortWords(link.label)}</NavigationLabel><img className="home-nav-state-icon" src={publicAsset(`figma/home/${isActiveLink(link.href) ? 'nav-minus' : 'nav-add'}.svg`)} alt="" width="24" height="24" /></MotionLink>)}
         </motion.nav></LayoutGroup>
       </div>
       <AnimatePresence>{open && <motion.div className="mobile-menu-backdrop" data-open="true" aria-hidden="true"
@@ -184,7 +188,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
           aria-label="На главную"
           onClick={() => setOpenFor(null)}
         >
-          <img src={publicAsset('icons/favicon/Logo 64 — Light.svg')} alt="" width="32" height="32" />
+          <img src={publicAsset('figma/home/logo.svg')} alt="" width="38" height="34" />
           <span>{profile.name}</span>
         </Link>}
         <motion.button {...press}
@@ -229,6 +233,7 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
                 style={{ ...navInteraction.style, '--menu-order': index + 4 } as CSSProperties}
               >
                 <NavigationLabel active={activeSection === section.id} className="mobile-menu-link-label">{bindShortWords(section.label)}</NavigationLabel>
+                <img className="home-nav-state-icon" src={publicAsset(`figma/home/${activeSection === section.id ? 'nav-minus' : 'nav-add'}.svg`)} alt="" width="24" height="24" />
               </motion.a>
             ))}
           </>

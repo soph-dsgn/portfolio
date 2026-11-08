@@ -140,7 +140,7 @@ export type CaseVideo = {
   title: string
   shortTitle: string
   src: string
-  poster: string
+  poster?: string
   width: number
   height: number
 }
@@ -172,16 +172,16 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'Web · Mobile',
     document: [],
-    cover: '/cases/concept/Обложка.png?v=6bad2b766e49',
-    coverDimensions: { width: 4584, height: 3438 },
+    cover: '/cases/concept/cover.png?v=d8a462700318',
+    coverDimensions: { width: 4441, height: 3231 },
     videos: [
-      { id: 'crypto-wallet', title: 'Криптокошелёк', shortTitle: 'Криптокошелёк', src: '/optimized/concepts/videos/3.mp4', poster: '/optimized/concepts/poster-3.webp?v=af7125f89aa3', width: 1600, height: 1200 },
-      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/optimized/concepts/videos/7.mp4', poster: '/optimized/concepts/poster-7.webp?v=b2c2ae29097c', width: 1600, height: 1200 },
-      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/optimized/concepts/videos/8.mp4', poster: '/optimized/concepts/poster-8.webp?v=4211dcc657a6', width: 1600, height: 1200 },
-      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/optimized/concepts/videos/2.mp4', poster: '/optimized/concepts/poster-2.webp', width: 1600, height: 1200 },
-      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/optimized/concepts/videos/1.mp4', poster: '/optimized/concepts/poster-1.webp', width: 1600, height: 1200 },
-      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/optimized/concepts/videos/4.mp4', poster: '/optimized/concepts/poster-4.webp', width: 1600, height: 1200 },
-      { id: 'crypto-portfolio', title: 'Криптопортфель', shortTitle: 'Криптопортфель', src: '/optimized/concepts/videos/5.mp4', poster: '/optimized/concepts/poster-5.webp?v=c6bc07e2437a', width: 1600, height: 1200 },
+      { id: 'uglycash', title: 'UglyCash', shortTitle: 'UglyCash', src: '/cases/concept/1.mp4?v=846c2ee788dc', poster: '/cases/concept/image_1.png?v=da84ca416341', width: 2902, height: 2176 },
+      { id: 'sales-analytics', title: 'Панель аналитики продаж', shortTitle: 'Аналитика', src: '/cases/concept/2.mp4?v=5df23a1de127', width: 2902, height: 2176 },
+      { id: 'train-tickets', title: 'РЖД', shortTitle: 'РЖД', src: '/cases/concept/3.mp4?v=9ecbd1e26363', poster: '/cases/concept/image_3.png?v=ca8084e8e618', width: 2902, height: 2176 },
+      { id: 'visual-collection', title: 'Коллекция изображений', shortTitle: 'Коллекция', src: '/cases/concept/4.mp4?v=0e58d82bad5d', poster: '/cases/concept/image_4.png?v=4ab6c217bd7a', width: 2902, height: 2176 },
+      { id: 'calendar', title: 'Календарь', shortTitle: 'Календарь', src: '/cases/concept/5.mp4?v=ac25441510f7', poster: '/cases/concept/image_5.png?v=ca1c61f515f3', width: 2902, height: 2176 },
+      { id: 'energy', title: 'Приложение умного дома', shortTitle: 'Умный дом', src: '/cases/concept/6.mp4?v=6517d7d3aea5', poster: '/cases/concept/image_6.png?v=55d90c967a0d', width: 2902, height: 2176 },
+      { id: 'messenger', title: 'Мессенджер', shortTitle: 'Мессенджер', src: '/cases/concept/7.mp4?v=50f9e7305690', poster: '/cases/concept/image_7.png?v=5d3a04858311', width: 2902, height: 2176 },
     ],
   },
   {
@@ -251,12 +251,12 @@ export const projects: Project[] = [
   },
 ].map((project) => ({
   ...project,
-  cover: project.cover ? publicAsset(`/optimized/home/${project.id === 'concepts' ? 'concept' : project.id}-1920.webp`) : undefined,
-  coverSrcSet: project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id === 'concepts' ? 'concept' : project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
+  cover: project.id === 'concepts' ? publicAsset(project.cover) : project.cover ? publicAsset(`/optimized/home/${project.id}-1920.webp`) : undefined,
+  coverSrcSet: project.id === 'concepts' ? undefined : project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
   videos: project.videos?.map((video) => ({
     ...video,
     src: publicAsset(video.src),
-    poster: publicAsset(video.poster),
+    poster: video.poster ? publicAsset(video.poster) : undefined,
   })),
 }))
 

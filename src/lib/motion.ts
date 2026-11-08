@@ -13,7 +13,7 @@ export const motionTokens = {
   micro: .16, hover: .22, reduced: .1, loaderExit: .18,
   caseNavigation: { arrowDistance: 4, hoverOpacity: .75, pressOpacity: .6 },
   evidence: { duration: .65, stagger: .06 },
-  caption: .25, captionDelay: .18, artwork: .5, scroll: .65,
+  caption: .25, captionDelay: .18, artwork: .5, scroll: .48,
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1,
   maxRevealDelay: .24,
   signature: {
