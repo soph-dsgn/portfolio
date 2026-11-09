@@ -12,9 +12,9 @@ type SourceImage = {
 const partnerPortalMediaRevision = '20261109a'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
-  const stem = file.replace(/\.[^.]+$/, '')
+  const stem = file.replace(/\.[^.]+$/, '').normalize('NFD')
   const srcSet = [960, 1600]
-    .map(size => `${encodeURI(publicAsset(`optimized/cases/partner-portal/${stem}-${size}.jpg`))}?v=${partnerPortalMediaRevision} ${size}w`)
+    .map(size => `${publicAsset(`optimized/cases/partner-portal/${stem}-${size}.jpg`)}?v=${partnerPortalMediaRevision} ${size}w`)
     .join(', ')
   return {
     src: `${publicAsset(`cases/partner-portal/${file}`)}?v=${partnerPortalMediaRevision}`,

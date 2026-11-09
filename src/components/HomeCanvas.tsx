@@ -6,7 +6,6 @@ import { useLocation, useNavigationType } from 'react-router-dom'
 import { activateHomeScroll, captureHomeScroll, deactivateHomeScroll, savedPageScroll } from '../lib/pageScroll'
 import { HomeContact, HomeHero, HomeWork } from './HomePanels'
 import { canvasPanelOffset, cancelSectionNavigation, navigateToSection, scrollToCanvasTarget } from '../lib/canvasNavigation'
-import { useLocale } from '../i18n/locale'
 import { ProgressCat } from './ProgressCat'
 import { homeSectionIds, setHomeActiveSection, type HomeSectionId } from '../lib/homeSectionNavigation'
 import { waitAtMost, waitForPrimaryFont, waitForReactLayout } from '../lib/criticalReadiness'
@@ -29,7 +28,6 @@ function nearestPanel(panels: CanvasPanel[], offset: number) {
 
 /** Scroll remains native: no wheel interception, artificial inertia or snapping. */
 export function HomeCanvas() {
-  const { locale } = useLocale()
   const root = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)
   const [horizontal, setHorizontal] = useState(() => window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference)').matches)
@@ -327,7 +325,7 @@ export function HomeCanvas() {
       window.removeEventListener('scroll', sync)
       document.removeEventListener('initial-ui-ready', sync)
     }
-  }, [horizontal, location.hash, location.key, navigationType, distance, offset, start, locale, updateActivePanel, location.state?.sectionNavigation, location.state?.anchorOriginPath, reduced])
+  }, [horizontal, location.hash, location.key, navigationType, distance, offset, start, updateActivePanel, location.state?.sectionNavigation, location.state?.anchorOriginPath, reduced])
 
   // This effect runs against React's committed scroll range. Bootstrap has one
   // owner: intent -> document/layout ready -> range commit -> native position ->

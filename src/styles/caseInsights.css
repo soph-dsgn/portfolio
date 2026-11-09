@@ -15,13 +15,13 @@
   display: grid;
   gap: var(--space-5);
   padding: var(--space-6);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
   background: var(--color-surface);
 }
 .case-insight-row h4 { margin: 0; font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading); }
 .case-insight-pair {
   display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--space-4);
-  border-radius: var(--radius-content-card); overflow: clip; background: var(--case-v-surface);
+  border-radius: var(--radius-card); overflow: clip; background: var(--case-v-surface);
 }
 .case-insight-row .case-insight-pair { margin-top: 0; background: transparent; border-radius: 0; overflow: visible; }
 .case-insight-row .case-insight-card { padding: 0; }
@@ -32,14 +32,14 @@
 .case-insight-card dd { margin: 0 0 0 44px; font-size: var(--case-v-body); line-height: var(--case-v-leading); color: var(--case-v-body-color); overflow-wrap: break-word; }
 .case-insight-benefit { color: var(--muted-strong); font-size: var(--case-v-body); line-height: var(--case-v-leading); }
 .case-insight-card dd.case-insight-benefit { margin-top: var(--space-4); font-size: var(--case-v-body); color: var(--muted-strong); }
-.case-insight-notes { border-radius: var(--radius-content-card); overflow: clip; background: var(--case-v-surface); }
+.case-insight-notes { border-radius: var(--radius-card); overflow: clip; background: var(--case-v-surface); }
 .case-insight-notes > div { padding: var(--case-v-padding); }
 
 .case-insight-number { flex: 0 0 28px; color: var(--muted-strong); font-size: var(--case-v-note); font-weight: var(--weight-medium); font-variant-numeric: tabular-nums; }
 .case-insight-notes dd { margin: 0 0 0 44px; font-size: var(--case-v-body); line-height: var(--case-v-leading); color: var(--case-v-body-color); }
 .case-insight-notes dd.case-insight-benefit { margin-top: var(--case-v-copy-gap); color: var(--muted-strong); font-size: var(--case-v-body); }
 .case-insight-notes--risks, .case-insight-notes--states { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--space-4); }
-.case-editorial-ledger { padding: var(--case-v-padding); background: var(--case-v-surface); border-radius: var(--radius-content-card); display: grid; gap: var(--case-v-gap); }
+.case-editorial-ledger { padding: var(--case-v-padding); background: var(--case-v-surface); border-radius: var(--radius-card); display: grid; gap: var(--case-v-gap); }
 .case-editorial-ledger > div { display: grid; grid-template-columns: 1fr 1.2fr 1fr; align-items: start; gap: var(--space-6); padding: 0; }
 
 .case-editorial-ledger dt { display: flex; gap: var(--space-3); font-size: var(--case-v-card-title); font-weight: var(--weight-strong); line-height: var(--case-v-heading-leading); }
@@ -48,12 +48,12 @@
 .case-editorial-ledger .case-tone--solution dt { color: var(--case-positive); }
 .case-editorial-ledger--impact > div { grid-template-columns: 1fr 1.2fr 1fr; }
 .case-insight-step-number { flex-shrink: 0; color: var(--muted-strong); font-size: var(--case-v-note); font-weight: var(--weight-medium); font-variant-numeric: tabular-nums; }
-.case-editorial-steps { background: var(--case-v-surface); border-radius: var(--radius-content-card); display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: var(--space-6); list-style: none; padding: var(--case-v-padding); }
+.case-editorial-steps { background: var(--case-v-surface); border-radius: var(--radius-card); display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: var(--space-6); list-style: none; padding: var(--case-v-padding); }
 .case-editorial-steps li { min-width: 0; }
 .case-editorial-steps .case-insight-step-number { display: block; margin-bottom: var(--space-3); }
 .case-editorial-steps strong { font-size: var(--case-v-card-title); font-weight: var(--weight-strong); }
 .case-editorial-steps p, .case-editorial-steps small { margin: var(--case-v-copy-gap) 0 0; font-size: var(--case-v-body); line-height: var(--case-v-leading); color: var(--muted-strong); }
-.case-change-chart { padding: var(--case-v-padding); background: var(--case-v-surface); border-radius: var(--radius-content-card); }
+.case-change-chart { padding: var(--case-v-padding); background: var(--case-v-surface); border-radius: var(--radius-card); }
 .case-change-chart-group + .case-change-chart-group { margin-top: var(--space-8); padding-top: var(--space-8); }
 .case-change-chart-label { margin: 0; font-size: var(--case-v-card-title); color: var(--color-text); font-weight: var(--weight-strong); }
 .case-change-chart-rows { display: grid; gap: var(--space-8); list-style: none; margin: var(--case-v-gap) 0 0; padding: 0; }

@@ -1,87 +1,26 @@
 :root {
   color-scheme: light;
-  --portfolio-page: #f4f4f6;
-  --portfolio-surface: #fff;
-  --portfolio-text: #171717;
-  --portfolio-muted: #8d8d98;
-  --muted-strong: #6f6f78;
-  --portfolio-accent: #f96aea;
+
+  /* One colour vocabulary for every route and visual primitive. */
+  --surface-page: #f4f4f6;
+  --surface-primary: #fff;
+  --surface-secondary: #eeeef1;
+  --surface-tertiary: #f1f1f3;
+  --text-primary: #171717;
+  --text-secondary: #6f6f78;
+  --text-tertiary: #85858e;
+  --text-disabled: #aaaab2;
+  --border-subtle: #dedee3;
+  --accent-primary: #f96aea;
+
+  /* Page geometry. */
   --page-max-width: 1200px;
   --page-gutter: clamp(16px, 3.35vw, 48px);
-  --section-gap: clamp(56px, 7vw, 96px);
-  --card-radius: 40px;
-  --card-padding: clamp(24px, 3.35vw, 48px);
-  --portfolio-card-radius: var(--card-radius);
-  --portfolio-control-radius: 16px;
-  --portfolio-card-padding: var(--card-padding);
-  --portfolio-page-gutter: var(--page-gutter);
-  --portfolio-layout-gap: clamp(16px, 2.25vw, 32px);
-  --portfolio-section-gap: var(--section-gap);
-  --color-page: var(--portfolio-page);
-  --color-white: #fff;
+  --page-top: 24px;
+  --page-bottom: var(--space-16);
   --header-height: max(104px, 13.3dvh);
-  --color-surface: #eeeef1;
-  --color-tile: #f1f1f3;
-  --color-dark: var(--portfolio-text);
-  --color-on-dark: #f7f7f5;
-  --color-muted-on-dark: #b7b7b2;
-  --color-text: var(--portfolio-text);
-  --color-muted: var(--portfolio-muted);
-  --color-meta-separator: var(--muted-strong);
-  --color-avatar: #d8d8d6;
-  --color-border: #dedee3;
-  --color-action: var(--portfolio-text);
-  --color-action-hover: #3c3c3c;
-  --color-action-pressed: #505050;
-  --color-social-telegram: #229ed9;
-  --color-social-linkedin: #0a66c2;
-  --color-social-email: #505050;
-  --color-accent-soft: #e4e4e4;
-  --color-accent-soft-hover: #dddddd;
-  --color-trophy-sparkle: #9a9a9a;
-  --font-sans: 'Onest', Arial, sans-serif;
-  --type-body: 18px;
-  --leading-body: 1.5;
-  --type-caption: 16px;
-  --type-note: 13px;
-  --type-button: 14px;
-  --type-section: 52px;
-  --type-hero-secondary: .82em;
-  --type-card-title: 18px;
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-strong: 600;
-  --radius-surface-outer: var(--portfolio-card-radius);
-  --radius-surface-inner: calc(var(--radius-surface-outer) - var(--surface-inset));
-  --radius-content-card: 24px;
-  --radius-media: 32px;
-  --radius-scene: var(--portfolio-card-radius);
-  --scene-light: var(--color-white);
-  --scene-muted: var(--color-surface);
-  --canvas-scene-width: 61vw;
-  --canvas-gutter: 5vw;
-  --canvas-scene-height: 74dvh;
-  --radius-logo: 18px;
-  --section-padding: 48px;
-  --case-content-width: 1120px;
-  --case-reading-width: 800px;
-  --case-group-gap: 32px;
-  --diagram-stroke: 1.6;
-  --diagram-port-gap: 8;
-  --diagram-arrow-size: 7;
-  --surface-inset: 8px;
-  --icon-size: 18px;
-  --action-height: 44px;
-  --action-radius: var(--portfolio-control-radius);
-  --action-padding-y: 10px;
-  --action-padding-x: 14px;
-  --radius-navigation: 24px;
-  --radius-inner: 4px;
-  --radius-small: 8px;
-  --radius-control: var(--portfolio-control-radius);
-  --radius-group: var(--portfolio-control-radius);
-  --radius-card: 16px;
-  --radius-shell: 24px;
+
+  /* 4px spacing scale. Larger layout distances no longer live as literals. */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -89,9 +28,73 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
-  --frame-inset: 6px;
-  --page-top: 24px;
-  --page-bottom: 64px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --space-control-x: var(--space-4);
+  --space-control-y: var(--space-3);
+  --space-card: clamp(var(--space-6), 3.35vw, var(--space-12));
+  --space-text: var(--space-6);
+  --space-text-visual: clamp(var(--space-8), 4vw, var(--space-12));
+  --space-block: clamp(var(--space-12), 5vw, var(--space-16));
+  --space-section: clamp(var(--space-16), 7vw, var(--space-24));
+  --space-layout: clamp(var(--space-4), 2.25vw, var(--space-8));
+
+  /* Six radius roles. Legacy names below only alias these roles. */
+  --radius-page: 40px;
+  --radius-large: 32px;
+  --radius-media: 28px;
+  --radius-card: 24px;
+  --radius-control: 16px;
+  --radius-small: 8px;
+
+  /* Semantic type roles: size / weight / leading / tracking travel together. */
+  --font-sans: 'Onest', Arial, sans-serif;
+  --type-display-size: clamp(48px, 5vw, 64px);
+  --type-display-weight: 600;
+  --type-display-leading: 1.04;
+  --type-display-tracking: -.045em;
+  --type-h1-size: clamp(40px, 4vw, 52px);
+  --type-h1-weight: 600;
+  --type-h1-leading: 1.08;
+  --type-h1-tracking: -.04em;
+  --type-h2-size: clamp(34px, 3.5vw, 48px);
+  --type-h2-weight: 600;
+  --type-h2-leading: 1.12;
+  --type-h2-tracking: -.035em;
+  --type-h3-size: clamp(24px, 2vw, 30px);
+  --type-h3-weight: 600;
+  --type-h3-leading: 1.24;
+  --type-h3-tracking: -.02em;
+  --type-h4-size: clamp(20px, 1.65vw, 24px);
+  --type-h4-weight: 600;
+  --type-h4-leading: 1.3;
+  --type-h4-tracking: -.015em;
+  --type-body-large-size: clamp(20px, 1.75vw, 24px);
+  --type-body-large-weight: 500;
+  --type-body-large-leading: 1.48;
+  --type-body-size: 18px;
+  --type-body-weight: 500;
+  --type-body-leading: 1.64;
+  --type-secondary-size: 16px;
+  --type-secondary-weight: 500;
+  --type-secondary-leading: 1.55;
+  --type-caption-size: 13px;
+  --type-caption-weight: 500;
+  --type-caption-leading: 1.5;
+
+  /* Three authored reading measures only. */
+  --reading-narrow: 42rem;
+  --reading-regular: 50rem;
+  --reading-wide: 62rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-strong: 600;
   --duration-feedback: 180ms;
   --duration-content: 260ms;
   --duration-image: 280ms;
@@ -101,23 +104,111 @@
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* Compatibility aliases carry no independent visual decisions. */
+  --portfolio-page: var(--surface-page);
+  --portfolio-surface: var(--surface-primary);
+  --portfolio-text: var(--text-primary);
+  --portfolio-muted: var(--text-tertiary);
+  --muted-strong: var(--text-secondary);
+  --portfolio-accent: var(--accent-primary);
+  --color-page: var(--surface-page);
+  --color-white: var(--surface-primary);
+  --color-surface: var(--surface-secondary);
+  --color-tile: var(--surface-tertiary);
+  --color-dark: var(--text-primary);
+  --color-on-dark: #f7f7f5;
+  --color-muted-on-dark: #b7b7b2;
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-tertiary);
+  --color-meta-separator: var(--text-secondary);
+  --color-border: var(--border-subtle);
+  --color-action: var(--text-primary);
+  --color-action-hover: #3c3c3c;
+  --color-action-pressed: #505050;
+  --color-avatar: #d8d8d6;
+  --color-accent-soft: #e4e4e4;
+  --color-accent-soft-hover: #ddd;
+  --color-trophy-sparkle: #9a9a9a;
+  --color-social-telegram: #229ed9;
+  --color-social-linkedin: #0a66c2;
+  --color-social-email: #505050;
+  --card-padding: var(--space-card);
+  --section-padding: var(--space-card);
+  --portfolio-card-radius: var(--radius-page);
+  --portfolio-control-radius: var(--radius-control);
+  --portfolio-card-padding: var(--space-card);
+  --portfolio-page-gutter: var(--page-gutter);
+  --portfolio-layout-gap: var(--space-layout);
+  --portfolio-section-gap: var(--space-section);
+  --radius-surface-outer: var(--radius-page);
+  --radius-surface-inner: calc(var(--radius-page) - var(--surface-inset));
+  --radius-navigation: var(--radius-card);
+  --radius-inner: var(--radius-small);
+  --radius-logo: var(--radius-control);
+  --scene-light: var(--surface-primary);
+  --scene-muted: var(--surface-secondary);
+  --surface-inset: var(--space-2);
+  --case-content-width: 1120px;
+  --case-group-gap: var(--space-block);
+  --type-body: var(--type-body-size);
+  --leading-body: var(--type-body-leading);
+  --type-caption: var(--type-secondary-size);
+  --type-note: var(--type-caption-size);
+  --type-button: 14px;
+  --type-section: var(--type-h1-size);
+  --type-hero-secondary: .82em;
+  --type-card-title: var(--type-body-size);
+  --canvas-scene-width: 61vw;
+  --canvas-gutter: 5vw;
+  --canvas-scene-height: 74dvh;
+  --diagram-stroke: 1.6;
+  --diagram-port-gap: 8;
+  --diagram-arrow-size: 7;
+  --frame-inset: 6px;
+  --icon-size: 18px;
+  --action-height: 44px;
+  --action-radius: var(--radius-control);
+  --action-padding-y: 10px;
+  --action-padding-x: 14px;
 }
 
-@media (max-width: 1100px) {
-  :root { --header-height: 68px; --card-radius: 32px; --radius-scene: 32px; }
+@media (max-width: 900px) {
+  :root {
+    --header-height: 68px;
+    --radius-page: 32px;
+    --radius-large: 28px;
+    --space-section: clamp(var(--space-14), 8vw, var(--space-20));
+  }
 }
+
 @media (max-width: 760px) {
   :root {
-    --radius-surface-outer: 32px;
-    --card-radius: 28px;
-    --card-padding: 24px;
     --page-gutter: 12px;
-    --portfolio-layout-gap: 12px;
-    --radius-content-card: 20px;
-    --radius-media: 24px;
-    --type-section: 34px;
-    --type-body: 16px;
-    --section-padding: 24px;
-    --section-gap: 40px;
+    --radius-page: 28px;
+    --radius-large: 24px;
+    --radius-media: 22px;
+    --radius-card: 20px;
+    --space-card: var(--space-6);
+    --space-layout: var(--space-3);
+    --space-block: var(--space-10);
+    --space-section: var(--space-10);
+    --type-h1-size: clamp(32px, 8.8vw, 34px);
+    --type-h2-size: clamp(28px, 7.6vw, 30px);
+    --type-h3-size: clamp(22px, 6vw, 24px);
+    --type-h4-size: 20px;
+    --type-body-large-size: 20px;
+    --type-body-size: 16px;
+    --type-body-leading: 1.68;
+  }
+}
+
+@media (max-width: 374px) {
+  :root {
+    --page-gutter: 10px;
+    --space-card: var(--space-5);
+    --radius-page: 24px;
+    --type-h1-size: 30px;
+    --type-h2-size: 27px;
   }
 }

@@ -1,5 +1,4 @@
 import { MediaEntrance } from '../components/MediaEntrance'
-import { CaseNavigation } from '../components/CaseNavigation'
 import { CaseTitle, CaseDeck } from '../components/CaseTitle'
 import { useActiveConcept } from '../lib/useActiveConcept'
 import { usePortalEntry } from '../lib/usePortalEntry'
@@ -246,7 +245,6 @@ export function ConceptCasePage({ project }: Props) {
             )
           })}
         </div>
-        <CaseNavigation projectId={project.id} />
       </main>
       <Footer variant="case" />
     </div></Typography>

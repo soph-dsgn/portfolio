@@ -8,7 +8,6 @@ import { InlineArrows } from './ArrowIcon'
 import { withoutFinalPeriod } from '../data/caseContent'
 import { diagramHubs, stateCenters, type DiagramMode } from '../data/caseDiagramModes'
 import { DiagramWires, type DiagramEdge } from './DiagramWires'
-import { MobileCaseDiagram } from './MobileCaseDiagram'
 import { bindShortWords } from '../lib/typography'
 import { DiagramSequence, DiagramSequenceNode } from './DiagramSequence'
 
@@ -107,16 +106,6 @@ function Branch({ visual }: { visual: CaseVisualSpec }) {
       <Explanation items={lead} />
     </>
   }
-  if (visual.id === 'atlyx-flight-flow') {
-    const [search, found, missing, save] = visual.items
-    return <>
-      <div className="case-diagram-decision"><DiagramNode item={search} index={0} tone="primary" /></div>
-      <div className="case-diagram-branches"><div><span className="case-diagram-branch-label">Да</span><DiagramNode item={found} index={1} /></div>
-        <div><span className="case-diagram-branch-label">Нет</span><DiagramNode item={missing} index={2} /></div></div>
-      <div className="case-diagram-branch-end"><DiagramNode item={save} index={3} tone="primary" /></div>
-      <Explanation items={visual.items} />
-    </>
-  }
   const [opening, ...outcomes] = visual.items
   return <>
     <div className="case-diagram-decision"><DiagramNode item={opening} index={0} tone="primary" /></div>
@@ -136,7 +125,6 @@ function Architecture({ visual }: { visual: CaseVisualSpec }) {
       <DiagramSequenceNode id="hub" className="case-diagram-hub"><strong>{bindShortWords(center)}</strong>{centerItem?.detail && <small>{centerItem.detail && bindShortWords(withoutFinalPeriod(centerItem.detail))}</small>}</DiagramSequenceNode>
       <div className="case-diagram-hub-nodes">{branches.map((item, index) => <DiagramNode key={item.label} item={item} index={index} />)}</div>
     </div>
-    {visual.id === 'astoria-cms' && <div className="case-diagram-architecture-end"><DiagramSequenceNode id="end" as="strong">Витрина</DiagramSequenceNode></div>}
     <Explanation items={visual.items} />
   </>
 }
@@ -248,18 +236,12 @@ function diagramEdges(visual: CaseVisualSpec, mode: DiagramMode): DiagramEdge[] 
       { from: node(0), to: node(1) }, { from: node(1), to: node(2) },
       { from: node(2), to: node(3) }, { from: node(3), to: 'yes' }, { from: node(3), to: 'no' },
     ]
-    if (visual.id === 'atlyx-flight-flow') return [
-      { from: node(0), to: node(1) }, { from: node(0), to: node(2) },
-      { from: node(1), to: node(3) }, { from: node(2), to: node(3) },
-    ]
     return visual.items.slice(1).map((_, index) => ({ from: node(0), to: node(index + 1) }))
   }
   if (mode === 'architecture') {
     const branchCount = visual.items.filter((item) => item.label !== diagramHubs[visual.id]).length
     const links = spokes('hub', branchCount)
-    return visual.id === 'astoria-cms'
-      ? links.concat(Array.from({ length: branchCount }, (_, index) => ({ from: node(index), to: 'end' })))
-      : links
+    return links
   }
   if (mode === 'convergence') return visual.items.map((_, index) => ({ from: node(index), to: 'hub' }))
   if (mode === 'status-branch') return [{ from: node(0), to: node(1) }, { from: node(0), to: node(2) }]
@@ -285,14 +267,13 @@ export function CaseDiagram({ visual, mode }: { visual: CaseVisualSpec; mode: Di
     initial={reduced ? false : { opacity: 0, transform: `translateY(${motionTokens.diagram.revealDistance}px)` }}
     animate={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0px)' : `translateY(${motionTokens.diagram.revealDistance}px)` }}
     transition={{ duration: reduced ? 0 : motionTokens.diagram.revealDuration, ease: motionTokens.ease }}>
-    {adaptive && <MobileCaseDiagram visual={visual} mode={mode} />}
     {mode === 'service-map' && <ServiceMap items={visual.items} />}
     {mode === 'filters' && <FilterStates items={visual.items} />}
     {mode === 'route' && <Route visual={visual} />}
     {mode === 'branch' && <Branch visual={visual} />}
     {mode === 'architecture' && <Architecture visual={visual} />}
     {mode === 'convergence' && <Convergence items={visual.items}
-      center={{ 'portal-support': 'Поддержка', 'astoria-intents': 'Подходящий тур', 'astoria-problem': 'Путь выбора и оформления', 'astoria-entry': 'Выдача туров' }[visual.id] ?? 'Выдача туров'}
+      center="Поддержка"
       />}
     {mode === 'status-branch' && <StatusBranch items={visual.items} />}
     {mode === 'status-pairs' && <StatusPairs items={visual.items} />}

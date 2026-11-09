@@ -17,15 +17,15 @@ export function SceneSurface({ single = false, children, className = '', ref }: 
             {segments.map(([x, y]) => (
               <rect key={`${x}-${y}`} x={`${x}%`} y={`${y}%`}
                 width={single ? '100%' : '50%'} height={single ? '100%' : '50%'}
-                style={{ rx: 'var(--radius-scene)', ry: 'var(--radius-scene)' }} />
+                style={{ rx: 'var(--radius-page)', ry: 'var(--radius-page)' }} />
             ))}
             {!single && (
               /* Join the inner corners in the mask, leaving only the outer edge notches. */
               <rect className="scene-surface-center" x="50%" y="50%"
                 style={{
-                  width: 'calc(var(--radius-scene) + var(--radius-scene))',
-                  height: 'calc(var(--radius-scene) + var(--radius-scene))',
-                  transform: 'translate(calc(0px - var(--radius-scene)), calc(0px - var(--radius-scene)))',
+                  width: 'calc(var(--radius-page) + var(--radius-page))',
+                  height: 'calc(var(--radius-page) + var(--radius-page))',
+                  transform: 'translate(calc(0px - var(--radius-page)), calc(0px - var(--radius-page)))',
                 }} />
             )}
             {!single && (

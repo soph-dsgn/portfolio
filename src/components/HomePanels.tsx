@@ -7,7 +7,7 @@ import { projects, type Project } from '../data/portfolio'
 import { publicAsset } from '../lib/publicAsset'
 import { trackEvent } from '../lib/analytics'
 import { useLocale } from '../i18n/locale'
-import { useMotionSystem } from '../lib/motion'
+import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useArtworkParallax } from '../lib/useArtworkParallax'
 import { captureHomeScroll } from '../lib/pageScroll'
 import { rememberHomeProject, rememberHomeProjectView } from '../lib/HomeMotionContext'
@@ -60,14 +60,14 @@ export function HomeHero() {
     initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
     <div className="home-card-canvas">
     <div className="home-hero-main">
-      <div className="home-greeting"><span>Привет</span><Portrait kind="hero" /><span>я — Соня!</span></div>
+      <div className="home-greeting home-localized-copy" key={`greeting-${locale}`}><span>Привет</span><Portrait kind="hero" /><span>я — Соня!</span></div>
       <div className="home-card-message">
-        <h1 id="hero-title"><span>Продуктовый &amp; UX/UI дизайнер</span><strong>с опытом B2B/B2C, запуском</strong><strong>и развитием цифровых продуктов</strong></h1>
+        <h1 className="home-localized-copy" id="hero-title" key={`headline-${locale}`}><span>Продуктовый &amp; UX/UI дизайнер</span><strong>с опытом B2B/B2C, запуском</strong><strong>и развитием цифровых продуктов</strong></h1>
         <ContactLinks location="home" variant="pill" className="home-pill-row" />
       </div>
     </div>
     <div className="home-card-footer">
-      <p><span>Москва</span><b aria-hidden="true">×</b><span>GMT +3</span></p>
+      <p className="home-localized-copy" key={`location-${locale}`}><span>Москва</span><b aria-hidden="true">×</b><span>GMT +3</span></p>
       <div className="home-locale" role="group" aria-label="Выбор языка">
         <button type="button" aria-pressed={locale === 'ru'} onClick={() => setLocale('ru')}>Ru</button><b aria-hidden="true">×</b><button type="button" aria-pressed={locale === 'en'} onClick={() => setLocale('en')}>Eng</button>
       </div>
@@ -77,10 +77,11 @@ export function HomeHero() {
 }
 
 export function HomeAbout() {
+  const { locale } = useLocale()
   return <Typography><motion.section id="about" className="home-figma-card home-about-card" data-canvas-panel aria-labelledby="about-title"
     initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .5 }}>
     <div className="home-card-canvas">
-    <div className="home-about-copy">
+    <div className="home-about-copy home-localized-copy" key={`about-${locale}`}>
       <h2 id="about-title">3+ года в цифровых продуктах</h2>
       <p>В <span className="home-company"><img src={publicAsset('figma/home/yukki.svg')} alt="" />Юкки</span>, <span className="home-company"><img src={publicAsset('figma/home/make.svg')} alt="" />Make Difference</span> и <span className="home-company"><img src={publicAsset('figma/home/sky.svg')} alt="" />SkyCapital</span><br /> проектировала интерфейсы, разбиралась<br /> в сложных сценариях и развивала продукты</p>
       <p>Училась продуктовому дизайну в <span className="home-company"><img src={publicAsset('figma/home/formfactor.svg')} alt="" />FormFactor</span><br /> и UX/UI-дизайну в <span className="home-company"><img src={publicAsset('figma/home/contented.svg')} alt="" />Contented</span></p>
@@ -94,6 +95,7 @@ export function HomeProjectCard({ project }: { project: Project }) {
   const presentation = homeProjectPresentation[project.id]
   const location = useLocation()
   const { hover, reduced } = useMotionSystem()
+  const { locale } = useLocale()
   const parallax = useArtworkParallax(hover && !reduced, presentation?.parallax)
   if (!presentation) return null
   const onLeave = () => parallax.reset()
@@ -109,7 +111,7 @@ export function HomeProjectCard({ project }: { project: Project }) {
         trackEvent('project_open', { project: project.id, location: 'home' })
       }}>
       <CaseCursor enabled>
-        <h2 id={`${project.id}-title`}><Typography>{presentation.title}</Typography></h2>
+        <h2 className="home-localized-copy" id={`${project.id}-title`} key={`${project.id}-${locale}`}><Typography>{presentation.title}</Typography></h2>
         <picture>
           {presentation.optimized && <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
           {presentation.optimized && <source type="image/webp" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.webp`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.webp`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
@@ -131,17 +133,39 @@ export function HomeWork() {
   </div></section>
 }
 
+function AvailabilityDot() {
+  const { reduced } = useMotionSystem()
+  const transition = reduced ? { duration: 0 } : {
+    duration: motionTokens.availability.duration,
+    repeat: Infinity,
+    repeatDelay: motionTokens.availability.pause,
+    ease: motionTokens.easeFloat,
+  }
+
+  return <span className="home-availability-dot" aria-hidden="true">
+    <motion.span className="home-availability-dot-halo"
+      initial={false}
+      animate={reduced ? { opacity: .4, scale: 1 } : { opacity: [.24, .4, .24], scale: [1, motionTokens.availability.haloScale, 1] }}
+      transition={transition} />
+    <motion.span className="home-availability-dot-core"
+      initial={false}
+      animate={reduced ? { scale: 1 } : { scale: [1, motionTokens.availability.coreScale, 1] }}
+      transition={transition} />
+  </span>
+}
+
 export function HomeContact() {
+  const { locale } = useLocale()
   return <Typography><motion.section id="contacts" className="home-figma-card home-contact-card" data-canvas-panel aria-labelledby="contacts-title"
     initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .5 }}>
     <div className="home-card-canvas">
     <div className="home-contact-main">
       <div className="home-contact-intro">
-        <p className="home-availability"><img src={publicAsset('figma/home/status.svg')} alt="" width="16" height="16" />Открыта к предложениям</p>
+        <p className="home-availability home-localized-copy" key={`availability-${locale}`}><AvailabilityDot />Открыта к предложениям</p>
         <Portrait kind="contact" />
       </div>
       <div className="home-card-message">
-        <h2 id="contacts-title"><span>Это конец сайта, но,</span><strong>может, начало</strong><strong>чего-то классного?</strong></h2>
+        <h2 className="home-localized-copy" id="contacts-title" key={`contact-title-${locale}`}><span>Это конец сайта, но,</span><strong>может, начало</strong><strong>чего-то классного?</strong></h2>
         <ContactLinks location="home" variant="pill" className="home-pill-row" />
       </div>
     </div>

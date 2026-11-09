@@ -1,17 +1,13 @@
 import { CaseTitle, CaseDeck } from '../components/CaseTitle'
-import { CaseNavigation } from '../components/CaseNavigation'
-import { SceneImage } from '../components/SceneImage'
 import { usePortalEntry } from '../lib/usePortalEntry'
-import { motionTokens } from '../lib/motion'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
 import { lazy, Suspense, useEffect } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { profile } from '../data/portfolio'
 import { caseProjects as projects } from '../data/caseProjects'
-import type { CaseImage } from '../data/portfolio'
 import { getCaseGroups, withoutFinalPeriod } from '../data/caseContent'
 import type { CaseNode } from '../data/caseContent'
 import { Icon } from '../components/Icon'
@@ -22,7 +18,6 @@ import { InlineArrows } from '../components/ArrowIcon'
 import { Typography } from '../components/Typography'
 import { MetaSeparatedText } from '../components/MetaSeparatedText'
 import { visualsAfter } from '../data/caseVisuals'
-import { CaseMediaStage } from '../components/CaseMediaStage'
 import { CaseEditorialText } from '../components/CaseEditorialText'
 import { CaseInlineMedia } from '../components/CaseInlineMedia'
 import { Footer } from '../components/Footer'
@@ -166,38 +161,6 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
   return <div className="case-editorial-flow">{editorial}</div>
 }
 
-function CaseGallery({ images, heightFill = false }: { images: CaseImage[] | undefined; heightFill?: boolean }) {
-  const reduced = useReducedMotion()
-  if (!images?.length) return null
-  return (
-    <div className="case-image-gallery" aria-label="Экраны проекта">
-      {images.map((image) => (
-        <motion.figure className={`case-image-frame ${image.screenCount && image.screenCount >= 4 ? 'case-layout--full' : image.screenCount === 3 ? 'case-layout--wide' : 'case-layout--medium'}`} key={image.src}
-          initial={reduced ? false : { opacity: motionTokens.signature.media.opacity }}
-          whileInView={{ opacity: 1 }} viewport={{ once: true, amount: .02 }}
-          transition={{ duration: reduced ? motionTokens.reduced : motionTokens.adaptiveReveal, ease: motionTokens.ease }}>
-          <a href={image.src} target="_blank" rel="noreferrer" aria-label={`Открыть изображение в полном размере: ${image.caption}`}>
-            <CaseMediaStage
-              fill
-              heightFill={heightFill}
-            ><SceneImage
-              src={image.src}
-              avifSrcSet={image.avifSrcSet}
-              webpSrcSet={image.webpSrcSet}
-              sizes="(min-width: 1201px) 1120px, calc(100vw - 48px)"
-              alt={image.alt}
-              width={image.width}
-              height={image.height}
-              loading="lazy"
-              decoding="async"
-            /></CaseMediaStage>
-          </a>
-        </motion.figure>
-      ))}
-    </div>
-  )
-}
-
 export function ProjectPage() {
   const portalEntry = usePortalEntry()
   const { t } = useLocale()
@@ -229,7 +192,16 @@ export function ProjectPage() {
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
-        <motion.header {...portalEntry} className="case-header">
+        <motion.header {...portalEntry} className="case-header" id="overview">
+          <p className="case-project-meta" aria-label="Параметры проекта">
+            <span>{project.niche ? <MetaSeparatedText value={project.niche} separator="slash" /> : null}</span>
+            <span aria-hidden="true">·</span>
+            <span><MetaSeparatedText value={project.platform} /></span>
+            <span aria-hidden="true">·</span>
+            <span>{project.discipline}</span>
+          </p>
+          <CaseTitle>{project.title}</CaseTitle>
+          <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
           {project.figmaUrl ? (
             <div className="case-meta" data-reveal="case-intro" data-reveal-order="0">
               <a className="button figma-button" href={project.figmaUrl} target="_blank" rel="noreferrer">
@@ -237,28 +209,17 @@ export function ProjectPage() {
               </a>
             </div>
           ) : null}
-          <CaseTitle>{project.title}</CaseTitle>
         </motion.header>
         <div className="case-content" id="case-content">
-          <div className="case-overview" id="overview">
-            <dl className="case-facts" aria-label="О проекте">
-              <div data-reveal="fact" data-reveal-order="0"><dt>Роль</dt><dd>{project.discipline}</dd></div>
-              <div data-reveal="fact" data-reveal-order="1"><dt>Платформа</dt><dd><MetaSeparatedText value={project.platform} /></dd></div>
-              <div data-reveal="fact" data-reveal-order="2"><dt>Ниша</dt><dd>{project.niche ? <MetaSeparatedText value={project.niche} separator="slash" /> : null}</dd></div>
-            </dl>
-            <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
-          </div>
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
               <section className="case-section case-document-section" id={group.id} aria-labelledby={`${group.id}-title`}>
                 <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
                 <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
               </section>
-              {!['skywallet', 'partner-portal'].includes(project.id) ? <CaseGallery images={project.images?.[group.id]} heightFill={project.id === 'astoria'} /> : null}
             </div>
           ))}
         </div>
-        <CaseNavigation projectId={project.id} />
       </main>
       <Footer variant="case" />
     </div></Typography>

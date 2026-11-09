@@ -2,45 +2,12 @@
 .mobile-menu a { transition: none; }
 /* Adaptive UI is isolated from the desktop canvas and editorial grid. */
 [data-motion-managed='true'] { transition: none; }
-.case-diagram-mobile { display: none; }
-
-@media (max-width: 1100px) {
-  .case-diagram > :not(.case-diagram-mobile) { display: none; }
-  .case-diagram > .case-diagram-mobile { display: block; }
-  .case-diagram-mobile-group { display: grid; gap: 12px; }
-  .case-diagram-mobile-step--separate { margin-top: 28px; }
-  .case-diagram-mobile-card {
-    width: 100%;
-    min-width: 0;
-    padding: 16px;
-    border-radius: var(--radius-control);
-    background: transparent;
-    overflow-wrap: anywhere;
-  }
-  .case-diagram-mobile-card strong { display: block; font-size: var(--case-v-card-title); line-height: 1.4; font-weight: var(--weight-strong); color: var(--color-text); }
-  .case-diagram-mobile-card p { margin: var(--case-v-copy-gap) 0 0; font-size: var(--case-v-body); line-height: 1.6; color: var(--color-muted); }
-  .case-diagram-mobile-card .case-diagram-mobile-note { font-size: var(--case-v-note); }
-  .case-diagram-mobile-connector { display: block; margin: 8px auto; color: var(--color-muted); }
-  .case-diagram-mobile-step--dominant .case-diagram-mobile-card {
-    background: var(--color-text);
-    color: var(--color-page);
-    text-align: center;
-  }
-  .case-diagram-mobile-step--dominant .case-diagram-mobile-card :is(strong, p) { color: inherit; }
-  .case-diagram-mobile--branch .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--architecture .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--convergence .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--status-branch .case-diagram-mobile-group:has(> :nth-child(2)) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 .case-section-disclosure { display: none; }
 
 /* The homepage navigation can include the shared back action on document pages. */
 .desktop-header--back { overflow: visible; }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .mobile-header-inner--back .back-button {
     width: 44px;
     height: 44px;
@@ -159,7 +126,7 @@
     background: var(--color-white);
     transform-origin: top center;
   }
-  .case-section-panel a { display: flex; align-items: center; min-height: 48px; padding: 12px 16px; border-radius: 14px; font-size: 15px; line-height: 1.4; color: #55555d; }
+  .case-section-panel a { display: flex; align-items: center; min-height: 48px; padding: 12px 16px; border-radius: var(--radius-control); font-size: var(--type-secondary-size); line-height: var(--type-secondary-leading); color: var(--text-secondary); }
   .case-section-panel a[aria-current] { color: var(--color-text); font-weight: var(--weight-medium); }
   .case-section-panel a:active { color: var(--color-text); }
   .case-section-trigger:focus-visible, .case-section-panel a:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
@@ -201,10 +168,6 @@
 @media (max-width: 760px) {
   .home-canvas .contacts-section { min-height: 560px; padding: 24px; }
   .case-diagram-entry-points { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .case-diagram-mobile--branch .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--architecture .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--convergence .case-diagram-mobile-group:has(> :nth-child(2)),
-  .case-diagram-mobile--status-branch .case-diagram-mobile-group:has(> :nth-child(2)) { grid-template-columns: minmax(0, 1fr); }
   .case-main > .version-switch { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); width: 100%; }
   .case-main > .version-switch button { min-width: 0; padding-inline: 10px; white-space: normal; line-height: 1.35; }
 }
@@ -222,11 +185,11 @@
   .home-canvas .contact-signature { font-size: 32px; white-space: nowrap; }
 }
 
-@media (max-width: 1100px) and (hover: hover) {
+@media (max-width: 900px) and (hover: hover) {
   .mobile-menu a:hover, .case-section-panel a:hover { color: var(--color-text); }
 }
 
-@media (max-width: 1100px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
   .mobile-menu, .mobile-menu a { transition: none; }
   .mobile-menu a { transform: none; }
 }
@@ -245,7 +208,7 @@
 }
 
 .case-header-spacer { flex: 1; }
-@media (min-width: 1101px) {
+@media (min-width: 901px) {
   .site-header--case .header-navigation {
     flex: none;
     width: max-content;
@@ -267,7 +230,7 @@
 }
 .case-visual-index { display: inline-flex; flex: none; align-items: center; color: var(--color-muted); }
 .case-visual-index .icon { width: 24px; height: 24px; }
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .case-header-controls > .telegram-link {
     background: var(--color-dark);
     color: var(--color-on-dark);
@@ -286,6 +249,6 @@
   .home-canvas .contacts-section .site-footer { grid-column: 1 / -1; }
 }
 
-@media (min-width: 1101px) {
+@media (min-width: 901px) {
   .site-header--concept .header-navigation { overflow: visible; padding-inline: 6px; }
 }

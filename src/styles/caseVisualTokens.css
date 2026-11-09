@@ -1,27 +1,19 @@
-/* Shared roles for visual evidence only; narrative headings keep their own scale. */
+/* Visual evidence consumes the same semantic roles as the editorial system. */
 :is(.case-visual, .case-results) {
-  --case-v-title: 24px;
-  --case-v-card-title: 18px;
-  --case-v-body: 16px;
-  --case-v-note: 14px;
-  --case-v-metric: 32px;
-  --case-v-leading: 1.6;
-  --case-v-heading-leading: 1.4;
+  --case-v-title: var(--type-h4-size);
+  --case-v-card-title: var(--type-body-size);
+  --case-v-body: var(--type-secondary-size);
+  --case-v-note: var(--type-caption-size);
+  --case-v-metric: var(--type-h2-size);
+  --case-v-leading: var(--type-secondary-leading);
+  --case-v-heading-leading: var(--type-h4-leading);
   --case-v-surface: var(--color-white);
-  --case-v-padding: var(--space-8);
-  --case-v-gap: var(--space-6);
+  --case-v-padding: var(--space-card);
+  --case-v-gap: var(--space-text);
   --case-v-copy-gap: var(--space-4);
-  --case-v-body-color: var(--case-body-color, #46464d);
+  --case-v-body-color: var(--text-secondary);
   font-family: var(--font-sans);
   font-size: var(--case-v-body);
   font-weight: var(--weight-medium);
   line-height: var(--case-v-leading);
-}
-@media (max-width: 760px) {
-  :is(.case-visual, .case-results) {
-    --case-v-title: 22px;
-    --case-v-card-title: 16px;
-    --case-v-metric: 28px;
-    --case-v-padding: var(--space-6);
-  }
 }

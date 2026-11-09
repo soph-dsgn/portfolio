@@ -26,8 +26,10 @@ body {
   color: var(--color-text);
   font-family: inherit;
   font-size: var(--type-body);
+  font-weight: var(--type-body-weight);
   line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 #root {
   display: flow-root;
@@ -55,14 +57,11 @@ a[aria-disabled='true'] { cursor: default; }
 main:focus {
   outline: none;
 }
-h1,
-h2,
-h3 {
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 1.22;
-  text-wrap: pretty;
-}
+h1 { font-size: var(--type-h1-size); font-weight: var(--type-h1-weight); line-height: var(--type-h1-leading); letter-spacing: var(--type-h1-tracking); }
+h2 { font-size: var(--type-h2-size); font-weight: var(--type-h2-weight); line-height: var(--type-h2-leading); letter-spacing: var(--type-h2-tracking); }
+h3 { font-size: var(--type-h3-size); font-weight: var(--type-h3-weight); line-height: var(--type-h3-leading); letter-spacing: var(--type-h3-tracking); }
+h4 { font-size: var(--type-h4-size); font-weight: var(--type-h4-weight); line-height: var(--type-h4-leading); letter-spacing: var(--type-h4-tracking); }
+:is(h1, h2, h3, h4) { text-wrap: balance; }
 [id] {
   scroll-margin-top: var(--space-4);
 }
@@ -300,7 +299,7 @@ h3 {
   align-items: center;
   gap: 32px;
   padding: 80px 40px 32px;
-  margin-top: var(--section-gap);
+  margin-top: var(--space-section);
   background: transparent;
   color: var(--color-text);
 }
@@ -527,7 +526,7 @@ h3 {
   gap: 48px;
 }
 #work {
-  margin-top: var(--section-gap);
+  margin-top: var(--space-section);
 }
 .project-card {
   min-width: 0;
@@ -612,7 +611,7 @@ h3 {
 .case-facts:not(.case-results) > div {
   min-width: 0;
   padding: 24px;
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
   background: var(--color-white);
 }
 .case-facts:not(.case-results) > div { min-height: 96px; }
@@ -637,7 +636,7 @@ h3 {
   gap: var(--case-v-gap);
   padding: var(--case-v-padding);
   background: var(--case-v-surface);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
 }
 .case-metric-grid > :where(div, li) {
   padding: 0;
@@ -673,12 +672,12 @@ h3 {
   border-radius: var(--radius-inner);
 }
 .segmented-group > :first-child {
-  border-top-left-radius: var(--radius-group);
-  border-bottom-left-radius: var(--radius-group);
+  border-top-left-radius: var(--radius-control);
+  border-bottom-left-radius: var(--radius-control);
 }
 .segmented-group > :last-child {
-  border-top-right-radius: var(--radius-group);
-  border-bottom-right-radius: var(--radius-group);
+  border-top-right-radius: var(--radius-control);
+  border-bottom-right-radius: var(--radius-control);
 }
 .project-tags {
   display: flex;
@@ -711,7 +710,7 @@ time.chip {
 
 .case-overview > *,
 .case-document-section > :is(h2, .case-text-card, .case-standalone-heading, .case-results) {
-  width: min(100%, var(--case-reading-width));
+  width: min(100%, var(--reading-regular));
   margin-inline: 0;
 }
 .case-overview > .case-facts { width: 100%; }
@@ -816,7 +815,6 @@ time.chip {
 }
 .version-switch {
   --radius-inner: var(--action-radius);
-  --radius-group: var(--action-radius);
   gap: 8px;
   display: flex;
   margin: var(--space-8) 0 var(--space-6);
@@ -857,7 +855,7 @@ time.chip {
 }
 .case-content {
   display: grid;
-  gap: var(--section-gap);
+  gap: var(--space-section);
 }
 .case-document-section > h2 {
   margin-block: 0;
@@ -982,7 +980,7 @@ time.chip {
   padding: var(--case-v-padding);
   list-style: none;
   background: var(--case-v-surface);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
 }
 .case-visual-results > li {
   display: grid;
@@ -1007,7 +1005,7 @@ time.chip {
   margin: var(--case-v-gap) 0 0;
   padding: var(--case-v-padding);
   background: var(--case-v-surface);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
 }
 .case-visual-plain > div {
   display: grid;
@@ -1036,7 +1034,7 @@ time.chip {
   min-width: 0;
   margin-top: var(--case-v-gap);
   padding: var(--case-v-padding);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
   background: var(--color-white);
   color: var(--color-text);
 }
@@ -1045,7 +1043,7 @@ time.chip {
   position: absolute;
   inset: var(--space-4);
   z-index: 0;
-  border-radius: calc(var(--radius-content-card) - var(--space-2));
+  border-radius: calc(var(--radius-card) - var(--space-2));
   background: var(--color-surface);
   pointer-events: none;
 }
@@ -1072,7 +1070,7 @@ time.chip {
   min-width: 0;
   min-height: 64px;
   padding: 12px 16px;
-  border-radius: var(--radius-group);
+  border-radius: var(--radius-control);
   background: transparent;
   text-align: center;
 }
@@ -1156,7 +1154,7 @@ time.chip {
   min-width: 0;
   min-height: 210px;
   padding: 18px;
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
   background: transparent;
 }
 .case-diagram-overline {
@@ -1421,7 +1419,7 @@ time.chip {
   font-weight: var(--weight-strong);
 }
 .case-diagram-state-root span {
-  color: #ddd;
+  color: var(--text-disabled);
   font-size: var(--case-v-note);
   line-height: 1.4;
 }
@@ -1435,7 +1433,7 @@ time.chip {
   gap: 16px;
   align-items: start;
   padding: 14px 16px;
-  border-radius: var(--radius-group);
+  border-radius: var(--radius-control);
   background: transparent;
 }
 .case-diagram-state-row strong {
@@ -1509,7 +1507,7 @@ time.chip {
 }
 .case-diagram-risk-row strong, .case-diagram-risk-row p {
   padding: 12px 16px;
-  border-radius: var(--radius-group);
+  border-radius: var(--radius-control);
   background: transparent;
 }
 .case-diagram-risk-row strong {
@@ -1537,7 +1535,7 @@ time.chip {
 }
 .case-diagram-change-row > span, .case-diagram-change-row > strong {
   padding: 12px 16px;
-  border-radius: var(--radius-group);
+  border-radius: var(--radius-control);
   background: transparent;
 }
 .case-diagram-change-row > span {
@@ -1598,7 +1596,7 @@ time.chip {
   min-width: 0;
   margin-top: var(--case-v-gap);
   padding: var(--case-v-padding);
-  border-radius: var(--radius-content-card);
+  border-radius: var(--radius-card);
   background: var(--case-v-surface);
   overflow-x: auto;
 }
@@ -1796,7 +1794,7 @@ time.chip {
 }
 .case-image-frame a {
   display: block;
-  border-radius: var(--radius-scene);
+  border-radius: var(--radius-page);
   line-height: 0;
   cursor: zoom-in;
 }
@@ -1945,7 +1943,7 @@ time.chip {
   grid-template-columns: 1fr 1fr;
   gap: var(--frame-inset);
   padding: var(--frame-inset);
-  border-radius: var(--radius-shell);
+  border-radius: var(--radius-card);
   background: var(--color-surface);
 }
 .type-specimen {
@@ -2158,7 +2156,7 @@ time.chip {
   transform: none;
 }
 /* Responsive composition adapts spacing without a second layout. */
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .hero-copy { padding: 32px; }
   .home-shell {
     width: calc(100% - 48px);
@@ -2238,7 +2236,7 @@ time.chip {
 .contacts-section {
     grid-template-columns: minmax(0, 1fr);
     padding: 48px 8px 16px;
-    margin-top: var(--section-gap);
+    margin-top: var(--space-section);
 }
 .contacts-section h2 {
     font-size: 52px;
@@ -2487,7 +2485,7 @@ time.chip {
 .mobile-header-inner, .mobile-menu, .mobile-menu-backdrop {
   display: none;
 }
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
 .desktop-header {
     display: none;
 }
@@ -2790,7 +2788,7 @@ button, input, select, textarea, svg text, svg tspan {
   .back-button:hover,
   .case-header-controls > .button:hover { background: var(--color-surface); color: var(--color-text); }
 }
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .case-header-controls { width: calc(100% - 32px); margin-top: 12px; gap: 8px; }
   .case-header-anchors { display: none; }
   .back-button,

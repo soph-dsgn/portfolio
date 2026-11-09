@@ -36,9 +36,6 @@ const equivalentHeadings: Record<string, string> = {
   'wallet-context': 'Постоянный активный контекст',
   'wallet-errors': 'Предупреждение ошибок до подтверждения',
   'wallet-states': 'Статусы операций',
-  'astoria-entry': 'Разные точки входа',
-  'health-states': 'Системные состояния',
-  'atlyx-statuses': 'Понятная модель статусов',
 }
 
 function repeatsHeading(title: string, heading: string, id: string) {

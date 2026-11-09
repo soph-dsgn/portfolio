@@ -13,11 +13,15 @@ export function ProgressCat() {
         <rect x="0" y="0" width="24.6634" height="17.2" />
       </clipPath>
     </defs>
-    <g className="canvas-progress-cat__tail" clipPath="url(#progress-cat-tail-clip)">
-      <path d={catPath} fill="#F96AEA" />
+    <g clipPath="url(#progress-cat-tail-clip)">
+      <g className="canvas-progress-cat__tail">
+        <path d={catPath} fill="#F96AEA" />
+      </g>
     </g>
-    <g className="canvas-progress-cat__body" clipPath="url(#progress-cat-body-clip)">
-      <path d={catPath} fill="#F96AEA" />
+    <g clipPath="url(#progress-cat-body-clip)">
+      <g className="canvas-progress-cat__body">
+        <path d={catPath} fill="#F96AEA" />
+      </g>
     </g>
     <g className="canvas-progress-cat__eyes">
       <path d={leftEyePath} fill="#FEFEFE" />

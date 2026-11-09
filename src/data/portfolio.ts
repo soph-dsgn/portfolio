@@ -1,10 +1,4 @@
-import caseImageSizes from './caseImageSizes.json'
 import { publicAsset } from '../lib/publicAsset'
-
-const caseCoverDimensions = (caseId: keyof typeof caseImageSizes) => {
-  const [width, height] = (caseImageSizes[caseId] as Record<string, number[]>)['Обложка.png']
-  return { width, height }
-}
 
 export const profile = {
   name: 'Софья Стрельченко',
@@ -66,12 +60,6 @@ export const experience: Experience[] = [
     role: 'UX/UI-дизайнер',
     period: '10.2025 — 07.2026',
     logo: '/icons/job/Make_Difference.jpg',
-    summary: 'Экосистема женского здоровья, Atlyx и Астория: архитектура и ключевые сценарии',
-    projects: [
-      { title: '01. Экосистема женского здоровья', results: ['Рост активации новых пользователей (Activation Rate) на +12%', 'Рост CR в запись на консультацию на +10%', 'Рост D30 Retention на +8%', 'Сокращение времени до первого целевого действия на −15%'], problem: 'У врача уже были продукты, контент и консультации, но идея платформы оставалась слишком широкой. Нужно было собрать понятный MVP, а остальное оставить на следующие этапы', solution: 'Определила, что войдёт в MVP, связала модули и разобрала ключевые пути: обучение, консультации, покупки и работу с личными данными' },
-      { title: '2. Atlyx — мобильное приложение для путешествий', results: ['Рост D30 Retention на +7%', 'Рост конверсии в создание первой поездки на +12%', 'Рост использования сохраненных мест и маршрутов на +10%'], problem: 'Поездки, перелёты, места и статистику нужно было связать в привычный сценарий. Иначе приложение открывали бы только перед путешествием', solution: 'Выстроила приложение вокруг задач путешественника: планирования, сохранения мест и статистики. Продумала профиль и достижения, чтобы поддержать возвращение в продукт' },
-      { title: '3. Астория — онлайн-агрегатор туров', results: ['Рост CR из поиска тура в отправку заявки на +10%', 'Рост CTR карточек туров на +13%', 'Сокращение времени поиска подходящего тура на −16%', 'Снижение отказов на этапе выбора тура на −5%'], problem: 'Бизнес хотел свой поиск и бронирование вместо виджетов Турвизора. Внешний интерфейс не давал управлять выдачей, фильтрами и страницами направлений и мешал развитию', solution: 'Связала поиск, фильтры, выбор и оформление тура. Продумала карточки, страницы направлений и управление контентом, подготовила адаптивные макеты, компоненты и спецификации' },
-    ],
   },
   {
     company: 'SkyCapital Group',
@@ -160,7 +148,6 @@ export type Project = {
   cover?: string
   coverDimensions?: { width: number; height: number }
   coverSrcSet?: string
-  images?: Partial<Record<'context' | 'structure' | 'concept' | 'system' | 'final', CaseImage[]>>
   videos?: CaseVideo[]
 }
 
@@ -209,46 +196,7 @@ export const projects: Project[] = [
     niche: 'Fintech / Crypto',
     document: [],
     cover: '/cases/skywallet/Cover.png?v=27d645c8f479',
-    coverDimensions: caseCoverDimensions('skywallet'),
-  },
-  {
-    id: 'astoria',
-    title: 'Астория — +12% к заявкам',
-    description:
-      'Спроектировала сервис, где можно найти, сравнить и оформить тур на любом устройстве. Вместо готовых виджетов использовала API Турвизора — так у бизнеса появился собственный интерфейс и основа онлайн-турагентства',
-    tags: ['B2C', 'TravelTech'],
-    discipline: 'UX/UI-дизайнер',
-    platform: 'Web · Mobile',
-    niche: 'TravelTech',
-    document: [],
-    cover: '/cases/astoria/Обложка.png?v=7bdf0731c28e',
-    coverDimensions: caseCoverDimensions('astoria'),
-  },
-  {
-    id: 'womens-health',
-    title: 'HealthTech: +25% Activation Rate',
-    description:
-      'Разобралась, как связать обучение, консультации и личный кабинет, и определила, что нужно в первом MVP',
-    tags: ['B2C', 'FemTech / HealthTech'],
-    discipline: 'UX/UI-дизайнер',
-    platform: 'mobile app · landing',
-    niche: 'FemTech / HealthTech',
-    document: [],
-    cover: '/cases/womens-health/Обложка.png?v=a1b38781be77',
-    coverDimensions: caseCoverDimensions('womens-health'),
-  },
-  {
-    id: 'atlyx',
-    title: 'Atlyx — travel superapp с retention +10%',
-    description:
-      'Собрала поездки, перелёты, сохранённые места и статистику в одном приложении — чтобы планы и история путешествий не терялись между сервисами',
-    tags: ['B2C', 'TravelTech'],
-    discipline: 'UX/UI-дизайнер',
-    platform: 'Mobile app',
-    niche: 'TravelTech',
-    document: [],
-    cover: '/cases/atlyx/Обложка.png?v=963cfe6f81c1',
-    coverDimensions: caseCoverDimensions('atlyx'),
+    coverDimensions: { width: 4584, height: 3438 },
   },
 ].map((project) => ({
   ...project,
@@ -265,10 +213,3 @@ export const projects: Project[] = [
   })),
 }))
 
-export const caseSections = [
-  { id: 'context', label: 'Контекст' },
-  { id: 'structure', label: 'Стратегия' },
-  { id: 'concept', label: 'Решение' },
-  { id: 'system', label: 'Система' },
-  { id: 'final', label: 'Результат' },
-]

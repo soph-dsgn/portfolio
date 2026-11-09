@@ -37,10 +37,16 @@ const MAX_DRAG_SAMPLE_SPEED = 720
 const RELEASE_VELOCITY_SCALE = .34
 const VELOCITY_SMOOTHING = .32
 const LINEAR_DAMPING = .035
-const WALL_RESTITUTION = .1
+const WALL_RESTITUTION = .04
+const WALL_SOFT_ZONE = 22
+const WALL_APPROACH_DAMPING = 16
+const DRAG_EDGE_ZONE = 26
+const DRAG_EDGE_MIN_FACTOR = .16
+const BOUNDARY_INSET = 1
 const COLLISION_RESTITUTION = .04
 const MAX_COLLISION_IMPULSE = 90
 const COLLISION_GAP = 1
+const COLLISION_POSITION_SLOP = .25
 const COLLISION_PASSES = 10
 const FIXED_STEP = 1 / 120
 const SLEEP_SPEED = 5
@@ -94,7 +100,15 @@ export function InteractiveToolCloud() {
           lastY: 0,
           lastTime: 0,
         }
-        element.style.transform = `translate3d(0px, 0px, 0px) rotate(${baseAngle}deg)`
+        const centerX = body.originX + body.width / 2
+        const centerY = body.originY + body.height / 2
+        const minX = body.boundHalfWidth + BOUNDARY_INSET - centerX
+        const maxX = container.clientWidth - body.boundHalfWidth - BOUNDARY_INSET - centerX
+        const minY = body.boundHalfHeight + BOUNDARY_INSET - centerY
+        const maxY = container.clientHeight - body.boundHalfHeight - BOUNDARY_INSET - centerY
+        body.x = clamp(0, minX, Math.max(minX, maxX))
+        body.y = clamp(0, minY, Math.max(minY, maxY))
+        element.style.transform = `translate3d(${body.x.toFixed(2)}px, ${body.y.toFixed(2)}px, 0px) rotate(${baseAngle}deg)`
         return body
       })
     }
@@ -118,10 +132,10 @@ export function InteractiveToolCloud() {
     const centerX = body.originX + body.width / 2
     const centerY = body.originY + body.height / 2
     return {
-      minX: body.boundHalfWidth - centerX,
-      maxX: containerWidth - body.boundHalfWidth - centerX,
-      minY: body.boundHalfHeight - centerY,
-      maxY: containerHeight - body.boundHalfHeight - centerY,
+      minX: body.boundHalfWidth + BOUNDARY_INSET - centerX,
+      maxX: containerWidth - body.boundHalfWidth - BOUNDARY_INSET - centerX,
+      minY: body.boundHalfHeight + BOUNDARY_INSET - centerY,
+      maxY: containerHeight - body.boundHalfHeight - BOUNDARY_INSET - centerY,
     }
   }
 
@@ -144,6 +158,27 @@ export function InteractiveToolCloud() {
     return { dx: body.x - beforeX, dy: body.y - beforeY }
   }
 
+  const softenDragAxis = (value: number, delta: number, min: number, max: number) => {
+    if (!delta) return value
+    const distanceToEdge = delta < 0 ? value - min : max - value
+    const progress = clamp(distanceToEdge / DRAG_EDGE_ZONE, 0, 1)
+    const resistance = DRAG_EDGE_MIN_FACTOR + (1 - DRAG_EDGE_MIN_FACTOR) * progress * progress
+    return clamp(value + delta * resistance, min, max)
+  }
+
+  const softenWallVelocity = (body: Body, dt: number) => {
+    const { minX, maxX, minY, maxY } = limits(body)
+    const dampOutwardVelocity = (velocity: number, distance: number, outward: boolean) => {
+      if (!outward || distance >= WALL_SOFT_ZONE) return velocity
+      const proximity = 1 - clamp(distance / WALL_SOFT_ZONE, 0, 1)
+      return velocity * Math.exp(-WALL_APPROACH_DAMPING * proximity * dt)
+    }
+    body.vx = dampOutwardVelocity(body.vx, body.x - minX, body.vx < 0)
+    body.vx = dampOutwardVelocity(body.vx, maxX - body.x, body.vx > 0)
+    body.vy = dampOutwardVelocity(body.vy, body.y - minY, body.vy < 0)
+    body.vy = dampOutwardVelocity(body.vy, maxY - body.y, body.vy > 0)
+  }
+
   const resolvePair = (a: Body, b: Body) => {
     const ax = a.originX + a.x + a.width / 2
     const ay = a.originY + a.y + a.height / 2
@@ -156,15 +191,27 @@ export function InteractiveToolCloud() {
     const horizontal = overlapX < overlapY
     const nx = horizontal ? (bx >= ax ? 1 : -1) : 0
     const ny = horizontal ? 0 : (by >= ay ? 1 : -1)
-    const penetration = horizontal ? overlapX : overlapY
+    const penetration = (horizontal ? overlapX : overlapY) - COLLISION_POSITION_SLOP
+    if (penetration <= 0) return false
+
+    let corrected = false
 
     if (a.dragging && !b.dragging) {
-      moveWithinBounds(a, -nx * penetration, -ny * penetration)
+      const moved = moveWithinBounds(b, nx * penetration, ny * penetration)
+      const resolved = Math.abs(moved.dx * nx + moved.dy * ny)
+      const residual = Math.max(0, penetration - resolved)
+      if (residual > 0) moveWithinBounds(a, -nx * residual, -ny * residual)
+      corrected = resolved > .01 || residual > .01
     } else if (b.dragging && !a.dragging) {
-      moveWithinBounds(b, nx * penetration, ny * penetration)
+      const moved = moveWithinBounds(a, -nx * penetration, -ny * penetration)
+      const resolved = Math.abs(moved.dx * nx + moved.dy * ny)
+      const residual = Math.max(0, penetration - resolved)
+      if (residual > 0) moveWithinBounds(b, nx * residual, ny * residual)
+      corrected = resolved > .01 || residual > .01
     } else {
-      moveWithinBounds(a, -nx * penetration * .5, -ny * penetration * .5)
-      moveWithinBounds(b, nx * penetration * .5, ny * penetration * .5)
+      const movedA = moveWithinBounds(a, -nx * penetration * .5, -ny * penetration * .5)
+      const movedB = moveWithinBounds(b, nx * penetration * .5, ny * penetration * .5)
+      corrected = Math.abs(movedA.dx) + Math.abs(movedA.dy) + Math.abs(movedB.dx) + Math.abs(movedB.dy) > .01
     }
 
     const inverseMassA = a.dragging ? 0 : 1
@@ -182,7 +229,7 @@ export function InteractiveToolCloud() {
         b.vy += impulse * ny
       }
     }
-    return true
+    return corrected
   }
 
   const resolveCollisions = () => {
@@ -206,6 +253,7 @@ export function InteractiveToolCloud() {
   const simulate = (dt: number) => {
     for (const body of bodiesRef.current) {
       if (body.dragging) continue
+      softenWallVelocity(body, dt)
       body.x += body.vx * dt
       body.y += body.vy * dt
       contain(body, true)
@@ -283,12 +331,12 @@ export function InteractiveToolCloud() {
     const sampledVY = clamp(dy / dt, -MAX_DRAG_SAMPLE_SPEED, MAX_DRAG_SAMPLE_SPEED)
     body.vx += (sampledVX - body.vx) * VELOCITY_SMOOTHING
     body.vy += (sampledVY - body.vy) * VELOCITY_SMOOTHING
-    body.x += dx
-    body.y += dy
+    const { minX, maxX, minY, maxY } = limits(body)
+    body.x = softenDragAxis(body.x, dx, minX, Math.max(minX, maxX))
+    body.y = softenDragAxis(body.y, dy, minY, Math.max(minY, maxY))
     body.lastX = event.clientX
     body.lastY = event.clientY
     body.lastTime = now
-    contain(body, false)
     resolveCollisions()
     bodiesRef.current.forEach(paint)
   }

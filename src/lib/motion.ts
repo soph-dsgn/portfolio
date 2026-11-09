@@ -11,7 +11,6 @@ export const motionTokens = {
   metric: .42, metricStagger: .07,
   navState: .18,
   micro: .16, hover: .22, reduced: .1, loaderExit: .18,
-  caseNavigation: { arrowDistance: 4, hoverOpacity: .75, pressOpacity: .6 },
   evidence: { duration: .65, stagger: .06 },
   caption: .25, captionDelay: .18, artwork: .5, scroll: .48,
   staggerSmall: .04, staggerAdaptive: .03, groupDelay: .1,
@@ -40,12 +39,13 @@ export const motionTokens = {
     tapScale: .985,
   },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
+  availability: { duration: 4.6, pause: .8, coreScale: 1.06, haloScale: 1.14 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
   diagram: { revealDuration: .5, revealDistance: 12 },
 }
 
 const subscribeAdaptive = (update: () => void) => {
-  const query = window.matchMedia('(max-width: 1100px)')
+  const query = window.matchMedia('(max-width: 900px)')
   query.addEventListener('change', update)
   return () => query.removeEventListener('change', update)
 }
@@ -67,7 +67,7 @@ export function revealIdentity(_preset: RevealPreset) {
 
 export function useMotionSystem() {
   const reduced = Boolean(useReducedMotion())
-  const adaptive = useSyncExternalStore(subscribeAdaptive, () => window.matchMedia('(max-width: 1100px)').matches, () => false)
+  const adaptive = useSyncExternalStore(subscribeAdaptive, () => window.matchMedia('(max-width: 900px)').matches, () => false)
   const hover = useSyncExternalStore(subscribeHover, () => window.matchMedia('(hover: hover) and (pointer: fine)').matches, () => false)
   const transition = { duration: reduced ? motionTokens.reduced : adaptive ? motionTokens.adaptiveReveal : motionTokens.reveal, ease: motionTokens.ease }
   const variants = (preset: RevealPreset = 'soft', delay = 0): Variants => ({
