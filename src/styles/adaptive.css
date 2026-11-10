@@ -8,16 +8,7 @@
 .desktop-header--back { overflow: visible; }
 
 @media (max-width: 900px) {
-  .mobile-header-inner--back .back-button {
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
-    padding: 0;
-    justify-content: center;
-    background: var(--color-surface);
-  }
-  .mobile-header-inner--back .back-button-label { display: none; }
-  .mobile-header-spacer { flex: 1; }
+  .mobile-brand--return { appearance: none; padding: 0; border: 0; background: transparent; cursor: pointer; }
   .mobile-header-inner {
     width: min(calc(100% - var(--page-gutter) * 2), var(--page-max-width));
     height: 64px;

@@ -111,6 +111,9 @@ export function HomeProjectCard({ project }: { project: Project }) {
         trackEvent('project_open', { project: project.id, location: 'home' })
       }}>
       <CaseCursor enabled>
+        <p className="home-project-meta" aria-label="Параметры проекта">
+          {[project.niche ?? project.tags.join(' / '), project.platform, project.discipline].filter(Boolean).join(' · ')}
+        </p>
         <h2 className="home-localized-copy" id={`${project.id}-title`} key={`${project.id}-${locale}`}><Typography>{presentation.title}</Typography></h2>
         <picture>
           {presentation.optimized && <source type="image/avif" srcSet={`${publicAsset(`optimized/home/${presentation.optimized}-640.avif`)} 640w, ${publicAsset(`optimized/home/${presentation.optimized}-1280.avif`)} 1280w`} sizes="(min-width: 1101px) 44vw, (min-width: 761px) 74vw, 76vw" />}
@@ -145,11 +148,11 @@ function AvailabilityDot() {
   return <span className="home-availability-dot" aria-hidden="true">
     <motion.span className="home-availability-dot-halo"
       initial={false}
-      animate={reduced ? { opacity: .4, scale: 1 } : { opacity: [.24, .4, .24], scale: [1, motionTokens.availability.haloScale, 1] }}
+      animate={reduced ? { opacity: .4, scale: 1 } : { opacity: [.48, .18, 0], scale: [1, motionTokens.availability.haloScale, 1.9] }}
       transition={transition} />
     <motion.span className="home-availability-dot-core"
       initial={false}
-      animate={reduced ? { scale: 1 } : { scale: [1, motionTokens.availability.coreScale, 1] }}
+      animate={reduced ? { scale: 1 } : { scale: [1, motionTokens.availability.coreScale, 1.12, 1] }}
       transition={transition} />
   </span>
 }

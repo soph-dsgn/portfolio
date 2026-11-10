@@ -39,7 +39,7 @@ export const motionTokens = {
     tapScale: .985,
   },
   float: { trophy: 5.2, sparkles: [4.6, 5.1, 5.6], stagger: .25 },
-  availability: { duration: 4.6, pause: .8, coreScale: 1.06, haloScale: 1.14 },
+  availability: { duration: 2.8, pause: 1.4, coreScale: 1.08, haloScale: 1.35 },
   // Diagram sequencing is shared by every desktop pattern and the mobile stack.
   diagram: { revealDuration: .5, revealDistance: 12 },
 }

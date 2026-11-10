@@ -1,15 +1,14 @@
-import { captureHomeScroll } from '../lib/pageScroll'
+import { captureHomeScroll, savedPageScroll } from '../lib/pageScroll'
 import { motionTokens, useMotionSystem } from '../lib/motion'
 import { useId, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { profile, projects } from '../data/portfolio'
+import { projects } from '../data/portfolio'
 import { bindShortWords } from '../lib/typography'
 import { publicAsset } from '../lib/publicAsset'
 import { Icon } from './Icon'
 import { navigateToSection } from '../lib/canvasNavigation'
-import { BackButton } from './BackButton'
 import { LanguageSelector } from './LanguageSelector'
 import { NavigationLabel } from './NavigationLabel'
 import { useHomeActiveSection } from '../lib/homeSectionNavigation'
@@ -46,6 +45,7 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const headerRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isCase = pathname.startsWith('/projects/')
+  const homeEntryKey = (location.state as { homeEntryKey?: string } | null)?.homeEntryKey
   const sections = useMemo(() => {
     const project = projects.find(project => pathname === `/projects/${project.id}`)
     if (!project) return []
@@ -57,6 +57,15 @@ export function MobileHeader({ showBack = false, backTo = '/' }: { showBack?: bo
   const isActiveLink = (href: string) => href.includes('#')
     ? pathname === '/' && activeSection === href.split('#')[1]
     : pathname === href
+
+  const returnFromInternalPage = () => {
+    const historyIndex = Number(window.history.state?.idx)
+    if ((homeEntryKey && savedPageScroll(homeEntryKey) !== undefined) || (Number.isFinite(historyIndex) && historyIndex > 0)) {
+      navigate(-1)
+      return
+    }
+    navigate(backTo, { replace: true })
+  }
 
   useEffect(() => {
     if (pathname === '/') return
@@ -171,10 +180,11 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
   return (
     <motion.header layoutRoot initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={transition} className={`site-header mobile-header site-header--portfolio-nav${pathname === '/' ? ' site-header--home' : isCase ? ' site-header--case' : ''}`} ref={headerRef}>
       <div className={`desktop-header${showBack ? ' desktop-header--back' : ''}${isCase ? ' desktop-header--case' : ''}`}>
-        {showBack ? <div className="desktop-header-back"><BackButton to={backTo} /></div> : null}
-        <Link className="home-desktop-brand" to="/" aria-label="На главную">
+        {showBack ? <button type="button" className="home-desktop-brand home-desktop-brand--return" onClick={returnFromInternalPage} aria-label="Назад">
           <img src={publicAsset('figma/home/logo.svg')} alt="" width="42" height="38" />
-        </Link>
+        </button> : <Link className="home-desktop-brand" to="/" aria-label="На главную">
+          <img src={publicAsset('figma/home/logo.svg')} alt="" width="42" height="38" />
+        </Link>}
         <LayoutGroup id={`${navScope}-desktop`}><motion.nav layoutScroll className={`header-navigation${isCase ? ' header-navigation--case' : ''}`} aria-label={isCase ? 'Разделы кейса' : 'Главная навигация'}>
           {isCase ? sections.map(section => <motion.a key={section.id} {...navInteraction} href={`#${section.id}`}
             aria-current={activeSection === section.id ? 'location' : undefined}
@@ -190,14 +200,15 @@ const links = headerRef.current?.querySelectorAll<HTMLElement>('.mobile-header-i
       <AnimatePresence>{open && <motion.div className="mobile-menu-backdrop" data-open="true" aria-hidden="true"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reducedMotion ? motionTokens.reduced : motionTokens.navState, ease: motionTokens.ease }} onClick={() => setOpenFor(null)} />}</AnimatePresence>
       <div className={`mobile-header-inner${isCase ? ' mobile-header-inner--case' : ' mobile-header-inner--home'}${showBack ? ' mobile-header-inner--back' : ''}`}>
-        {showBack ? <><BackButton to={backTo} /><div className="mobile-header-spacer" /></> : <Link
+        {showBack ? <button type="button" className="mobile-brand mobile-brand--return" onClick={returnFromInternalPage} aria-label="Назад">
+          <img src={publicAsset('figma/home/logo.svg')} alt="" width="38" height="34" />
+        </button> : <Link
           className="mobile-brand"
           to="/"
           aria-label="На главную"
           onClick={() => setOpenFor(null)}
         >
           <img src={publicAsset('figma/home/logo.svg')} alt="" width="38" height="34" />
-          <span>{profile.name}</span>
         </Link>}
         <motion.button {...press}
           className="icon-action mobile-menu-toggle"

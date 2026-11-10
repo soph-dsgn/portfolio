@@ -15,7 +15,10 @@ type SourceImage = {
 const skywalletMediaRevision = '20261108b'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
-  const stem = file.replace(/\.[^.]+$/, '')
+  // macOS stores the generated Cyrillic filenames in decomposed Unicode.
+  // Keep the request path in that same normalization form so responsive
+  // candidates do not 404 while the original PNG still exists.
+  const stem = file.replace(/\.[^.]+$/, '').normalize('NFD')
   const srcSet = [960, 1600]
     .map(size => `${encodeURI(publicAsset(`optimized/cases/skywallet/${stem}-${size}.jpg`))}?v=${skywalletMediaRevision} ${Math.min(size, width)}w`)
     .join(', ')

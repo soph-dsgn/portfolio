@@ -16,7 +16,6 @@ import type { CaseVisualSpec } from '../components/CaseVisual'
 import { diagramModeFor } from '../data/caseDiagramModes'
 import { InlineArrows } from '../components/ArrowIcon'
 import { Typography } from '../components/Typography'
-import { MetaSeparatedText } from '../components/MetaSeparatedText'
 import { visualsAfter } from '../data/caseVisuals'
 import { CaseEditorialText } from '../components/CaseEditorialText'
 import { CaseInlineMedia } from '../components/CaseInlineMedia'
@@ -193,15 +192,13 @@ export function ProjectPage() {
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
         <motion.header {...portalEntry} className="case-header" id="overview">
-          <p className="case-project-meta" aria-label="Параметры проекта">
-            <span>{project.niche ? <MetaSeparatedText value={project.niche} separator="slash" /> : null}</span>
-            <span aria-hidden="true">·</span>
-            <span><MetaSeparatedText value={project.platform} /></span>
-            <span aria-hidden="true">·</span>
-            <span>{project.discipline}</span>
-          </p>
           <CaseTitle>{project.title}</CaseTitle>
           <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
+          <dl className="case-facts" aria-label="Параметры проекта">
+            <div><dt>Роль</dt><dd>{project.discipline}</dd></div>
+            <div><dt>Платформа</dt><dd>{project.platform}</dd></div>
+            <div><dt>Ниша</dt><dd>{project.niche ?? project.tags.join(' · ')}</dd></div>
+          </dl>
           {project.figmaUrl ? (
             <div className="case-meta" data-reveal="case-intro" data-reveal-order="0">
               <a className="button figma-button" href={project.figmaUrl} target="_blank" rel="noreferrer">

@@ -68,6 +68,16 @@
   letter-spacing: 0;
 }
 
+.case-header > .case-facts {
+  margin-top: var(--space-8);
+}
+
+.case-header > .case-facts > div {
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--portfolio-page);
+}
+
 .case-shell--editorial .case-overview > .case-deck { width: 100%; }
 
 .case-header .figma-button {
@@ -158,23 +168,23 @@
   --case-v-body-color: var(--portfolio-text);
   --case-v-copy-gap: 12px;
   --case-v-gap: 12px;
-  gap: 0;
+  gap: var(--space-4);
   padding: 0;
-  overflow: hidden;
-  border-radius: var(--radius-media);
-  background: var(--surface-secondary);
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
   color: var(--portfolio-text);
 }
 
 .case-shell--editorial .case-results > div {
   min-height: 180px;
   padding: var(--space-card);
-  border-radius: 0;
-  background: transparent;
+  border-radius: var(--radius-card);
+  background: var(--portfolio-page);
 }
 
-.case-shell--editorial .case-results > div:nth-child(even) { border-inline-start: 1px solid var(--border-subtle); }
-.case-shell--editorial .case-results > div:nth-child(n + 3) { border-top: 1px solid var(--border-subtle); }
+.case-shell--editorial .case-results > div:nth-child(even),
+.case-shell--editorial .case-results > div:nth-child(n + 3) { border: 0; }
 .case-shell--editorial .case-results dt { color: var(--portfolio-text); font-size: var(--case-v-metric); font-weight: var(--weight-strong); letter-spacing: -.045em; }
 .case-shell--editorial .case-results dd { font-size: var(--case-v-body); font-weight: var(--weight-medium); line-height: 1.55; }
 
@@ -186,6 +196,11 @@
 .case-diagram::before { display: none; }
 
 .case-insight-row,
+.case-insight-notes,
+.case-editorial-ledger,
+.case-editorial-steps,
+.case-change-chart,
+.case-visual-plain,
 .case-diagram-mobile-card,
 .case-change-chart-track {
   background: var(--portfolio-page);
@@ -242,7 +257,7 @@
 .site-footer-copyright { display: flex; align-items: center; min-width: 0; }
 .site-footer-credit { flex-wrap: nowrap; }
 .site-footer-mark { display: inline-flex; flex: none; align-items: center; gap: .35em; white-space: nowrap; }
-.site-footer-separator { color: var(--color-meta-separator); }
+.site-footer-separator { color: var(--portfolio-text); }
 .site-footer-author { min-width: 0; }
 .site-footer-copyright { min-height: 0; white-space: nowrap; }
 .case-shell > .site-footer,
@@ -298,6 +313,8 @@
   font-size: 14px;
 }
 
+.case-scroll-top,
+.case-scroll-top .arrow-icon { overflow: visible; }
 .case-scroll-top .arrow-icon { width: 18px; height: 18px; }
 
 .case-contact-main {
@@ -460,7 +477,7 @@
 .copyright-document li + li { margin-top: var(--space-2); }
 .copyright-contact { margin: 0; color: var(--portfolio-text); font-size: var(--type-secondary-size); font-weight: var(--type-secondary-weight); font-style: normal; line-height: var(--type-secondary-leading); }
 .copyright-contact a { overflow-wrap: anywhere; }
-.copyright-meta { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); padding-top: var(--space-text); border-top: 1px solid var(--border-subtle); }
+.copyright-meta { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); padding-top: var(--space-text); border-top: 0; }
 .copyright-document .copyright-updated { margin-top: var(--space-3); color: var(--text-secondary); font-size: var(--type-caption-size); font-weight: var(--type-caption-weight); }
 
 .copyright-shell > .site-footer {
@@ -521,8 +538,14 @@
   .site-footer-copyright { white-space: normal; }
   .site-footer--page { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 24px var(--card-padding) 28px; font-size: 14px; }
   .site-footer--page .site-footer-copyright { justify-self: end; text-align: right; }
-  .site-footer--home { display: flex; align-items: flex-end; gap: 14px; font-size: 13px; }
-  .site-footer--home .site-footer-credit { flex-wrap: wrap; max-width: 22ch; }
+  .site-footer--home { display: flex; align-items: flex-end; gap: 8px; font-size: 12px; }
+  .site-footer--home .site-footer-credit {
+    flex-wrap: nowrap;
+    max-width: none;
+    font-size: clamp(10px, 2.8vw, 12px);
+    white-space: nowrap;
+  }
+  .site-footer--home .site-footer-author { white-space: nowrap; }
   .case-contact-card { gap: 40px; }
   .case-contact-main { gap: var(--space-6); padding-bottom: 0; }
   .case-contact-main h2 { font-size: clamp(30px, 8.5vw, 34px); }

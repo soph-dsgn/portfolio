@@ -1071,7 +1071,7 @@ time.chip {
   min-height: 64px;
   padding: 12px 16px;
   border-radius: var(--radius-control);
-  background: transparent;
+  background: var(--surface-secondary);
   text-align: center;
 }
 .case-diagram-node--primary {
@@ -2571,6 +2571,7 @@ time.chip {
     position: relative;
     display: flex;
     align-items: center;
+    gap: 12px;
     min-height: 48px;
     padding: 10px 14px;
     border-radius: 10px;
@@ -2799,7 +2800,10 @@ button, input, select, textarea, svg text, svg tspan {
   .case-reading-progress { height: 2px; }
 }
 /* Motion wrappers reserve their final layout throughout the entrance. */
-.case-title-mask { overflow: hidden; }
+.case-title-mask {
+  overflow: clip;
+  overflow-clip-margin: .16em;
+}
 .navigation-label { position: relative; display: inline-block; isolation: isolate; }
 .navigation-label-text { position: relative; z-index: 1; }
 /* Onest's visible cap/word bounds sit slightly above its centred line box.
