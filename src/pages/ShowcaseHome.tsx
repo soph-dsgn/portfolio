@@ -9,6 +9,7 @@ import { ShowcaseFooter, ShowcaseSettings } from '../components/ShowcaseChrome'
 import { CaseCard } from '../components/ShowcaseCase'
 import { showcaseCases } from '../data/showcaseCases'
 import { HeroStickers } from '../components/HeroStickers'
+import { useUISound } from '../lib/soundContext'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const asset = (path: string) => publicAsset(path)
@@ -22,8 +23,8 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
 
 /* ---------- Hero ---------- */
 
-/** Waist-up illustrated avatar with a transparent background (cut out of the source render). */
-const portrait = { src: '/optimized/home/avatar-cutout-706.png', srcSet: '/optimized/home/avatar-cutout-360.png 360w, /optimized/home/avatar-cutout-706.png 706w', width: 706, height: 724 }
+/** Waist-up photo with the background removed (cut out of the studio shot). */
+const portrait = { src: '/optimized/home/avatar-photo-760.png', srcSet: '/optimized/home/avatar-photo-380.png 380w, /optimized/home/avatar-photo-760.png 760w', width: 760, height: 813 }
 
 function Hero() {
   const { t } = useLocale()
@@ -96,7 +97,7 @@ function ConceptSlide({ id, onOpen }: { id: string; onOpen: () => void }) {
   if (!item) return null
   return <figure className="sc-slide sc-slide--video">
     {media}
-    <button type="button" className="sc-slide-open" aria-label={t('Открыть превью') + ': ' + title} aria-haspopup="dialog"
+    <button type="button" className="sc-slide-open" data-sound-skip aria-label={t('Открыть превью') + ': ' + title} aria-haspopup="dialog"
       onClick={event => { if (event.currentTarget.closest<HTMLElement>('.sc-slider-view')?.dataset.dragged !== 'true') onOpen() }} />
     <figcaption>{title}</figcaption>
     {control}
@@ -127,6 +128,7 @@ function ConceptPreview({ index, direction, onClose, onStep }: {
   index: number; direction: 1 | -1; onClose: () => void; onStep: (direction: 1 | -1) => void
 }) {
   const { t } = useLocale()
+  const { play } = useUISound()
   const dialog = useRef<HTMLDialogElement>(null)
   const video = useRef<HTMLVideoElement>(null)
   const swipe = useRef<{ x: number; y: number } | null>(null)
@@ -146,7 +148,7 @@ function ConceptPreview({ index, direction, onClose, onStep }: {
   if (!item) return null
   const title = t(item.title)
   return <dialog ref={dialog} className="sc-preview" aria-labelledby="sc-preview-title"
-    onClose={onClose}
+    onClose={() => { play('close'); onClose() }}
     onClick={event => { if (event.target === event.currentTarget || (event.target as HTMLElement).classList.contains('sc-preview-stage')) dialog.current?.close() }}
     onKeyDown={event => {
       if (event.key === 'ArrowRight') { event.preventDefault(); onStep(1) }
@@ -277,6 +279,7 @@ function useDragTrack() {
 }
 
 function ConceptSlider() {
+  const { play } = useUISound()
   const { t } = useLocale()
   const { view, track } = useDragTrack()
   const [open, setOpen] = useState<number | null>(null)
@@ -286,7 +289,7 @@ function ConceptSlider() {
     <div className="sc-slider-view" ref={view} tabIndex={0} aria-label={t('UI-концепты. Листайте стрелками')}>
       <div className="sc-slider-track" ref={track}>
         {conceptOrder.map((id, index) => <ConceptSlide key={id} id={id} onOpen={() => {
-          setDirection(1); setOpen(index); trackEvent('project_open', { project: 'concepts', location: 'home-slider' })
+          setDirection(1); setOpen(index); play('open'); trackEvent('project_open', { project: 'concepts', location: 'home-slider' })
         }} />)}
       </div>
     </div>
@@ -337,9 +340,9 @@ export function ShowcaseHome() {
       <ShowcaseSettings />
       <Hero />
       <div className="sc-canvas">
-        <Reveal><ConceptSlider /></Reveal>
-        <Reveal className="sc-gap"><CaseCard item={showcaseCases.skywallet} /></Reveal>
+        <Reveal><CaseCard item={showcaseCases.skywallet} /></Reveal>
         <Reveal className="sc-gap"><CaseCard item={showcaseCases['partner-portal']} /></Reveal>
+        <Reveal className="sc-gap"><ConceptSlider /></Reveal>
         <Reveal className="sc-gap sc-gap--wide"><ExperienceGrid /></Reveal>
       </div>
       <ShowcaseFooter id="contacts" />

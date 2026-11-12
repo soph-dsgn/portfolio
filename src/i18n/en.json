@@ -414,7 +414,6 @@
   "Навигация": "Navigation",
   "Назад": "Back",
   "Найти операцию через список и фильтры": "Find a transaction using the list and filters",
-  "Написать в Telegram": "Message on Telegram",
   "Написать на почту": "Send an email",
   "Например, статья о дефицитах могла вести к калькулятору, после результата — к релевантному гайду или консультации": "For example, an article about deficiencies could lead to a calculator, then to a relevant guide or consultation based on the result",
   "Настоящее уведомление составлено в соответствии с положениями Части четвертой Гражданского кодекса Российской Федерации (Раздел VII, Глава 70). Авторские права на произведения дизайна, графики и программного кода возникают в силу факта их создания. Регистрация произведений в государственных органах для возникновения и защиты прав не требуется (п. 4 ст. 1259 ГК РФ)": "This notice is issued under Part Four of the Civil Code of the Russian Federation (Section VII, Chapter 70). Copyright in design, graphics, and code arises upon creation. Registration with public authorities is not required for copyright to arise or be protected (Article 1259, paragraph 4)",
@@ -1992,9 +1991,7 @@
   "Стикер": "Sticker",
   "Перетащите стикер мышью или двигайте стрелками": "Drag the sticker or move it with the arrow keys",
   "Если дочитали до сюда — давайте знакомиться": "If you’ve read this far, let’s get acquainted",
-  "Дизайнила и кодила": "Designed and coded by",
-  "Сейчас в Москве": "Now in Moscow",
-  "Пишите в Telegram:": "Write on Telegram:",
-  "Или на почту:": "Or by email:",
-  "Мой рабочий лор": "My work lore"
+  "Мой рабочий лор": "My work lore",
+  "скоро": "coming soon",
+  "Телеграм": "Telegram"
 }

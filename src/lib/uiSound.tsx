@@ -2,91 +2,170 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocale } from '../i18n/locale'
 import { SoundContext, useUISound, type SoundKind } from './soundContext'
 
-const soundKey = 'portfolio.sound'
+/* Interface sounds, synthesised with Web Audio (no audio files): soft digital ticks on hover, a short
+   "clack" on press, a zip when a sticker is peeled and a thud when it sticks back, a whoosh for previews.
+   Every play detunes slightly at random so repeated hovers never sound mechanical.
+   Sound is on by default and starts after the first click or key press (browsers require a gesture);
+   the speaker toggle next to the language switch turns it off and the choice is remembered. */
 
+const soundKey = 'portfolio.sound'
+const jitter = (amount: number) => 1 + (Math.random() * 2 - 1) * amount
+
+type Voice = { audio: AudioContext; out: GainNode; noise: AudioBuffer }
+
+function tone({ audio, out }: Voice, at: number, { from, to = from, length, volume, type = 'sine' }: {
+  from: number; to?: number; length: number; volume: number; type?: OscillatorType
+}) {
+  const oscillator = audio.createOscillator(), gain = audio.createGain()
+  oscillator.type = type
+  oscillator.frequency.setValueAtTime(from, at)
+  oscillator.frequency.exponentialRampToValueAtTime(to, at + length)
+  gain.gain.setValueAtTime(0.0001, at)
+  gain.gain.exponentialRampToValueAtTime(volume, at + 0.004)
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + length)
+  oscillator.connect(gain).connect(out)
+  oscillator.start(at); oscillator.stop(at + length + 0.02)
+}
+
+function hiss({ audio, out, noise }: Voice, at: number, { filter = 'bandpass', from, to = from, q = 1, length, volume }: {
+  filter?: BiquadFilterType; from: number; to?: number; q?: number; length: number; volume: number
+}) {
+  const source = audio.createBufferSource(), band = audio.createBiquadFilter(), gain = audio.createGain()
+  source.buffer = noise
+  band.type = filter; band.Q.value = q
+  band.frequency.setValueAtTime(from, at)
+  band.frequency.exponentialRampToValueAtTime(to, at + length)
+  gain.gain.setValueAtTime(0.0001, at)
+  gain.gain.exponentialRampToValueAtTime(volume, at + 0.006)
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + length)
+  source.connect(band).connect(gain).connect(out)
+  source.start(at, Math.random() * 0.5); source.stop(at + length + 0.02)
+}
+
+const recipes: Record<SoundKind, (voice: Voice, at: number) => void> = {
+  hover: (v, at) => {
+    const p = jitter(0.08)
+    tone(v, at, { from: 1900 * p, to: 1700 * p, length: 0.035, volume: 0.022 })
+    hiss(v, at, { filter: 'highpass', from: 5000, length: 0.012, volume: 0.012 })
+  },
+  click: (v, at) => {
+    const p = jitter(0.04)
+    hiss(v, at, { from: 2400 * p, to: 1800 * p, q: 1.4, length: 0.03, volume: 0.07 })
+    tone(v, at, { from: 220 * p, to: 110 * p, length: 0.07, volume: 0.05 })
+  },
+  switch: (v, at) => {
+    const p = jitter(0.03)
+    tone(v, at, { from: 660 * p, length: 0.07, volume: 0.035, type: 'triangle' })
+    tone(v, at + 0.055, { from: 990 * p, length: 0.09, volume: 0.03, type: 'triangle' })
+  },
+  peel: (v, at) => {
+    const p = jitter(0.06)
+    hiss(v, at, { from: 700 * p, to: 3600 * p, q: 2.5, length: 0.2, volume: 0.05 })
+    tone(v, at + 0.02, { from: 420 * p, to: 760 * p, length: 0.12, volume: 0.012 })
+  },
+  stick: (v, at) => {
+    const p = jitter(0.05)
+    tone(v, at, { from: 150 * p, to: 70 * p, length: 0.11, volume: 0.07 })
+    hiss(v, at, { filter: 'lowpass', from: 900, to: 300, length: 0.05, volume: 0.05 })
+  },
+  open: (v, at) => {
+    hiss(v, at, { filter: 'lowpass', from: 300, to: 2600, length: 0.24, volume: 0.035 })
+    tone(v, at + 0.03, { from: 520, to: 780, length: 0.18, volume: 0.018 })
+  },
+  close: (v, at) => {
+    hiss(v, at, { filter: 'lowpass', from: 2400, to: 280, length: 0.2, volume: 0.03 })
+    tone(v, at, { from: 760, to: 500, length: 0.14, volume: 0.016 })
+  },
+  on: (v, at) => {
+    tone(v, at, { from: 880, length: 0.12, volume: 0.03 })
+    tone(v, at + 0.07, { from: 1320, length: 0.16, volume: 0.026 })
+  },
+}
+
+/** Speaker icon toggle; sits next to the language switch. */
 export function SoundControl() {
   const { enabled, toggle } = useUISound()
   const { locale } = useLocale()
-  return <button type="button" className="story-sound" data-sound-toggle aria-pressed={enabled} onClick={toggle}>
-    <span aria-hidden="true" />{locale === 'en' ? (enabled ? 'Sound on' : 'Sound off') : (enabled ? 'Звук вкл.' : 'Звук выкл.')}
+  const label = locale === 'en' ? 'Interface sounds' : 'Звуки интерфейса'
+  return <button type="button" className="sc-sound" data-sound-toggle aria-pressed={enabled} aria-label={label} title={label} onClick={toggle}>
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z" fill="currentColor" />
+      {enabled ? <><path d="M15.5 9a4 4 0 0 1 0 6" /><path d="M18 6.5a7.5 7.5 0 0 1 0 11" /></> : <path d="m16 9.5 5 5m0-5-5 5" />}
+    </svg>
   </button>
 }
 
-function makeTone(context: AudioContext, frequency: number, start: number, duration: number, volume: number) {
-  const oscillator = context.createOscillator()
-  const gain = context.createGain()
-  oscillator.type = 'sine'
-  oscillator.frequency.setValueAtTime(frequency, start)
-  oscillator.frequency.exponentialRampToValueAtTime(frequency * .92, start + duration)
-  gain.gain.setValueAtTime(.0001, start)
-  gain.gain.exponentialRampToValueAtTime(volume, start + .008)
-  gain.gain.exponentialRampToValueAtTime(.0001, start + duration)
-  oscillator.connect(gain)
-  gain.connect(context.destination)
-  oscillator.start(start)
-  oscillator.stop(start + duration + .01)
-}
-
 export function UISoundProvider({ children }: { children: ReactNode }) {
-  const audioRef = useRef<AudioContext | null>(null)
-  const lastSound = useRef(-Infinity)
+  const voice = useRef<Voice | null>(null)
+  const last = useRef<Partial<Record<SoundKind, number>>>({})
   const [enabled, setEnabled] = useState(() => {
-    try { return localStorage.getItem(soundKey) === 'on' } catch { return false }
+    try { return localStorage.getItem(soundKey) !== 'off' } catch { return true }
   })
 
   const unlock = useCallback(() => {
     try {
-      audioRef.current ??= new AudioContext({ latencyHint: 'interactive' })
-      if (audioRef.current.state === 'suspended') void audioRef.current.resume().catch(() => {})
+      if (!voice.current) {
+        const audio = new AudioContext({ latencyHint: 'interactive' })
+        const out = audio.createGain(); out.gain.value = 0.9; out.connect(audio.destination)
+        const noise = audio.createBuffer(1, audio.sampleRate, audio.sampleRate)
+        const data = noise.getChannelData(0)
+        for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1
+        voice.current = { audio, out, noise }
+      }
+      if (voice.current.audio.state === 'suspended') void voice.current.audio.resume().catch(() => {})
     } catch { /* Audio is optional. */ }
   }, [])
 
   const play = useCallback((kind: SoundKind) => {
-    const audio = audioRef.current
-    if (!enabled || audio?.state !== 'running' || performance.now() - lastSound.current < 85) return
-    lastSound.current = performance.now()
-    const now = audio.currentTime + .004
-    if (kind === 'switch') {
-      makeTone(audio, 360, now, .075, .018)
-      makeTone(audio, 540, now + .045, .085, .014)
-    } else if (kind === 'click') {
-      makeTone(audio, 430, now, .055, .012)
-    } else {
-      makeTone(audio, kind === 'chip' ? 245 : 490, now, .045, .006)
-    }
+    const current = voice.current
+    if (!enabled || current?.audio.state !== 'running') return
+    // Each kind has its own short cooldown so fast pointer sweeps don't turn into a buzz.
+    const now = performance.now(), gap = kind === 'hover' ? 55 : 70
+    if (now - (last.current[kind] ?? -Infinity) < gap) return
+    last.current[kind] = now
+    recipes[kind](current, current.audio.currentTime + 0.005)
   }, [enabled])
 
   const toggle = () => {
-    if (!enabled) unlock()
-    else if (audioRef.current?.state === 'running') void audioRef.current.suspend().catch(() => {})
-    setEnabled(!enabled)
-    try { localStorage.setItem(soundKey, enabled ? 'off' : 'on') } catch { /* Session preference still works. */ }
+    const next = !enabled
+    if (next) { unlock(); window.setTimeout(() => { if (voice.current?.audio.state === 'running') recipes.on(voice.current, voice.current.audio.currentTime + 0.01) }, 30) }
+    else if (voice.current?.audio.state === 'running') void voice.current.audio.suspend().catch(() => {})
+    setEnabled(next)
+    try { localStorage.setItem(soundKey, next ? 'on' : 'off') } catch { /* Session preference still works. */ }
   }
 
   useEffect(() => {
     if (!enabled) return
+    // The first gesture unlocks audio; until then browsers keep the context suspended.
+    const gesture = () => unlock()
+    const control = (target: EventTarget | null) => target instanceof Element
+      ? target.closest<HTMLElement>('a[href], button, [role="button"], summary, label')
+      : null
     const onClick = (event: MouseEvent) => {
-      if (!(event.target instanceof Element)) return
-      const control = event.target.closest<HTMLElement>('a, button, [role="button"]')
-      if (!control || control.matches(':disabled, [aria-disabled="true"], [data-sound-toggle]')) return
-      unlock()
-      const switched = control.matches('[aria-pressed], [role="switch"], .canvas-zone-indicator button, .language-selector button')
-      play(switched ? 'switch' : 'click')
+      const element = control(event.target)
+      if (!element || element.matches(':disabled, [aria-disabled="true"], [data-sound-toggle], [data-sound-skip], [data-sound-skip] *')) return
+      play(element.matches('[aria-pressed], [role="switch"], [data-sound-switch], .language-selector button') ? 'switch' : 'click')
     }
     const onPointerOver = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse' || !(event.target instanceof Element)) return
-      const target = event.target.closest('[data-sound-hover]')
-      if (target && !(event.relatedTarget instanceof Node && target.contains(event.relatedTarget))) play('hover')
+      if (event.pointerType !== 'mouse') return
+      const element = control(event.target)
+      if (!element || element.matches(':disabled')) return
+      if (event.relatedTarget instanceof Node && element.contains(event.relatedTarget)) return
+      play('hover')
     }
+    document.addEventListener('pointerdown', gesture, true)
+    document.addEventListener('keydown', gesture, true)
     document.addEventListener('click', onClick, true)
     document.addEventListener('pointerover', onPointerOver)
     return () => {
+      document.removeEventListener('pointerdown', gesture, true)
+      document.removeEventListener('keydown', gesture, true)
       document.removeEventListener('click', onClick, true)
       document.removeEventListener('pointerover', onPointerOver)
     }
   }, [enabled, play, unlock])
 
-  useEffect(() => () => { void audioRef.current?.close() }, [])
+  useEffect(() => () => { void voice.current?.audio.close() }, [])
 
   return <SoundContext.Provider value={{ enabled, toggle, play }}>{children}</SoundContext.Provider>
 }
