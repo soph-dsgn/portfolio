@@ -20,6 +20,3 @@ export function waitForReactLayout() {
   })
 }
 
-export function waitAtMost(milliseconds: number) {
-  return new Promise<void>(resolve => window.setTimeout(resolve, milliseconds))
-}

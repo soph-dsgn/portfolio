@@ -14,18 +14,6 @@ export const profile = {
     'Разбираюсь в требованиях и сценариях, нахожу места, где легко запутаться, и готовлю решения к разработке. Проверяю не только визуал: понятно ли человеку, что делать, получается ли закончить задачу и есть ли смысл вернуться',
 }
 
-export const aboutPresentation = {
-  background: 'В Юкки, Make Difference и SkyCapital Group собирала сценарии и дизайн-системы для веб-сервисов и мобильных продуктов и доводила их до разработки. Училась продуктовому и UX/UI-дизайну в FormFactor и Contented',
-  statement: 'Люблю разбираться в запутанном и превращать это в понятный продукт.',
-  emphasis: 'Обычно начинаю с вопросов, сценариев и ограничений, а заканчиваю интерфейсом, который понятен пользователю, полезен бизнесу и не вызывает вопросов у разработки',
-  principles: [
-    { title: '+14% к конверсии', description: 'После редизайна лендинга и калькулятора' },
-    { title: '−30% времени', description: 'Ключевые задачи в личном кабинете — быстрее' },
-    { title: '−35% ошибок', description: 'Меньше ошибок в переработанных формах' },
-    { title: '−20% времени запуска', description: 'С готовыми компонентами запускались быстрее' },
-  ],
-}
-
 export type Experience = {
   company: string
   role: string
@@ -108,10 +96,6 @@ export const toolLogos = [
   { id: 'cursor', label: 'Cursor', src: '/icons/tools/cursor.svg' },
 ].map((tool) => ({ ...tool, src: publicAsset(tool.src) }))
 
-export const aboutTools = toolLogos.filter(({ id }) => id !== 'cursor').flatMap(({ id, label }) => id === 'figma'
-  ? [{ id, label }, { id: 'figma-motion', label: 'Figma Motion' }, { id: 'figjam', label: 'FigJam' }]
-  : [{ id, label }])
-
 export type CaseBlock = {
   kind: string
   bullet: boolean
@@ -150,10 +134,7 @@ export type Project = {
   niche?: string
   document: CaseBlock[]
   figmaUrl?: string
-  /** Homepage-only cover. Case study content must use the existing images/videos. */
-  cover?: string
   coverDimensions?: { width: number; height: number }
-  coverSrcSet?: string
   videos?: CaseVideo[]
 }
 
@@ -166,7 +147,6 @@ export const projects: Project[] = [
     discipline: 'UX/UI-дизайнер',
     platform: 'Web · Mobile',
     document: [],
-    cover: '/cases/concept/cover.png?v=90356d747719',
     coverDimensions: { width: 4390, height: 3231 },
     videos: [
       { id: 'uglycash', title: 'UglyCash', shortTitle: 'UglyCash', src: '/cases/concept/1.mp4?v=846c2ee788dc', poster: '/optimized/concepts/poster-1-1600.avif?v=5ec0b152feec', width: 2902, height: 2176 },
@@ -188,7 +168,6 @@ export const projects: Project[] = [
     platform: 'Web · Mobile',
     niche: 'FinTech / Crypto',
     document: [],
-    cover: '/cases/partner-portal/Cover.png?v=20261109a',
     coverDimensions: { width: 6872, height: 5504 },
   },
   {
@@ -201,17 +180,10 @@ export const projects: Project[] = [
     platform: 'Mobile app',
     niche: 'Fintech / Crypto',
     document: [],
-    cover: '/cases/skywallet/Cover.png?v=27d645c8f479',
     coverDimensions: { width: 4584, height: 3438 },
   },
 ].map((project) => ({
   ...project,
-  cover: project.id === 'concepts' || project.id === 'partner-portal'
-    ? publicAsset(project.cover)
-    : project.cover ? publicAsset(`/optimized/home/${project.id}-1920.webp`) : undefined,
-  coverSrcSet: project.id === 'concepts' ? undefined : project.id === 'partner-portal'
-    ? [960, 1920].map(width => `${publicAsset(`/optimized/home/partner-portal-${width}.jpg`)}?v=20261109a ${width}w`).join(', ')
-    : project.cover ? [960, 1920].map(width => `${publicAsset(`/optimized/home/${project.id}-${width}.webp`)} ${width}w`).join(', ') : undefined,
   videos: project.videos?.map((video) => ({
     ...video,
     src: publicAsset(video.src),

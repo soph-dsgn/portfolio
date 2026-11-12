@@ -32,15 +32,6 @@ export function StoryHeader() {
   </header>
 }
 
-/** Detail pages (cases) replace the navigation with a single way back, like a note. */
-export function StoryBack() {
-  const { t } = useLocale()
-  return <header className="story-back story-wrap">
-    <Link to="/#work"><span aria-hidden="true">←</span> {t('Назад к кейсам')}</Link>
-    <StorySettings />
-  </header>
-}
-
 export function MoscowTime() {
   const { t, locale } = useLocale()
   const [now, setNow] = useState(() => new Date())

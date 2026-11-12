@@ -1,4 +1,4 @@
-import type { CaseVisualSpec } from '../components/CaseVisual'
+import type { CaseVisualSpec } from './caseVisualTypes'
 
 export const caseVisuals: Record<string, CaseVisualSpec[]> = {
   'partner-portal': [

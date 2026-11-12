@@ -1,8 +1,7 @@
 import type { CaseImage } from './portfolio'
-import type { CaseMediaLayout, CaseMediaPlacement } from './caseMedia'
+import type { CaseMediaPlacement } from './caseMedia'
 import { publicAsset } from '../lib/publicAsset'
 
-export type SkywalletMediaLayout = CaseMediaLayout
 export type SkywalletMediaPlacement = CaseMediaPlacement
 
 type SourceImage = {

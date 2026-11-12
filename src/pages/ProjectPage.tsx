@@ -1,4 +1,3 @@
-import { CaseTitle, CaseDeck } from '../components/CaseTitle'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
@@ -10,17 +9,14 @@ import { profile } from '../data/portfolio'
 import { caseProjects as projects } from '../data/caseProjects'
 import { getCaseGroups, withoutFinalPeriod } from '../data/caseContent'
 import type { CaseNode } from '../data/caseContent'
-import { Icon } from '../components/Icon'
-import { CaseVisual } from '../components/CaseVisual'
-import type { CaseVisualSpec } from '../components/CaseVisual'
-import { diagramModeFor } from '../data/caseDiagramModes'
+import type { CaseVisualSpec } from '../data/caseVisualTypes'
 import { InlineArrows } from '../components/ArrowIcon'
 import { Typography } from '../components/Typography'
 import { visualsAfter } from '../data/caseVisuals'
 import { CaseEditorialText } from '../components/CaseEditorialText'
 import { CaseInlineMedia } from '../components/CaseInlineMedia'
 import { Footer } from '../components/Footer'
-import { audienceStatementLength, companionStart, isNarrativeLead } from '../lib/caseEditorial'
+import { audienceStatementLength, isNarrativeLead } from '../lib/caseEditorial'
 import { skywalletMediaAfter } from '../data/skywalletMedia'
 import { partnerPortalMediaAfter } from '../data/partnerPortalMedia'
 import { CaseCard } from '../components/ShowcaseCase'
@@ -30,7 +26,7 @@ import '../styles/caseEditorial.css'
 import '../styles/caseShowcase.css'
 
 // Cases use the home-page visual language: case-card header, numbered sections, diagrams as cards and pills.
-const usesShowcase = (projectId: string) => projectId in showcaseCases
+const isShowcaseCase = (projectId: string): projectId is keyof typeof showcaseCases => projectId in showcaseCases
 
 function CaseNodeView({ node }: { node: CaseNode }) {
   if (node.kind === 'heading') {
@@ -80,12 +76,7 @@ function CaseResults({ items }: { items: string[] }) {
   )
 }
 
-function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: CaseNode[]; projectId: string; groupId: string; groupTitle: string }) {
-  const showcase = usesShowcase(projectId)
-  const visualView = (visual: CaseVisualSpec, heading: string) => showcase && visual.presentation !== 'results'
-    ? <ShowcaseVisual visual={visual} />
-    : <CaseVisual visual={visual} precedingHeading={heading} />
-  let precedingHeading = groupTitle
+function CaseDocumentNodes({ nodes, projectId, groupId }: { nodes: CaseNode[]; projectId: string; groupId: string }) {
   let textNodes: CaseNode[] = []
   let blockIndex = 0
   const blocks: { content: ReactNode; nodes?: CaseNode[]; visual?: CaseVisualSpec; key: string }[] = []
@@ -102,19 +93,16 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
       blocks.push({ key: "results", content: <CaseResults items={node.items} /> })
       blockIndex += 1
       for (const visual of resultVisuals) {
-        blocks.push({ key: visual.id, visual, content: visualView(visual, groupTitle) })
+        blocks.push({ key: visual.id, visual, content: <ShowcaseVisual visual={visual} /> })
       }
       return
     }
-    if (node.kind === 'heading') {
-      if (textNodes.some(node => node.kind !== 'heading')) flushText()
-      precedingHeading = node.text
-    }
+    if (node.kind === 'heading' && textNodes.some(node => node.kind !== 'heading')) flushText()
     textNodes.push(node)
     const text = node.kind === 'list' ? node.items.join(' ') : node.text
     for (const visual of visualsAfter(projectId, groupId, text)) {
       flushText()
-      blocks.push({ key: visual.id, visual, content: visualView(visual, precedingHeading) })
+      blocks.push({ key: visual.id, visual, content: <ShowcaseVisual visual={visual} /> })
     }
     for (const placement of skywalletMediaAfter(projectId, groupId, text)) {
       flushText()
@@ -126,46 +114,9 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
     }
   })
   flushText()
-  const editorial: ReactNode[] = []
-  for (let index = 0; index < blocks.length; index += 1) {
-    const block = blocks[index]
-    const next = blocks[index + 1]
-    const companionMode = !showcase && next?.visual && !next.visual.presentation && diagramModeFor(next.visual.id)
-    const start = block.nodes && next?.visual?.items.length === 2 &&
-      (companionMode === 'contrast' || companionMode === 'transformation') ? companionStart(block.nodes) : null
-    if (block.nodes && start !== null) {
-      const intro = block.nodes.slice(0, start)
-      const explanation = block.nodes.slice(start)
-      // Keep a short list with the sentence that introduces it, even when a
-      // generated diagram was inserted between those source nodes.
-      const continuation = blocks[index + 2]
-      const firstNode = continuation?.nodes?.[0]
-      if (isNarrativeLead(explanation[explanation.length - 1]) && firstNode?.kind === 'list' && firstNode.items.join(' ').length <= 400) {
-        explanation.push(firstNode)
-        const remaining = continuation.nodes!.slice(1)
-        if (remaining.length) {
-          continuation.nodes = remaining
-          continuation.content = remaining.map((node, nodeIndex) => <CaseNodeView node={node} key={nodeIndex} />)
-        } else blocks.splice(index + 2, 1)
-      }
-      if (intro.length) editorial.push(<CaseEditorialText nodes={intro} section={groupId}
-        width={groupId !== 'final' && intro.every(node => node.kind === 'paragraph') && intro.reduce((sum, node) => sum + (node.kind === 'paragraph' ? node.text.length : 0), 0) <= 260 ? 'narrow' : undefined}
-        key={`${block.key}-intro`}>
-        {intro.map((node, nodeIndex) => <CaseNodeView node={node} key={nodeIndex} />)}
-      </CaseEditorialText>)
-      editorial.push(<div className="case-layout--text-visual" key={block.key}>
-        <CaseEditorialText nodes={explanation} section={groupId}>
-          {explanation.map((node, nodeIndex) => <CaseNodeView node={node} key={nodeIndex} />)}
-        </CaseEditorialText>
-        {next.content}
-      </div>)
-      index += 1
-    } else {
-      editorial.push(block.nodes
-        ? <CaseEditorialText nodes={block.nodes} section={groupId} key={block.key}>{block.content}</CaseEditorialText>
-        : <div className="case-editorial-visual case-layout--wide" key={block.key}>{block.content}</div>)
-    }
-  }
+  const editorial = blocks.map(block => block.nodes
+    ? <CaseEditorialText nodes={block.nodes} section={groupId} key={block.key}>{block.content}</CaseEditorialText>
+    : <div className="case-editorial-visual case-layout--wide" key={block.key}>{block.content}</div>)
   return <div className="case-editorial-flow">{editorial}</div>
 }
 
@@ -185,7 +136,7 @@ export function ProjectPage() {
   }, [project?.id])
 
   // Concepts no longer have their own page: they open as previews from the home slider.
-  if (!project || project.videos)
+  if (!project || project.videos || !isShowcaseCase(project.id))
     return (
       <main className="not-found" id="main-content" tabIndex={-1}>
         <h1>Проект не найден</h1>
@@ -198,35 +149,20 @@ export function ProjectPage() {
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
-        {usesShowcase(project.id) ? <motion.div {...portalEntry} className="scc-header" id="overview">
-          <CaseCard item={showcaseCases[project.id as keyof typeof showcaseCases]} page />
+        <motion.div {...portalEntry} className="scc-header" id="overview">
+          <CaseCard item={showcaseCases[project.id]} page />
           <dl className="scc-facts" aria-label="Параметры проекта">
             <div><dt>Роль</dt><dd>{project.discipline}</dd></div>
             <div><dt>Платформа</dt><dd>{project.platform}</dd></div>
             <div><dt>Ниша</dt><dd>{project.niche ?? project.tags.join(' · ')}</dd></div>
           </dl>
-        </motion.div> : <motion.header {...portalEntry} className="case-header" id="overview">
-          <CaseTitle>{project.title}</CaseTitle>
-          <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
-          <dl className="case-facts" aria-label="Параметры проекта">
-            <div><dt>Роль</dt><dd>{project.discipline}</dd></div>
-            <div><dt>Платформа</dt><dd>{project.platform}</dd></div>
-            <div><dt>Ниша</dt><dd>{project.niche ?? project.tags.join(' · ')}</dd></div>
-          </dl>
-          {project.figmaUrl ? (
-            <div className="case-meta" data-reveal="case-intro" data-reveal-order="0">
-              <a className="button figma-button" href={project.figmaUrl} target="_blank" rel="noreferrer">
-                Figma-файл <span className="icon-motion"><Icon name="external" /></span>
-              </a>
-            </div>
-          ) : null}
-        </motion.header>}
+        </motion.div>
         <div className="case-content" id="case-content">
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
-              <section className={`case-section case-document-section${usesShowcase(project.id) ? ' scc-section' : ''}`} id={group.id} aria-labelledby={`${group.id}-title`}>
+              <section className={`case-section case-document-section scc-section`} id={group.id} aria-labelledby={`${group.id}-title`}>
                 <h2 id={`${group.id}-title`} data-reveal="text" data-index={String(groups.indexOf(group) + 1).padStart(2, '0')}>{group.title}</h2>
-                <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
+                <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} />
               </section>
             </div>
           ))}

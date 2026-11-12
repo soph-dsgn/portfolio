@@ -3,7 +3,7 @@ import { diagramHubs } from '../data/caseDiagramModes'
 import { useLocale } from '../i18n/locale'
 import { InlineArrows } from './ArrowIcon'
 import { Check } from './ShowcaseCase'
-import type { CaseVisualSpec, VisualItem } from './CaseVisual'
+import type { CaseVisualSpec, VisualItem } from '../data/caseVisualTypes'
 
 /* Case diagrams in the home-page vocabulary: a grey card holding white cards, pills and check lists.
    One renderer per visual shape; the data in caseVisuals.ts stays untouched. */

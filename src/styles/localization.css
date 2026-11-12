@@ -6,3 +6,11 @@
 @media (hover: hover) and (pointer: fine) { .language-selector button:hover { color: var(--color-text); } }
 @media (prefers-reduced-motion: reduce) { .language-selector button { transition-duration: 0s; } }
 @media (max-width: 900px) { .mobile-menu .language-selector { justify-self: start; width: 120px; padding-inline: 20px; background: var(--color-surface); min-height: 44px; margin: 2px 0 10px; } }
+
+/* Language label fades in after a switch (moved from the retired figmaHome.css). */
+.home-localized-copy { animation: home-localized-copy-fade 160ms var(--ease-out) both; }
+@keyframes home-localized-copy-fade {
+  from { opacity: .56; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .home-localized-copy { animation: none; } }

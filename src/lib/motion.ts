@@ -118,25 +118,3 @@ export function useMotionSystem() {
   return { reduced, adaptive, hover, mobileEntrance, mobileGroup, mobileMask, mobileLine, variants, reveal, hoverLift, navInteraction, transition, staggerGroup, opacityVariants, metricGroupVariants, metricItemVariants, metricVariants, metricCaptionVariants }
 }
 
-// First-document reveals must not finish behind the initial loader. All scenes
-// share this one readiness subscription; client navigation never resets it.
-const interfaceListeners = new Set<() => void>()
-const interfaceReady = () => !document.getElementById('root')?.hasAttribute('data-initial-loading')
-const announceInterface = () => {
-  if (!interfaceReady()) return
-  document.removeEventListener('initial-ui-ready', announceInterface)
-  interfaceListeners.forEach(listener => listener())
-  interfaceListeners.clear()
-}
-const subscribeInterface = (listener: () => void) => {
-  if (interfaceReady()) return () => {}
-  interfaceListeners.add(listener)
-  if (interfaceListeners.size === 1) document.addEventListener('initial-ui-ready', announceInterface)
-  return () => {
-    interfaceListeners.delete(listener)
-    if (!interfaceListeners.size) document.removeEventListener('initial-ui-ready', announceInterface)
-  }
-}
-export function useInterfaceReady() {
-  return useSyncExternalStore(subscribeInterface, interfaceReady, () => false)
-}
