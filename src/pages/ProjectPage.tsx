@@ -2,7 +2,7 @@ import { CaseTitle, CaseDeck } from '../components/CaseTitle'
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
-import { lazy, Suspense, useEffect } from 'react'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -23,9 +23,14 @@ import { Footer } from '../components/Footer'
 import { audienceStatementLength, companionStart, isNarrativeLead } from '../lib/caseEditorial'
 import { skywalletMediaAfter } from '../data/skywalletMedia'
 import { partnerPortalMediaAfter } from '../data/partnerPortalMedia'
+import { CaseCard } from '../components/ShowcaseCase'
+import { ShowcaseVisual } from '../components/ShowcaseVisual'
+import { showcaseCases } from '../data/showcaseCases'
 import '../styles/caseEditorial.css'
+import '../styles/caseShowcase.css'
 
-const ConceptCasePage = lazy(() => import('./ConceptCasePage').then(module => ({ default: module.ConceptCasePage })))
+// Pilot of the home-page visual language inside cases: SkyWallet header and its first section.
+const showcasePilot = (projectId: string, groupId?: string) => projectId === 'skywallet' && (groupId === undefined || groupId === 'context')
 
 function CaseNodeView({ node }: { node: CaseNode }) {
   if (node.kind === 'heading') {
@@ -76,6 +81,10 @@ function CaseResults({ items }: { items: string[] }) {
 }
 
 function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: CaseNode[]; projectId: string; groupId: string; groupTitle: string }) {
+  const showcase = showcasePilot(projectId, groupId)
+  const visualView = (visual: CaseVisualSpec, heading: string) => showcase && visual.presentation !== 'results'
+    ? <ShowcaseVisual visual={visual} />
+    : <CaseVisual visual={visual} precedingHeading={heading} />
   let precedingHeading = groupTitle
   let textNodes: CaseNode[] = []
   let blockIndex = 0
@@ -93,7 +102,7 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
       blocks.push({ key: "results", content: <CaseResults items={node.items} /> })
       blockIndex += 1
       for (const visual of resultVisuals) {
-        blocks.push({ key: visual.id, visual, content: <CaseVisual visual={visual} precedingHeading={groupTitle} /> })
+        blocks.push({ key: visual.id, visual, content: visualView(visual, groupTitle) })
       }
       return
     }
@@ -105,7 +114,7 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
     const text = node.kind === 'list' ? node.items.join(' ') : node.text
     for (const visual of visualsAfter(projectId, groupId, text)) {
       flushText()
-      blocks.push({ key: visual.id, visual, content: <CaseVisual visual={visual} precedingHeading={precedingHeading} /> })
+      blocks.push({ key: visual.id, visual, content: visualView(visual, precedingHeading) })
     }
     for (const placement of skywalletMediaAfter(projectId, groupId, text)) {
       flushText()
@@ -121,7 +130,7 @@ function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: C
   for (let index = 0; index < blocks.length; index += 1) {
     const block = blocks[index]
     const next = blocks[index + 1]
-    const companionMode = next?.visual && !next.visual.presentation && diagramModeFor(next.visual.id)
+    const companionMode = !showcase && next?.visual && !next.visual.presentation && diagramModeFor(next.visual.id)
     const start = block.nodes && next?.visual?.items.length === 2 &&
       (companionMode === 'contrast' || companionMode === 'transformation') ? companionStart(block.nodes) : null
     if (block.nodes && start !== null) {
@@ -175,7 +184,8 @@ export function ProjectPage() {
     document.dispatchEvent(new Event('reveal-content-ready'))
   }, [project?.id])
 
-  if (!project)
+  // Concepts no longer have their own page: they open as previews from the home slider.
+  if (!project || project.videos)
     return (
       <main className="not-found" id="main-content" tabIndex={-1}>
         <h1>Проект не найден</h1>
@@ -184,14 +194,18 @@ export function ProjectPage() {
       </main>
     )
 
-  if (project.videos)
-    return <Suspense fallback={null}><ConceptCasePage project={project} /></Suspense>
-
   const groups = getCaseGroups(project)
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
-        <motion.header {...portalEntry} className="case-header" id="overview">
+        {showcasePilot(project.id) && project.id in showcaseCases ? <motion.div {...portalEntry} className="scc-header" id="overview">
+          <CaseCard item={showcaseCases[project.id as keyof typeof showcaseCases]} page />
+          <dl className="scc-facts" aria-label="Параметры проекта">
+            <div><dt>Роль</dt><dd>{project.discipline}</dd></div>
+            <div><dt>Платформа</dt><dd>{project.platform}</dd></div>
+            <div><dt>Ниша</dt><dd>{project.niche ?? project.tags.join(' · ')}</dd></div>
+          </dl>
+        </motion.div> : <motion.header {...portalEntry} className="case-header" id="overview">
           <CaseTitle>{project.title}</CaseTitle>
           <CaseDeck>{withoutFinalPeriod(project.description)}</CaseDeck>
           <dl className="case-facts" aria-label="Параметры проекта">
@@ -206,12 +220,12 @@ export function ProjectPage() {
               </a>
             </div>
           ) : null}
-        </motion.header>
+        </motion.header>}
         <div className="case-content" id="case-content">
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
-              <section className="case-section case-document-section" id={group.id} aria-labelledby={`${group.id}-title`}>
-                <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
+              <section className={`case-section case-document-section${showcasePilot(project.id, group.id) ? ' scc-section' : ''}`} id={group.id} aria-labelledby={`${group.id}-title`}>
+                <h2 id={`${group.id}-title`} data-reveal="text" data-index={String(groups.indexOf(group) + 1).padStart(2, '0')}>{group.title}</h2>
                 <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
               </section>
             </div>

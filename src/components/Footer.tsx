@@ -1,9 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowIcon } from './ArrowIcon'
-import { ContactLinks } from './ContactLinks'
+import { StoryFooter } from './StoryChrome'
 import { useLocale } from '../i18n/locale'
-import { useMotionSystem } from '../lib/motion'
 
 const footerContent = {
   year: '2026',
@@ -26,24 +23,6 @@ function FooterBar({ variant }: { variant: 'page' | 'home' }) {
 }
 
 export function Footer({ variant = 'page' }: { variant?: 'page' | 'home' | 'case' }) {
-  const { t } = useLocale()
-  const { reduced, navInteraction } = useMotionSystem()
-
-  if (variant !== 'case') return <FooterBar variant={variant} />
-
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
-  return <div className="case-footer-composition">
-    <section className="case-contact-card" aria-labelledby="case-contact-title">
-      <div className="case-contact-topline">
-        <motion.button {...navInteraction} className="case-scroll-top" type="button" onClick={scrollToTop}>
-          {t('Наверх')}<ArrowIcon direction="up" decorative />
-        </motion.button>
-      </div>
-      <div className="case-contact-main">
-        <h2 id="case-contact-title">{t('Обсудим ваш проект?')}</h2>
-        <ContactLinks location="case-footer" variant="pill" className="case-contact-actions" />
-      </div>
-    </section>
-    <FooterBar variant="page" />
-  </div>
+  if (variant === 'home') return <FooterBar variant="home" />
+  return <StoryFooter location={variant} />
 }

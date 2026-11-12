@@ -1,17 +1,18 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
   /* One colour vocabulary for every route and visual primitive. */
-  --surface-page: #f4f4f6;
-  --surface-primary: #fff;
-  --surface-secondary: #eeeef1;
-  --surface-tertiary: #f1f1f3;
-  --text-primary: #171717;
-  --text-secondary: #6f6f78;
-  --text-tertiary: #85858e;
-  --text-disabled: #aaaab2;
-  --border-subtle: #dedee3;
-  --accent-primary: #f96aea;
+  --surface-page: #656769;
+  --surface-primary: #191C1D;
+  --surface-secondary: color-mix(in srgb, var(--surface-primary), var(--text-primary) 8%);
+  --surface-tertiary: color-mix(in srgb, var(--surface-primary), var(--text-primary) 13%);
+  --text-primary: #EFEEEF;
+  --text-secondary: color-mix(in srgb, var(--text-primary), var(--surface-primary) 17%);
+  --text-tertiary: color-mix(in srgb, var(--text-primary), var(--surface-primary) 25%);
+  --text-disabled: color-mix(in srgb, var(--text-primary), var(--surface-primary) 46%);
+  --border-subtle: color-mix(in srgb, var(--text-primary) 16%, transparent);
+  --accent-primary: #F3BFDB;
+  --accent-ink: var(--surface-primary);
 
   /* Page geometry. */
   --page-max-width: 1200px;
@@ -116,14 +117,14 @@
   --color-white: var(--surface-primary);
   --color-surface: var(--surface-secondary);
   --color-tile: var(--surface-tertiary);
-  --color-dark: var(--text-primary);
+  --color-dark: var(--surface-primary);
   --color-on-dark: #f7f7f5;
   --color-muted-on-dark: #b7b7b2;
   --color-text: var(--text-primary);
   --color-muted: var(--text-tertiary);
   --color-meta-separator: var(--text-secondary);
   --color-border: var(--border-subtle);
-  --color-action: var(--text-primary);
+  --color-action: var(--surface-primary);
   --color-action-hover: #3c3c3c;
   --color-action-pressed: #505050;
   --color-avatar: #d8d8d6;

@@ -7,18 +7,16 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom'
-import { HomeCanvas } from './components/HomeCanvas'
+import { ShowcaseHome } from './pages/ShowcaseHome'
 import { savedPageScroll, savePageScroll } from './lib/pageScroll'
-import { ExperiencePage } from './pages/ExperiencePage'
 import { cancelSectionNavigation, navigateToSection } from './lib/canvasNavigation'
-import { profile } from './data/portfolio'
 import { ScrollReveals } from './components/ScrollReveals'
-import { MobileHeader } from './components/MobileHeader'
+import { ShowcaseDock, ShowcaseTopBar, ShowcaseTopFade } from './components/ShowcaseChrome'
 import { CaseHeader } from './components/CaseHeader'
 import { CopyrightPage } from './pages/CopyrightPage'
 import { useCaseScrollTracking, usePageTracking } from './hooks/useAnalyticsTracking'
-import { useLocale } from './i18n/locale'
 import { UISoundProvider } from './lib/uiSound'
+import { PrivacySettings } from './components/PrivacySettings'
 
 const ProjectPage = lazy(() => import('./pages/ProjectPage').then(module => ({ default: module.ProjectPage })))
 
@@ -37,14 +35,6 @@ function ScrollToPage() {
       cancelSectionNavigation()
       document.getElementById('main-content')?.focus({ preventScroll: true })
     }
-    // HomeCanvas owns home positioning after its real scroll range is committed.
-    // Two owners here would race the initial vertical/horizontal layout switch.
-    if (pathname === '/') {
-      previousPath.current = pathname
-      return
-    }
-    // Home hash commits belong to HomeCanvas; cancelling here would stop the
-    // tween that fulfils that same navigation intent. Other pages own theirs.
     cancelSectionNavigation()
     const restored = navigationType === 'POP' ? savedPageScroll(key) : undefined
     if (restored !== undefined) {
@@ -54,21 +44,17 @@ function ScrollToPage() {
       if (target && pathname.startsWith('/projects/')) {
         navigateToSection(target, previousPath.current === pathname ? 'smooth' : 'instant')
       } else target?.scrollIntoView({ behavior: previousPath.current === pathname && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' })
-    } else if (previousPath.current !== pathname || pathname === '/' || pathname === '/experience')
+    } else if (previousPath.current !== pathname || pathname === '/')
       window.scrollTo({ top: 0, behavior: 'instant' })
     previousPath.current = pathname
     return () => savePageScroll(key, window.scrollY)
   }, [pathname, hash, key, navigationType])
   return null
 }
-function HomePage() {
-  const { t } = useLocale()
-  useLayoutEffect(() => { document.title = `${t(profile.name)} — ${t(profile.role)}` }, [t])
-  return <HomeCanvas />
-}
 function SiteHeader() {
   const { pathname } = useLocation()
-  return pathname.startsWith('/projects/') ? <CaseHeader key={pathname} /> : <MobileHeader showBack={pathname === '/copyright'} />
+  if (pathname === '/') return null
+  return pathname.startsWith('/projects/') ? <CaseHeader key={pathname} /> : <ShowcaseTopBar />
 }
 function App() {
   return (
@@ -80,10 +66,10 @@ function App() {
       <ScrollToPage />
       <AnalyticsTracking />
       <ScrollReveals />
+      <ShowcaseTopFade />
       <SiteHeader />
       <Suspense fallback={null}><Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/" element={<ShowcaseHome />} />
         <Route path="/projects/:slug" element={<ProjectPage />} />
         <Route path="/copyright" element={<CopyrightPage />} />
         <Route
@@ -98,6 +84,8 @@ function App() {
           }
         />
       </Routes></Suspense>
+      <ShowcaseDock />
+      <PrivacySettings banner />
       </UISoundProvider>
     </BrowserRouter>
   )

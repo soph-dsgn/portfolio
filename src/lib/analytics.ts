@@ -1,3 +1,5 @@
+import { getAnalyticsConsent } from './analyticsConsent'
+
 const metrikaId = Number(import.meta.env.VITE_YANDEX_METRIKA_ID || '113354835')
 const clarityId = import.meta.env.VITE_CLARITY_PROJECT_ID || 'yrw5j54ads'
 
@@ -57,6 +59,7 @@ export function initAnalytics() {
 
 // React StrictMode can rerun effects; only a changed route path is a new pageview.
 export function trackPageView(path: string, url: string) {
+  if (getAnalyticsConsent() !== 'allow') return false
   if (previousPagePath === path) return false
   initAnalytics()
   const referer = previousPageUrl ?? document.referrer
@@ -71,6 +74,7 @@ export function trackPageView(path: string, url: string) {
 }
 
 export function trackEvent(name: AnalyticsEvent, params: EventParams) {
+  if (getAnalyticsConsent() !== 'allow') return
   if (!import.meta.env.PROD) {
     console.info('[analytics]', name, params)
     return

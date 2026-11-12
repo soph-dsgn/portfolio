@@ -1,0 +1,186 @@
+/* Pilot: cases in the home-page language (SkyWallet header + "Контекст").
+   Loaded lazily with ProjectPage, after showcaseInner.css, so selectors carry the same `html` prefix. */
+
+/* ---------- Header: the home case card + fact pills ---------- */
+html .case-main .scc-header { display: grid; gap: calc(16 * var(--u)); }
+html .case-main .scc-header :is(.sc-list, ul) { margin-left: 0; padding-left: 0; list-style: none; }
+html .case-main .scc-header .sc-case-title { max-width: none; margin: 0; font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; letter-spacing: 0; }
+.scc-facts { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin: 0; padding: 0 calc(20 * var(--u)); }
+.scc-facts > div {
+  display: inline-flex;
+  align-items: baseline;
+  gap: calc(8 * var(--u));
+  padding: calc(14 * var(--u)) calc(22 * var(--u));
+  border-radius: 999px;
+  background: var(--sc-card);
+}
+.scc-facts dt { color: var(--sc-muted); font-size: calc(18 * var(--u)); font-weight: 500; }
+.scc-facts dd { margin: 0; color: var(--sc-ink); font-size: calc(18 * var(--u)); font-weight: 500; }
+
+/* ---------- Section: white page, sticky numbered title on the left, reading column on the right ---------- */
+html .case-shell--editorial .case-document-section.scc-section {
+  display: grid;
+  grid-template-columns: calc(300 * var(--u)) minmax(0, 1fr);
+  column-gap: calc(60 * var(--u));
+  row-gap: 0;
+  padding: calc(90 * var(--u)) 0 calc(30 * var(--u));
+  border-radius: 0;
+  background: transparent;
+}
+html .case-shell--editorial .scc-section > h2 {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  max-width: none;
+  margin: 0;
+  font-size: calc(32 * var(--u));
+  line-height: calc(40 * var(--u));
+  font-weight: 500;
+}
+html .case-shell--editorial .scc-section > h2::before {
+  content: attr(data-index);
+  display: block;
+  margin-bottom: calc(12 * var(--u));
+  color: var(--sc-blue);
+  font-size: calc(16 * var(--u));
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+html .case-shell--editorial .scc-section > .case-editorial-flow { gap: calc(40 * var(--u)); min-width: 0; }
+/* Prose keeps the canvas proportions but never drops below a comfortable reading size */
+html .case-shell--editorial .scc-section .case-editorial-text :is(p, li) {
+  color: rgba(8, 8, 8, .64);
+  font-size: max(16px, calc(20 * var(--u)));
+  line-height: max(26px, calc(32 * var(--u)));
+}
+html .case-shell--editorial .scc-section .case-editorial-text :is(ul, ol) { margin: 0; padding: 0; list-style: none; }
+html .case-shell--editorial .scc-section .case-editorial-text :is(ul, ol) > li { position: relative; padding-left: 24px; }
+html .case-shell--editorial .scc-section .case-editorial-text :is(ul, ol) > li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  color: rgba(8, 8, 8, .35);
+}
+html .case-shell--editorial .scc-section .case-editorial-text > :is(p, ul, ol, .case-audience-intro) { max-width: calc(800 * var(--u)); }
+html .case-shell--editorial .scc-section .case-editorial-text :is(h3, h4) {
+  max-width: none;
+  margin: calc(16 * var(--u)) 0 calc(12 * var(--u));
+  color: var(--sc-ink);
+  font-size: max(19px, calc(24 * var(--u)));
+  line-height: max(26px, calc(32 * var(--u)));
+  font-weight: 500;
+}
+html .case-shell--editorial .scc-section .case-editorial-text p.case-narrative-lead { color: var(--sc-ink); font-weight: 500; }
+html .case-shell--editorial .scc-section .case-inline-media-open { border-radius: calc(40 * var(--u)); background: var(--sc-card); }
+html .case-shell--editorial .scc-section .case-inline-media-item :is(img, picture) { border-radius: calc(40 * var(--u)); }
+html .case-shell--editorial .scc-section .visual-caption { margin-top: calc(12 * var(--u)); padding: 0 calc(8 * var(--u)); }
+
+/* ---------- Diagrams ---------- */
+.scv { margin: 0; padding: calc(36 * var(--u)) calc(36 * var(--u)) calc(36 * var(--u)); border-radius: calc(48 * var(--u)); background: var(--sc-card); }
+.scv-title { margin: 0 0 calc(22 * var(--u)); padding-left: calc(4 * var(--u)); color: var(--sc-muted); font-size: max(14px, calc(18 * var(--u))); line-height: calc(26 * var(--u)); font-weight: 500; }
+.scv-caption { margin: calc(20 * var(--u)) 0 0; padding-left: calc(4 * var(--u)); color: var(--sc-muted); font-size: calc(16 * var(--u)); line-height: calc(24 * var(--u)); }
+.scv-card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+  padding: calc(26 * var(--u)) calc(28 * var(--u));
+  border-radius: calc(32 * var(--u));
+  background: #fff;
+}
+.scv-card p { margin: 0; color: rgba(8, 8, 8, .62); font-size: max(14px, calc(18 * var(--u))); line-height: max(21px, calc(28 * var(--u))); }
+.scv-card strong { color: var(--sc-ink); font-size: max(15px, calc(20 * var(--u))); line-height: max(21px, calc(28 * var(--u))); font-weight: 500; }
+.scv-muted { color: var(--sc-muted) !important; }
+
+.scv-chain { display: flex; gap: calc(30 * var(--u)); margin: 0; padding: 0; list-style: none; }
+.scv-chain-step {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: calc(4 * var(--u));
+  min-width: 0;
+  padding: calc(18 * var(--u)) calc(20 * var(--u));
+  border-radius: calc(28 * var(--u));
+  background: #fff;
+}
+.scv-chain-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  right: calc(-24 * var(--u));
+  color: rgba(8, 8, 8, .3);
+  font-size: max(14px, calc(20 * var(--u)));
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.scv-chain-step strong { color: var(--sc-ink); font-size: max(15px, calc(20 * var(--u))); line-height: max(20px, calc(26 * var(--u))); font-weight: 500; }
+.scv-chain-step span { color: var(--sc-muted); font-size: max(12px, calc(16 * var(--u))); line-height: max(17px, calc(22 * var(--u))); }
+.scv-chain-index { color: var(--sc-blue) !important; font-size: max(11px, calc(14 * var(--u))) !important; font-weight: 600; }
+
+.scv-sides,
+.scv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(12 * var(--u)); margin: 0; padding: 0; list-style: none; }
+.scv-pill {
+  align-self: flex-start;
+  padding: calc(8 * var(--u)) calc(16 * var(--u));
+  border-radius: 999px;
+  background: rgba(8, 8, 8, .05);
+  color: var(--sc-ink);
+  font-size: calc(17 * var(--u));
+  line-height: calc(22 * var(--u));
+  font-weight: 500;
+}
+.scv-check { display: flex; gap: calc(10 * var(--u)); color: var(--sc-ink) !important; }
+.scv-check .sc-check { margin-top: calc(6 * var(--u)); opacity: .5; }
+.scv-card-index {
+  display: grid;
+  place-items: center;
+  width: calc(36 * var(--u));
+  height: calc(36 * var(--u));
+  border-radius: 50%;
+  background: rgba(41, 115, 255, .1);
+  color: var(--sc-blue);
+  font-size: calc(14 * var(--u));
+  font-weight: 600;
+}
+.scv-card[data-tone='problem'] .scv-card-index { background: rgba(255, 77, 26, .12); color: #e5481b; font-size: calc(17 * var(--u)); }
+
+/* ---------- Below 900px ---------- */
+@media (max-width: 899px) {
+  html .case-main .scc-header { gap: 10px; }
+  .scc-facts { gap: 6px; padding: 0 4px; }
+  .scc-facts > div { padding: 8px 14px; gap: 6px; }
+  .scc-facts :is(dt, dd) { font-size: 13px; }
+  html .case-shell--editorial .case-document-section.scc-section { grid-template-columns: minmax(0, 1fr); row-gap: 20px; padding: 48px 0 12px; }
+  html .case-shell--editorial .scc-section > h2 { position: static; font-size: 24px; line-height: 30px; }
+  html .case-shell--editorial .scc-section > h2::before { margin-bottom: 8px; font-size: 13px; }
+  html .case-shell--editorial .scc-section > .case-editorial-flow { gap: 24px; }
+  html .case-shell--editorial .scc-section .case-editorial-text :is(p, li) { font-size: 16px; line-height: 26px; }
+  .scc-header .sc-case-art { display: block; }
+  html .case-main .scc-header .sc-case-title { font-size: 22px; line-height: 28px; }
+  html .case-shell--editorial .scc-section .case-editorial-text > :is(p, ul, ol, .case-audience-intro) { max-width: none; }
+  html .case-shell--editorial .scc-section .case-editorial-text :is(h3, h4) { margin: 8px 0; font-size: 18px; line-height: 24px; }
+  html .case-shell--editorial .scc-section :is(.case-inline-media-open, .case-inline-media-item img, .case-inline-media-item picture) { border-radius: 20px; }
+  .scv { padding: 16px; border-radius: 26px; }
+  .scv-title { margin-bottom: 12px; font-size: 14px; line-height: 20px; }
+  .scv-caption { margin-top: 12px; font-size: 13px; line-height: 19px; }
+  .scv-sides,
+  .scv-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .scv-card { gap: 8px; padding: 18px; border-radius: 20px; }
+  .scv-card p { font-size: 15px; line-height: 23px; }
+  .scv-card strong { font-size: 16px; line-height: 22px; }
+  .scv-pill { padding: 6px 12px; font-size: 14px; line-height: 18px; }
+  .scv-chain { flex-direction: column; gap: 20px; }
+  .scv-chain-step:not(:last-child)::after { content: '↓'; top: auto; right: auto; bottom: -18px; left: 18px; transform: none; font-size: 14px; }
+  .scv-chain-step { min-width: 0; padding: 12px 16px; border-radius: 18px; }
+  .scv-chain-step strong { font-size: 15px; line-height: 20px; }
+  .scv-chain-step span { font-size: 13px; line-height: 18px; }
+  .scv-chain-index { font-size: 11px !important; }
+  .scv-card-index { width: 28px; height: 28px; font-size: 12px; }
+}

@@ -1,7 +1,9 @@
 /* oxlint-disable react/immutability -- Matter owns and mutates its world outside React's render cycle. */
-import { useEffect, useRef, type KeyboardEvent } from 'react'
+import { useEffect, useEffectEvent, useRef, type KeyboardEvent } from 'react'
 import * as Matter from 'matter-js'
 import { useMotionSystem } from '../lib/motion'
+import { useUISound } from '../lib/soundContext'
+import { useLocale } from '../i18n/locale'
 
 const tools = [
   ['Figma', 'figma', 0], ['Figma Motion', 'figma-motion', -4.02], ['FigJam', 'figjam', 11.17],
@@ -109,7 +111,11 @@ const findInitialPositions = (elements: HTMLLIElement[], width: number, height: 
 export function InteractiveToolCloud() {
   const containerRef = useRef<HTMLUListElement>(null)
   const physicsRef = useRef<PhysicsState | null>(null)
+  const startRef = useRef<(() => void) | null>(null)
   const { reduced } = useMotionSystem()
+  const { play } = useUISound()
+  const { t } = useLocale()
+  const tap = useEffectEvent(() => play('chip'))
 
   useEffect(() => {
     const container = containerRef.current
@@ -133,7 +139,7 @@ export function InteractiveToolCloud() {
       const toolWidth = element.offsetWidth
       const toolHeight = element.offsetHeight
       const position = initialPositions[index]
-      const body = Matter.Bodies.rectangle(position.x, position.y, toolWidth, toolHeight, {
+      const body = Matter.Bodies.rectangle(position.x, Math.max(toolHeight / 2 + 4, position.y - 38), toolWidth, toolHeight, {
         label: `tool-${tools[index][1]}`,
         angle: width < 600 ? 0 : tools[index][2] * Math.PI / 180,
         chamfer: { radius: Math.min(toolHeight / 2, 18) },
@@ -148,6 +154,9 @@ export function InteractiveToolCloud() {
     })
 
     const walls = makeWalls(width, height)
+    const collider = Matter.Bodies.circle(-100, -100, 22, { isStatic: true, restitution: .12, friction: .08 })
+    const bodies = toolBodies.map(entry => entry.body)
+    let colliderTarget: Matter.Vector | null = null
     Matter.Composite.add(engine.world, [...walls, ...toolBodies.map(entry => entry.body)])
 
     const state: PhysicsState = {
@@ -163,7 +172,7 @@ export function InteractiveToolCloud() {
       lastFrame: 0,
       resizeFrame: 0,
       running: false,
-      visible: true,
+      visible: false,
       lastPointerX: 0,
       lastPointerY: 0,
       lastPointerTime: 0,
@@ -182,11 +191,22 @@ export function InteractiveToolCloud() {
       }
       const elapsed = Math.min(32, state.lastFrame ? time - state.lastFrame : BASE_FRAME)
       state.lastFrame = time
-      Matter.Engine.update(state.engine, elapsed)
+      if (colliderTarget) {
+        const delta = Matter.Vector.sub(colliderTarget, collider.position)
+        const distance = Matter.Vector.magnitude(delta)
+        const point = Matter.Vector.add(collider.position, Matter.Vector.mult(delta, Math.min(1, 16 / Math.max(1, distance))))
+        Matter.Body.setVelocity(collider, Matter.Vector.sub(point, collider.position))
+        Matter.Body.setPosition(collider, point)
+        if (distance > 1) for (const { bodyA, bodyB } of Matter.Query.collides(collider, bodies)) {
+          Matter.Sleeping.set(bodyA === collider ? bodyB : bodyA, false)
+        }
+      }
+      const steps = Math.max(1, Math.ceil(elapsed / BASE_FRAME))
+      for (let step = 0; step < steps; step += 1) Matter.Engine.update(state.engine, elapsed / steps)
       paint()
 
       const interacting = state.activePointerId !== null
-      if (!interacting && allToolsSleeping()) {
+      if (!interacting && allToolsSleeping() && (!colliderTarget || Matter.Vector.magnitude(Matter.Vector.sub(colliderTarget, collider.position)) < 1)) {
         state.running = false
         state.frame = 0
         state.lastFrame = 0
@@ -201,6 +221,15 @@ export function InteractiveToolCloud() {
       state.lastFrame = 0
       state.frame = requestAnimationFrame(tick)
     }
+    startRef.current = start
+
+    const hideCollider = () => {
+      colliderTarget = null
+      Matter.Composite.remove(engine.world, collider)
+    }
+    Matter.Events.on(engine, 'collisionStart', ({ pairs }) => {
+      if (pairs.some(pair => pair.bodyA === collider || pair.bodyB === collider)) tap()
+    })
 
     const localPoint = (event: globalThis.PointerEvent) => {
       const rect = container.getBoundingClientRect()
@@ -225,6 +254,14 @@ export function InteractiveToolCloud() {
         state.lastPointerY = point.y
         state.lastPointerTime = now
         start()
+      } else if (event.pointerType === 'mouse' && state.visible) {
+        const point = localPoint(event)
+        if (!colliderTarget) {
+          Matter.Body.setPosition(collider, point)
+          Matter.Composite.add(engine.world, collider)
+        }
+        colliderTarget = point
+        start()
       }
     }
 
@@ -237,6 +274,8 @@ export function InteractiveToolCloud() {
       if (!entry) return
 
       if (event.cancelable) event.preventDefault()
+      hideCollider()
+      tap()
       const point = localPoint(event)
       const localGrabPoint = Matter.Vector.rotate(Matter.Vector.sub(point, entry.body.position), -entry.body.angle)
       const constraint = Matter.Constraint.create({
@@ -283,12 +322,16 @@ export function InteractiveToolCloud() {
     const updateBounds = () => {
       const nextWidth = container.clientWidth
       const nextHeight = container.clientHeight
-      if (!nextWidth || !nextHeight || (nextWidth === state.width && nextHeight === state.height)) return
+      if (!nextWidth || !nextHeight) return
+      const boundsChanged = nextWidth !== state.width || nextHeight !== state.height
+      if (!boundsChanged && state.tools.every(({ element, width, height }) => element.offsetWidth === width && element.offsetHeight === height)) return
       const previousWidth = state.width
       const previousHeight = state.height
-      Matter.Composite.remove(state.engine.world, state.walls)
-      state.walls = makeWalls(nextWidth, nextHeight)
-      Matter.Composite.add(state.engine.world, state.walls)
+      if (boundsChanged) {
+        Matter.Composite.remove(state.engine.world, state.walls)
+        state.walls = makeWalls(nextWidth, nextHeight)
+        Matter.Composite.add(state.engine.world, state.walls)
+      }
 
       for (const entry of state.tools) {
         const nextToolWidth = entry.element.offsetWidth
@@ -318,25 +361,29 @@ export function InteractiveToolCloud() {
       state.visible = entry.isIntersecting
       if (state.visible) start()
       else {
+        hideCollider()
         state.running = false
         cancelAnimationFrame(state.frame)
         state.frame = 0
         state.lastFrame = 0
       }
-    }, { rootMargin: '160px' })
+    })
 
     container.addEventListener('pointerdown', onPointerDown)
+    container.addEventListener('pointerleave', hideCollider)
     container.addEventListener('pointermove', onPointerMove, { passive: false })
     container.addEventListener('pointerup', releasePointer)
     container.addEventListener('pointercancel', releasePointer)
     container.addEventListener('lostpointercapture', releasePointer)
     resizeObserver.observe(container)
+    elements.forEach(element => resizeObserver.observe(element))
     intersectionObserver.observe(container)
     paint()
     start()
 
     return () => {
       container.removeEventListener('pointerdown', onPointerDown)
+      container.removeEventListener('pointerleave', hideCollider)
       container.removeEventListener('pointermove', onPointerMove)
       container.removeEventListener('pointerup', releasePointer)
       container.removeEventListener('pointercancel', releasePointer)
@@ -352,6 +399,7 @@ export function InteractiveToolCloud() {
         delete element.dataset.dragging
       })
       physicsRef.current = null
+      startRef.current = null
     }
   }, [reduced])
 
@@ -369,24 +417,8 @@ export function InteractiveToolCloud() {
     if (event.key === 'ArrowDown') force.y = strength
     Matter.Sleeping.set(entry.body, false)
     Matter.Body.applyForce(entry.body, entry.body.position, force)
-    if (!state.running && state.visible) {
-      state.running = true
-      state.lastFrame = 0
-      const resume = (time: number) => {
-        if (!state.running || !state.visible) return
-        Matter.Engine.update(state.engine, Math.min(32, state.lastFrame ? time - state.lastFrame : BASE_FRAME))
-        state.lastFrame = time
-        state.tools.forEach(setToolTransform)
-        if (state.tools.every(item => item.body.isSleeping)) {
-          state.running = false
-          state.frame = 0
-          state.lastFrame = 0
-          return
-        }
-        state.frame = requestAnimationFrame(resume)
-      }
-      state.frame = requestAnimationFrame(resume)
-    }
+    play('chip')
+    startRef.current?.()
   }
 
   return <>
@@ -395,7 +427,7 @@ export function InteractiveToolCloud() {
       {tools.map(([label, id], index) => <li className={`home-tool home-tool--${id}`} data-ai={['chatgpt', 'codex', 'claude', 'cursor'].includes(id) || undefined} key={id}>
         <button type="button" className="home-tool-action" aria-label={`${label}. Физический интерактивный инструмент`}
           aria-describedby="tool-cloud-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
-          onKeyDown={event => onKeyDown(index, event)}>{label}</button>
+          onKeyDown={event => onKeyDown(index, event)}>{t(label)}</button>
       </li>)}
     </ul>
   </>

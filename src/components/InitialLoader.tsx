@@ -26,8 +26,11 @@ export function InitialLoader() {
   const reduced = useReducedMotion()
 
   useEffect(() => {
+    if (!loading) return
     let cancelled = false
     let frame = 0
+    const started = performance.now()
+    let assemblyTimer = 0
     let finished = false
     const finish = () => {
       if (cancelled || finished) return
@@ -43,16 +46,18 @@ export function InitialLoader() {
     const failSafe = window.setTimeout(finish, loaderFailSafe)
     void Promise.all([waitForReactLayout(), waitForPrimaryFont(), waitForHeroImage()]).then(() => {
       if (cancelled) return
-      frame = requestAnimationFrame(finish)
+      assemblyTimer = window.setTimeout(() => { frame = requestAnimationFrame(finish) },
+        reduced ? 0 : Math.max(0, 420 - (performance.now() - started)))
     })
-    return () => { cancelled = true; window.clearTimeout(failSafe); cancelAnimationFrame(frame) }
-  }, [])
+    return () => { cancelled = true; window.clearTimeout(failSafe); window.clearTimeout(assemblyTimer); cancelAnimationFrame(frame) }
+  }, [loading, reduced])
 
   return <AnimatePresence>
     {loading && <motion.div className="initial-loader" key="initial-loader"
       role="status" aria-live="polite" initial={false} animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }} transition={{ duration: reduced ? motionTokens.reduced : motionTokens.loaderExit, ease: motionTokens.ease }}>
-      <p><span>Минутку, расставляю всё по местам</span><span className="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
+      exit={reduced ? { opacity: 0 } : { opacity: 0, clipPath: 'inset(0 0 100% 0)' }} transition={{ duration: reduced ? motionTokens.reduced : .42, ease: motionTokens.ease }}>
+      <span className="sr-only">Минутку, расставляю всё по местам</span>
+      <div className="opening-guides" aria-hidden="true"><i /><i /><i /></div>
     </motion.div>}
   </AnimatePresence>
 }

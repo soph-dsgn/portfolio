@@ -28,7 +28,7 @@ function ContactPill({ label, href, event, location, disabled = false }: {
   const content = <Typography>{label}</Typography>
   const props = {
     ...navInteraction,
-    className: location === 'home' ? 'home-pill' : 'contact-pill',
+    className: 'contact-pill',
     'aria-disabled': disabled || undefined,
     onClick: !disabled ? () => {
       if (event === 'telegram_click') trackEvent('contact_click', { location })
@@ -50,7 +50,7 @@ export function ContactLinks({ location, resume = true, variant = 'default', cla
   const { t } = useLocale()
   if (variant === 'pill') return <nav className={className ?? 'contact-pill-row'} aria-label={t('Контакты')}>
     <ContactPill label="Telegram" href={profile.telegram} event="telegram_click" location={location} />
-    <ContactPill label="CV" href={profile.cv} event="resume_click" location={location} disabled={!profile.cv} />
+    {resume && <ContactPill label="CV" href={profile.cv} event="resume_click" location={location} disabled={!profile.cv} />}
     <ContactPill label={location === 'home' ? 'Linkedin' : 'LinkedIn'} href={profile.linkedin} event="linkedin_click" location={location} />
     <ContactPill label="Mail" href={profile.email} event="email_click" location={location} />
   </nav>
