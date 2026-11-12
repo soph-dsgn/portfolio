@@ -18,34 +18,22 @@ html .case-main .scc-header .sc-case-title { max-width: none; margin: 0; font-si
 .scc-facts dd { margin: 0; color: var(--sc-ink); font-size: calc(18 * var(--u)); font-weight: 500; }
 
 /* ---------- Section: white page, sticky numbered title on the left, reading column on the right ---------- */
+/* Title on top, content below: the side rail handles navigation, so nothing else sits in the gutter */
 html .case-shell--editorial .case-document-section.scc-section {
   display: grid;
-  grid-template-columns: calc(300 * var(--u)) minmax(0, 1fr);
-  column-gap: calc(60 * var(--u));
-  row-gap: 0;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: calc(32 * var(--u));
   padding: calc(90 * var(--u)) 0 calc(30 * var(--u));
   border-radius: 0;
   background: transparent;
 }
 html .case-shell--editorial .scc-section > h2 {
-  position: sticky;
-  top: 96px;
-  align-self: start;
+  position: static;
   max-width: none;
   margin: 0;
   font-size: calc(32 * var(--u));
   line-height: calc(40 * var(--u));
   font-weight: 500;
-}
-html .case-shell--editorial .scc-section > h2::before {
-  content: attr(data-index);
-  display: block;
-  margin-bottom: calc(12 * var(--u));
-  color: var(--sc-blue);
-  font-size: calc(16 * var(--u));
-  line-height: 1;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
 }
 html .case-shell--editorial .scc-section > .case-editorial-flow { gap: calc(40 * var(--u)); min-width: 0; }
 /* Prose keeps the canvas proportions but never drops below a comfortable reading size */
@@ -68,7 +56,7 @@ html .case-shell--editorial .scc-section .case-editorial-text :is(ul, ol) > li::
   mask: none;
   color: rgba(8, 8, 8, .35);
 }
-html .case-shell--editorial .scc-section .case-editorial-text > :is(p, ul, ol, .case-audience-intro) { max-width: calc(800 * var(--u)); }
+html .case-shell--editorial .scc-section .case-editorial-text > :is(p, ul, ol, .case-audience-intro) { max-width: none; }
 html .case-shell--editorial .scc-section .case-editorial-text :is(h3, h4) {
   max-width: none;
   margin: calc(16 * var(--u)) 0 calc(12 * var(--u));
@@ -182,7 +170,7 @@ html .case-shell--editorial .scc-section .visual-caption { margin-top: calc(12 *
   border-radius: 50%;
   background: rgba(41, 115, 255, .1);
 }
-.scv-chain--route .scv-chain-body { padding-top: calc(4 * var(--u)); }
+
 .scv-branches { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin-top: calc(8 * var(--u)); }
 .scv-branch { display: inline-flex; gap: 6px; padding: calc(8 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: rgba(8, 8, 8, .05); color: var(--sc-ink) !important; }
 .scv-branch b { font-weight: 600; }
@@ -204,9 +192,6 @@ html .case-shell--editorial .scc-section .case-results > div { padding: calc(30 
 html .case-shell--editorial .scc-section .case-results dt { color: var(--sc-blue); font-size: calc(36 * var(--u)); line-height: calc(44 * var(--u)); font-weight: 600; }
 html .case-shell--editorial .scc-section .case-results dd { color: rgba(8, 8, 8, .62); font-size: max(14px, calc(18 * var(--u))); line-height: max(21px, calc(26 * var(--u))); }
 html .case-shell--editorial .scc-section .case-layout--statement > p:first-of-type { color: var(--sc-ink); font-size: max(19px, calc(28 * var(--u))); line-height: max(28px, calc(38 * var(--u))); font-weight: 500; }
-html .case-shell--editorial .scc-section .case-editorial-text ol.step-list { counter-reset: scc-step; }
-html .case-shell--editorial .scc-section .case-editorial-text ol.step-list > li { counter-increment: scc-step; padding-left: 40px; }
-html .case-shell--editorial .scc-section .case-editorial-text ol.step-list > li::before { content: counter(scc-step, decimal-leading-zero); color: var(--sc-blue); font-weight: 600; font-size: .8em; top: .15em; }
 html .case-shell--editorial .scc-section .case-outcome-label { color: var(--sc-blue); }
 
 /* ---------- Section rail: fixed segmented bar on the left, labels when scrolling stops ---------- */
@@ -242,8 +227,9 @@ html .case-main > .scc-rail { width: max-content; max-width: none; margin: 0; }
 .scc-rail-label { width: 184px; margin-top: -2px; text-wrap: balance; transition: opacity .3s ease-out, transform .3s ease-out, color .1s ease-out; }
 .scc-rail a:hover .scc-rail-label,
 .scc-rail a[aria-current] .scc-rail-label { color: var(--sc-ink); }
-.scc-rail[data-scrolling]:not(:hover, :focus-within) .scc-rail-label,
-.scc-rail[data-room='bars']:not(:hover, :focus-within) .scc-rail-label { opacity: 0; transform: translateX(-4px); transition-duration: .15s; }
+.scc-rail[data-scrolling]:not(:hover, :focus-within) .scc-rail-label { opacity: 0; transform: translateX(-4px); transition-duration: .15s; }
+/* Narrow gutter: bars only, labels never appear over the text (the rail keeps its accessible names) */
+.scc-rail[data-room='bars'] .scc-rail-label { opacity: 0; pointer-events: none; }
 .scc-rail a:focus-visible { outline: none; }
 .scc-rail a:focus-visible .scc-rail-label { color: var(--sc-ink); text-decoration: underline; text-underline-offset: 3px; }
 .scc-rail a:focus-visible .scc-rail-bar { box-shadow: 0 0 0 2px var(--sc-blue); }
@@ -251,22 +237,7 @@ html .case-main > .scc-rail { width: max-content; max-width: none; margin: 0; }
   .scc-rail,
   .scc-rail-label { transition: none; }
   .scc-rail[data-scrolling]:not(:hover, :focus-within) .scc-rail-label { opacity: 1; transform: none; }
-}
-
-/* Where the side rail is shown (gutter ≥ 36px from ~972px), it names the sections: the in-flow titles
-   stay for screen readers only and the content takes the full card width. */
-@media (min-width: 972px) {
-  html .case-shell--editorial .case-document-section.scc-section { grid-template-columns: minmax(0, 1fr); padding-top: calc(80 * var(--u)); }
-  html .case-shell--editorial .scc-section > h2 {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
+  .scc-rail[data-room='bars'] .scc-rail-label { opacity: 0; }
 }
 
 /* ---------- Below 900px ---------- */
@@ -277,8 +248,7 @@ html .case-main > .scc-rail { width: max-content; max-width: none; margin: 0; }
   .scc-facts :is(dt, dd) { font-size: 13px; }
   html .case-shell--editorial .case-document-section.scc-section { grid-template-columns: minmax(0, 1fr); row-gap: 20px; padding: 48px 0 12px; }
   html .case-shell--editorial .scc-section > h2 { position: static; font-size: 24px; line-height: 30px; }
-  html .case-shell--editorial .scc-section > h2::before { margin-bottom: 8px; font-size: 13px; }
-  html .case-shell--editorial .scc-section > .case-editorial-flow { gap: 24px; }
+    html .case-shell--editorial .scc-section > .case-editorial-flow { gap: 24px; }
   html .case-shell--editorial .scc-section .case-editorial-text :is(p, li) { font-size: 16px; line-height: 26px; }
   .scc-header .sc-case-art { display: block; }
   html .case-main .scc-header .sc-case-title { font-size: 22px; line-height: 28px; }

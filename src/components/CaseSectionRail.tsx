@@ -4,8 +4,8 @@ import { useLocale } from '../i18n/locale'
 type RailSection = { id: string; title: string }
 type Room = 'full' | 'bars' | 'none'
 
-/** Room for the rail in the left gutter: labels need ~220px, bars alone ~32px. */
-const roomFor = (gutter: number): Room => gutter >= 232 ? 'full' : gutter >= 36 ? 'bars' : 'none'
+/** Room for the rail in the left gutter: labels need their own width plus a gap, bars alone ~32px. */
+const roomFor = (gutter: number, labels: number): Room => gutter >= labels ? 'full' : gutter >= 36 ? 'bars' : 'none'
 
 /**
  * Fixed segmented rail of case sections. Each segment is as tall as its section and fills while it is read.
@@ -36,7 +36,10 @@ export function CaseSectionRail({ sections }: { sections: RailSection[] }) {
         if (box.top <= anchor && box.bottom > anchor) active = sections[index].id
       })
       const visible = boxes[0].top < window.innerHeight * 0.75 && boxes[boxes.length - 1].bottom > window.innerHeight * 0.25
-      const room = roomFor(boxes[0].left)
+      // Labels show only when their widest line clears the text column with a 24px gap.
+      const labels = [...element.querySelectorAll<HTMLElement>('.scc-rail-label')]
+      const widest = Math.max(0, ...labels.map(label => { const range = document.createRange(); range.selectNodeContents(label); return Math.max(0, ...[...range.getClientRects()].map(rect => rect.width)) }))
+      const room = roomFor(boxes[0].left, 16 + 3 + 10 + widest + 24)
       setState(current => current.active === active && current.visible === visible && current.room === room ? current : { active, visible, room })
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure) }

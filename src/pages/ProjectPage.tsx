@@ -164,7 +164,7 @@ export function ProjectPage() {
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
               <section className={`case-section case-document-section scc-section`} id={group.id} aria-labelledby={`${group.id}-title`}>
-                <h2 id={`${group.id}-title`} data-reveal="text" data-index={String(groups.indexOf(group) + 1).padStart(2, '0')}>{group.title}</h2>
+                <h2 id={`${group.id}-title`} data-reveal="text">{group.title}</h2>
                 <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} />
               </section>
             </div>

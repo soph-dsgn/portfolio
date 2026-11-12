@@ -9,7 +9,6 @@ import type { CaseVisualSpec, VisualItem } from '../data/caseVisualTypes'
    One renderer per visual shape; the data in caseVisuals.ts stays untouched. */
 
 const text = (value?: string) => value ? <InlineArrows text={withoutFinalPeriod(value)} /> : null
-const index = (value: number) => String(value + 1).padStart(2, '0')
 
 /** Yes / no outcome of a decision step. */
 function Branches({ branches }: { branches: NonNullable<VisualItem['branches']> }) {
@@ -20,12 +19,11 @@ function Branches({ branches }: { branches: NonNullable<VisualItem['branches']> 
   </span>
 }
 
-/** Short chains read in one row of equal pills; long ones become a numbered vertical route. */
-function Chain({ items, numbered }: { items: VisualItem[]; numbered?: boolean }) {
+/** Short chains read in one row of equal pills; long ones become a vertical route. */
+function Chain({ items }: { items: VisualItem[] }) {
   const compact = items.length <= 5 && items.every(item => !item.branches && (item.detail?.length ?? 0) <= 42)
   return <ol className={`scv-chain${compact ? '' : ' scv-chain--route'}`}>
-    {items.map((item, position) => <li className="scv-chain-step" key={item.label}>
-      {(numbered || !compact) && <span className="scv-chain-index" aria-hidden="true">{index(position)}</span>}
+    {items.map(item => <li className="scv-chain-step" key={item.label}>
       <span className="scv-chain-body">
         <strong>{text(item.label)}</strong>
         {item.detail && <span>{text(item.detail)}</span>}
@@ -46,11 +44,11 @@ function Sides({ items }: { items: VisualItem[] }) {
   </ul>
 }
 
-/** Grid of small numbered cards; problems get an orange mark, the note reads as the next step. */
+/** Grid of small cards; problems get an orange mark, the note reads as the next step. */
 function Grid({ items }: { items: VisualItem[] }) {
   return <ul className={`scv-grid${items.length === 3 ? ' scv-grid--three' : ''}`}>
-    {items.map((item, position) => <li className="scv-card" key={item.label} data-tone={item.tone ?? 'neutral'}>
-      <span className="scv-card-index" aria-hidden="true">{item.tone === 'problem' ? '!' : index(position)}</span>
+    {items.map(item => <li className="scv-card" key={item.label} data-tone={item.tone ?? 'neutral'}>
+      {item.tone === 'problem' && <span className="scv-card-index" aria-hidden="true">!</span>}
       <strong>{text(item.label)}</strong>
       {item.detail && <p>{text(item.detail)}</p>}
       {item.note && <p className="scv-check"><Check />{text(item.note)}</p>}
@@ -73,7 +71,7 @@ function Table({ items, columns }: { items: VisualItem[]; columns: string[] }) {
 export function ShowcaseVisual({ visual }: { visual: CaseVisualSpec }) {
   const hub = diagramHubs[visual.id]
   const body = visual.kind === 'flow'
-    ? <Chain items={visual.items} numbered={visual.numbered} />
+    ? <Chain items={visual.items} />
     : visual.kind === 'comparison'
       ? <Sides items={visual.items} />
       : visual.kind === 'columns' && visual.columns
