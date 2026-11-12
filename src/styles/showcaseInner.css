@@ -91,7 +91,6 @@ body { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 
 
 /* ---------- Cases: every document section is a card ---------- */
-html .case-reading-progress { height: 3px; background: var(--sc-blue); }
 html .case-shell { margin-top: 0; }
 html .case-main { gap: calc(20 * var(--u)); }
 html .case-header {

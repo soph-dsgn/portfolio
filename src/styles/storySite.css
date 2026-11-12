@@ -149,7 +149,6 @@ body { color: var(--text-primary); font-family: var(--font-sans); font-size: 14p
 .privacy-actions button:is(:hover, [aria-pressed="true"]) { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
 
 /* ---------- Cases: read like a note ---------- */
-html .case-reading-progress { height: 2px; background: var(--text-primary); }
 html .case-shell { margin-top: 0; }
 html .case-main { gap: 0; }
 html .case-header { margin-top: 56px; padding: 0 0 28px; border-radius: 0; background: transparent; }

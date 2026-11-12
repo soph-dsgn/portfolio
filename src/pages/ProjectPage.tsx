@@ -1,7 +1,7 @@
 import { usePortalEntry } from '../lib/usePortalEntry'
 import { useLocale } from '../i18n/locale'
 import { useMotionSystem } from '../lib/motion'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -20,6 +20,7 @@ import { audienceStatementLength, isNarrativeLead } from '../lib/caseEditorial'
 import { skywalletMediaAfter } from '../data/skywalletMedia'
 import { partnerPortalMediaAfter } from '../data/partnerPortalMedia'
 import { CaseCard } from '../components/ShowcaseCase'
+import { CaseSectionRail } from '../components/CaseSectionRail'
 import { ShowcaseVisual } from '../components/ShowcaseVisual'
 import { showcaseCases } from '../data/showcaseCases'
 import '../styles/caseEditorial.css'
@@ -125,6 +126,8 @@ export function ProjectPage() {
   const { t } = useLocale()
   const { slug } = useParams()
   const project = projects.find((item) => item.id === slug)
+  const groups = useMemo(() => project && !project.videos ? getCaseGroups(project) : [], [project])
+  const railSections = useMemo(() => groups.map(group => ({ id: group.id, title: group.title })), [groups])
 
   useEffect(() => {
     document.title = project
@@ -145,7 +148,6 @@ export function ProjectPage() {
       </main>
     )
 
-  const groups = getCaseGroups(project)
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
@@ -157,6 +159,7 @@ export function ProjectPage() {
             <div><dt>Ниша</dt><dd>{project.niche ?? project.tags.join(' · ')}</dd></div>
           </dl>
         </motion.div>
+        <CaseSectionRail sections={railSections} />
         <div className="case-content" id="case-content">
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
