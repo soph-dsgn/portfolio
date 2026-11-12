@@ -29,8 +29,8 @@ import { showcaseCases } from '../data/showcaseCases'
 import '../styles/caseEditorial.css'
 import '../styles/caseShowcase.css'
 
-// Pilot of the home-page visual language inside cases: SkyWallet header and its first section.
-const showcasePilot = (projectId: string, groupId?: string) => projectId === 'skywallet' && (groupId === undefined || groupId === 'context')
+// Cases use the home-page visual language: case-card header, numbered sections, diagrams as cards and pills.
+const usesShowcase = (projectId: string) => projectId in showcaseCases
 
 function CaseNodeView({ node }: { node: CaseNode }) {
   if (node.kind === 'heading') {
@@ -81,7 +81,7 @@ function CaseResults({ items }: { items: string[] }) {
 }
 
 function CaseDocumentNodes({ nodes, projectId, groupId, groupTitle }: { nodes: CaseNode[]; projectId: string; groupId: string; groupTitle: string }) {
-  const showcase = showcasePilot(projectId, groupId)
+  const showcase = usesShowcase(projectId)
   const visualView = (visual: CaseVisualSpec, heading: string) => showcase && visual.presentation !== 'results'
     ? <ShowcaseVisual visual={visual} />
     : <CaseVisual visual={visual} precedingHeading={heading} />
@@ -198,7 +198,7 @@ export function ProjectPage() {
   return (
     <Typography><div className="case-shell case-shell--editorial" key={project.id}>
       <main className="case-main" id="main-content" tabIndex={-1}>
-        {showcasePilot(project.id) && project.id in showcaseCases ? <motion.div {...portalEntry} className="scc-header" id="overview">
+        {usesShowcase(project.id) ? <motion.div {...portalEntry} className="scc-header" id="overview">
           <CaseCard item={showcaseCases[project.id as keyof typeof showcaseCases]} page />
           <dl className="scc-facts" aria-label="Параметры проекта">
             <div><dt>Роль</dt><dd>{project.discipline}</dd></div>
@@ -224,7 +224,7 @@ export function ProjectPage() {
         <div className="case-content" id="case-content">
           {groups.map((group) => (
             <div className="case-document-group" key={group.id}>
-              <section className={`case-section case-document-section${showcasePilot(project.id, group.id) ? ' scc-section' : ''}`} id={group.id} aria-labelledby={`${group.id}-title`}>
+              <section className={`case-section case-document-section${usesShowcase(project.id) ? ' scc-section' : ''}`} id={group.id} aria-labelledby={`${group.id}-title`}>
                 <h2 id={`${group.id}-title`} data-reveal="text" data-index={String(groups.indexOf(group) + 1).padStart(2, '0')}>{group.title}</h2>
                 <CaseDocumentNodes nodes={group.nodes} projectId={project.id} groupId={group.id} groupTitle={group.title} />
               </section>
