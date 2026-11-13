@@ -64,24 +64,21 @@ export function ShowcaseDock() {
 }
 
 /** Plain text footer: an invitation with contact links on one side, credits and legal links below. Shared by every page. */
-export function ShowcaseFooter({ location = 'footer', id }: { location?: string; id?: string }) {
+/** Quiet closing line: copyright and authorship on the left, a back-to-top pill on the right. Contacts live in the dock. */
+export function ShowcaseFooter({ id }: { location?: string; id?: string }) {
   const { t } = useLocale()
-  const email = profile.email.replace(/^mailto:/, '')
-  const telegram = () => { trackEvent('contact_click', { location }); trackEvent('telegram_click', { location }) }
+  const top = () => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+  }
   return <footer className="sc-site-footer" id={id}>
-    <div className="sc-footer-main">
-      <p className="sc-footer-title">{t('Если дочитали до сюда\u00a0— давайте знакомиться')}</p>
-      <ul className="sc-footer-links">
-        <li><a href={profile.telegram} target="_blank" rel="noreferrer" onClick={telegram}>Telegram</a></li>
-        <li><a href={profile.linkedin} target="_blank" rel="noreferrer" onClick={() => trackEvent('linkedin_click', { location })}>LinkedIn</a></li>
-        <li><a href={profile.email} onClick={() => trackEvent('email_click', { location })}>{email}</a></li>
-      </ul>
+    <div className="sc-footer-note">
+      <p>© 2026,<br />{t('Дизайнила Софья Стрельченко')}</p>
+      <Link className="sc-footer-legal" to="/copyright">{t('Авторские права')}</Link>
     </div>
-    <div className="sc-footer-bottom">
-      <p>© 2026 · {t('Дизайнила Софья Стрельченко')}</p>
-      <p className="sc-footer-legal">
-        <Link to="/copyright">{t('Авторские права')}</Link>
-      </p>
-    </div>
+    <button type="button" className="sc-footer-top" onClick={top}>
+      {t('Только наверх')}
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10 16V4m-5 5 5-5 5 5" /></svg>
+    </button>
   </footer>
 }

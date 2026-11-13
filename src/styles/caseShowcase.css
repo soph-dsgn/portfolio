@@ -248,7 +248,7 @@ html .case-main > .scc-rail { width: max-content; max-width: none; margin: 0; }
   .scc-facts :is(dt, dd) { font-size: 13px; }
   html .case-shell--editorial .case-document-section.scc-section { grid-template-columns: minmax(0, 1fr); row-gap: 20px; padding: 48px 0 12px; }
   html .case-shell--editorial .scc-section > h2 { position: static; font-size: 24px; line-height: 30px; }
-    html .case-shell--editorial .scc-section > .case-editorial-flow { gap: 24px; }
+  html .case-shell--editorial .scc-section > .case-editorial-flow { gap: 24px; }
   html .case-shell--editorial .scc-section .case-editorial-text :is(p, li) { font-size: 16px; line-height: 26px; }
   .scc-header .sc-case-art { display: block; }
   html .case-main .scc-header .sc-case-title { font-size: 22px; line-height: 28px; }
