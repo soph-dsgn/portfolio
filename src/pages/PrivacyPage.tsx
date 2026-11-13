@@ -91,8 +91,8 @@ export function PrivacyPage() {
             <p>7.2. Новая Политика вступает в силу с момента ее размещения на Сайте, если иное не предусмотрено новой редакцией Политики.</p>
             <p>7.3. Актуальная версия Политики всегда доступна по адресу: <a href={address}>{address}</a></p>
           </section>
+          <PrivacySettings />
         </article>
-        <PrivacySettings />
       </main>
       <Footer />
     </div></Typography>

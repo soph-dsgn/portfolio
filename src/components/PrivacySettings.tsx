@@ -14,9 +14,6 @@ export function PrivacySettings({ banner = false }: { banner?: boolean }) {
   const english = locale === 'en'
   const title = english ? 'Privacy' : 'Конфиденциальность'
   if (banner && consent !== null) return null
-  const description = english
-    ? 'With your permission, Yandex Metrica and Microsoft Clarity collect usage data, including page visits and interactions. You can change your choice here at any time.'
-    : 'С вашего разрешения Яндекс Метрика и Microsoft Clarity собирают данные об использовании сайта, в том числе о просмотрах страниц и взаимодействиях. Вы можете изменить выбор здесь в любой момент.'
   const controls = <div className="privacy-actions">
     <button type="button" aria-pressed={consent === 'deny'} onClick={() => {
       setAnalyticsConsent('deny')
@@ -33,7 +30,26 @@ export function PrivacySettings({ banner = false }: { banner?: boolean }) {
       : <>Немного <Link to="/privacy" title="Политика конфиденциальности и использования файлов cookie">слежки</Link>, но только ради UX 👀</>}</p>
     <p id="privacy-banner-text">{english ? 'Metrica and Clarity show me where the site works and where it needs fixing' : 'Метрика и Clarity помогают понять, где сайт ок, а где надо чинить'}</p>
     {controls}
-  </aside> : <section className="privacy-settings" id="privacy" aria-labelledby="privacy-title">
-    <h2 id="privacy-title">{title}</h2><p>{description}</p>{controls}
-  </section>
+  </aside> : <InlineChoice consent={consent} english={english} />
+}
+
+/** Policy page: one line in the document's own voice that shows the current choice and flips it. */
+function InlineChoice({ consent, english }: { consent: ReturnType<typeof getAnalyticsConsent>; english: boolean }) {
+  const turnOff = () => {
+    const wasOn = consent === 'allow'
+    setAnalyticsConsent('deny')
+    // Scripts already on the page stay until a reload; production reloads so tracking stops at once.
+    if (wasOn && import.meta.env.PROD) window.location.reload()
+  }
+  const turnOn = () => setAnalyticsConsent('allow')
+  const state = consent === 'allow'
+    ? (english ? 'Analytics is on for you now' : 'Сейчас у вас аналитика включена')
+    : consent === 'deny'
+      ? (english ? 'Analytics is off for you now' : 'Сейчас у вас аналитика выключена')
+      : (english ? 'You haven’t chosen yet, so analytics is off' : 'Вы ещё не сделали выбор, поэтому аналитика выключена')
+  return <p className="privacy-inline" id="privacy" aria-live="polite">
+    {state}{'\u00a0·'} {consent === 'allow'
+      ? <button type="button" onClick={turnOff}>{english ? 'Turn off' : 'Выключить'}</button>
+      : <button type="button" onClick={turnOn}>{english ? 'Turn on' : 'Включить'}</button>}
+  </p>
 }
