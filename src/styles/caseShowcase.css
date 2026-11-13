@@ -121,8 +121,8 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   width: calc(36 * var(--u));
   height: calc(36 * var(--u));
   border-radius: 50%;
-  background: rgba(41, 115, 255, .1);
-  color: var(--sc-blue);
+  background: rgba(8, 8, 8, .06);
+  color: var(--sc-ink);
   font-size: calc(14 * var(--u));
   font-weight: 600;
 }
@@ -130,7 +130,7 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 
 .scv-pill { font-size: var(--fs-caption); }
 .scv-card[data-tone='problem'] .scv-pill { background: rgba(255, 77, 26, .1); color: #c93d12; }
-.scv-card[data-tone='solution'] .scv-pill { background: rgba(41, 115, 255, .1); color: var(--sc-blue); }
+.scv-card[data-tone='solution'] .scv-pill { background: rgba(31, 157, 85, .12); color: #17804a; }
 .scv-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .scv-hub { padding: calc(6 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: var(--sc-ink); color: #fff; font-size: var(--fs-caption); line-height: var(--lh-caption); white-space: nowrap; }
 .scv-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -145,13 +145,14 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-table-row span { color: rgba(8, 8, 8, .62); font-size: var(--fs-small); line-height: var(--lh-small); }
 
 /* ---------- Schemes: pipeline, node flow, hub tree, status board ---------- */
-.scv { --scv-blue: #2973ff; --scv-red: #e5481b; --scv-line: rgba(8, 8, 8, .22); }
+/* Schemes are neutral: white, grey and ink. Colour carries meaning only — green for good, red for a problem */
+.scv { --scv-green: #1f9d55; --scv-red: #e5481b; --scv-line: rgba(8, 8, 8, .22); }
 
 /* Pipeline: coloured nodes in one row, white ports on the joins */
 .scv-pipe { display: flex; gap: calc(36 * var(--u)); margin: 0; padding: 0; list-style: none; }
 .scv-pipe-node {
-  --node: var(--scv-blue);
-  --node-ink: #fff;
+  --node: #fff;
+  --node-ink: var(--sc-ink);
   position: relative;
   display: flex;
   flex: 1 1 0;
@@ -165,9 +166,6 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   background: var(--node);
   color: var(--node-ink);
 }
-.scv-pipe-node[data-tint='1'] { --node: var(--sc-ink); }
-.scv-pipe-node[data-tint='3'] { --node: var(--sc-ink); }
-.scv-pipe-node[data-tint='outline'] { --node: #fff; --node-ink: var(--sc-ink); box-shadow: inset 0 0 0 2px var(--scv-blue); }
 .scv-pipe-node strong { font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
 .scv-pipe-node > span { opacity: .78; font-size: var(--fs-caption); line-height: var(--lh-caption); }
 /* the join: a line from this node's right port to the next node's left port */
@@ -200,8 +198,7 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 
 /* Node flow: a tab with the step name sits on a white card, connectors run between steps */
 .scv-nodes { display: grid; justify-items: center; margin: 0; padding: calc(8 * var(--u)) 0; list-style: none; }
-.scv-node { --tag: rgba(41, 115, 255, .12); --tag-ink: #1f5fe0; display: grid; justify-items: center; width: min(100%, calc(760 * var(--u))); }
-.scv-node:is([data-tint='1'], [data-tint='3']) { --tag: rgba(8, 8, 8, .07); --tag-ink: var(--sc-ink); }
+.scv-node { --tag: rgba(8, 8, 8, .07); --tag-ink: var(--sc-ink); display: grid; justify-items: center; width: min(100%, calc(760 * var(--u))); }
 .scv-node[data-tint='check'] { --tag: rgba(8, 8, 8, .86); --tag-ink: #fff; }
 .scv-link { width: calc(12 * var(--u)); height: calc(48 * var(--u)); margin: calc(4 * var(--u)) 0; fill: none; stroke: rgba(8, 8, 8, .35); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .scv-link circle { fill: rgba(8, 8, 8, .35); stroke: none; }
@@ -224,7 +221,6 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   padding: calc(22 * var(--u)) calc(30 * var(--u));
   border-radius: var(--r-s);
   background: #fff;
-  box-shadow: 0 0 0 1px rgba(8, 8, 8, .06);
   color: var(--sc-ink);
   text-align: center;
   font-size: var(--fs-small);
@@ -240,7 +236,6 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   padding: 0 .45em;
   border-radius: .4em;
   background: rgba(8, 8, 8, .045);
-  box-shadow: inset 0 0 0 1px rgba(8, 8, 8, .1);
   color: var(--sc-ink);
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: max(14px, .88em);
@@ -251,8 +246,6 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-term > span { color: rgba(8, 8, 8, .4); }
 .scv-node-card .scv-term,
 .scv-pipe-node .scv-term { background: rgba(8, 8, 8, .04); }
-.scv-pipe-node:is([data-tint='0'], [data-tint='1']) .scv-term { background: rgba(255, 255, 255, .16); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3); color: #fff; }
-.scv-pipe-node:is([data-tint='0'], [data-tint='1']) .scv-term > span { color: rgba(255, 255, 255, .6); }
 /* decision: two outcomes leave the card side by side */
 .scv-fork { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: calc(12 * var(--u)); width: 100%; margin-top: calc(44 * var(--u)); }
 .scv-fork::after { content: ''; position: absolute; top: calc(-44 * var(--u)); left: 50%; height: calc(16 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
@@ -265,14 +258,13 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   padding: calc(16 * var(--u)) calc(20 * var(--u));
   border-radius: var(--r-s);
   background: #fff;
-  box-shadow: 0 0 0 1px rgba(8, 8, 8, .06);
   text-align: center;
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
   color: rgba(8, 8, 8, .7);
 }
 .scv-fork-way::before { content: ''; position: absolute; top: calc(-14 * var(--u)); left: 50%; height: calc(14 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
-.scv-fork-way b { font-weight: 600; color: var(--scv-blue); }
+.scv-fork-way b { font-weight: 600; color: var(--scv-green); }
 .scv-fork-way[data-branch='no'] b { color: var(--sc-ink); }
 
 /* Hub tree: a dark hub, an elbow line, one card per branch */
@@ -284,20 +276,18 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-tree-leaf { position: relative; }
 .scv-tree-leaf::before { content: ''; position: absolute; top: calc(-6 * var(--u)); left: 50%; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.6px rgba(8, 8, 8, .3); transform: translateX(-50%); }
 .scv-tree-branches > li:nth-child(n + 2):nth-last-child(n + 2)::after { content: ''; position: absolute; top: calc(-26 * var(--u)); left: 50%; height: calc(20 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
-.scv-tree-label { align-self: flex-start; padding: calc(6 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: var(--scv-blue); color: #fff; font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
-.scv-tree-leaf:is([data-tint='1'], [data-tint='3']) .scv-tree-label { background: var(--sc-ink); }
+.scv-tree-label { align-self: flex-start; padding: calc(6 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: rgba(8, 8, 8, .06); color: var(--sc-ink); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
 
 /* Stepper: dots on one track, names and notes under them */
 .scv-stepper { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: calc(16 * var(--u)); margin: 0; padding: calc(12 * var(--u)) calc(8 * var(--u)) calc(4 * var(--u)); list-style: none; }
-.scv-stepper li { --dot: var(--scv-blue); position: relative; display: flex; flex-direction: column; gap: calc(6 * var(--u)); padding-top: calc(40 * var(--u)); min-width: 0; }
-.scv-stepper li:is([data-tint='1'], [data-tint='3']) { --dot: var(--sc-ink); }
+.scv-stepper li { --dot: var(--sc-ink); position: relative; display: flex; flex-direction: column; gap: calc(6 * var(--u)); padding-top: calc(40 * var(--u)); min-width: 0; }
 .scv-stepper li:not(:last-child)::after { content: ''; position: absolute; top: calc(11 * var(--u)); left: calc(30 * var(--u)); right: calc(-16 * var(--u)); height: 2px; background: var(--scv-line); }
-.scv-stepper-dot { position: absolute; top: 0; left: 0; z-index: 1; width: calc(24 * var(--u)); height: calc(24 * var(--u)); border: calc(5 * var(--u)) solid #fff; border-radius: 50%; background: var(--dot); box-shadow: 0 0 0 1px rgba(8, 8, 8, .08); }
+.scv-stepper-dot { position: absolute; top: 0; left: 0; z-index: 1; width: calc(24 * var(--u)); height: calc(24 * var(--u)); border: calc(5 * var(--u)) solid #fff; border-radius: 50%; background: var(--dot); }
 .scv-stepper strong { color: var(--sc-ink); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
 .scv-stepper li > span:not(.scv-stepper-dot) { color: rgba(8, 8, 8, .6); font-size: var(--fs-caption); line-height: var(--lh-caption); }
 
 /* Receipt: a summary sheet with dashed rows */
-.scv-receipt { display: grid; width: min(100%, calc(680 * var(--u))); margin: 0 auto; padding: calc(8 * var(--u)) calc(32 * var(--u)); border-radius: var(--r-m); background: #fff; box-shadow: 0 0 0 1px rgba(8, 8, 8, .06); }
+.scv-receipt { display: grid; width: min(100%, calc(680 * var(--u))); margin: 0 auto; padding: calc(8 * var(--u)) calc(32 * var(--u)); border-radius: var(--r-m); background: #fff; }
 .scv-receipt > div { display: grid; grid-template-columns: calc(150 * var(--u)) minmax(0, 1fr); gap: calc(20 * var(--u)); align-items: baseline; padding: calc(20 * var(--u)) 0; }
 .scv-receipt > div + div { border-top: 1.5px dashed rgba(8, 8, 8, .14); }
 .scv-receipt dt { color: var(--sc-muted); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
@@ -325,8 +315,7 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   background-position: calc(20 * var(--u)) 0;
   list-style: none;
 }
-.scv-track li { --block: rgba(41, 115, 255, .13); grid-column: calc(var(--i) + 1) / span 2; grid-row: calc(var(--i) + 1); display: flex; flex-direction: column; gap: calc(4 * var(--u)); min-width: 0; padding: calc(16 * var(--u)) calc(18 * var(--u)) calc(22 * var(--u)); border-radius: var(--r-s); background: var(--block); color: var(--sc-ink); }
-.scv-track li:is([data-tint='1'], [data-tint='3']) { --block: rgba(8, 8, 8, .07); }
+.scv-track li { --block: rgba(8, 8, 8, .06); grid-column: calc(var(--i) + 1) / span 2; grid-row: calc(var(--i) + 1); display: flex; flex-direction: column; gap: calc(4 * var(--u)); min-width: 0; padding: calc(16 * var(--u)) calc(18 * var(--u)) calc(22 * var(--u)); border-radius: var(--r-s); background: var(--block); color: var(--sc-ink); }
 .scv-track strong { font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
 .scv-track span { color: rgba(8, 8, 8, .62); font-size: var(--fs-caption); line-height: var(--lh-caption); }
 
@@ -335,15 +324,15 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-status-chip { --light: rgba(8, 8, 8, .3); display: inline-flex; align-self: flex-start; align-items: center; gap: calc(10 * var(--u)); padding: calc(7 * var(--u)) calc(14 * var(--u)) calc(7 * var(--u)) calc(12 * var(--u)); border-radius: 999px; background: rgba(8, 8, 8, .045); color: var(--sc-ink); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
 .scv-status-chip > span { width: calc(9 * var(--u)); height: calc(9 * var(--u)); min-width: 7px; min-height: 7px; border-radius: 50%; background: var(--light); box-shadow: 0 0 0 calc(4 * var(--u)) color-mix(in srgb, var(--light) 18%, transparent); }
 .scv-status-chip[data-status='pending'] { --light: var(--sc-ink); }
-.scv-status-chip[data-status='success'] { --light: var(--scv-blue); }
+.scv-status-chip[data-status='success'] { --light: var(--scv-green); }
 .scv-status-chip[data-status='error'] { --light: var(--scv-red); }
 
 /* Results and other legacy blocks inside the white sections */
 html .case-shell--editorial .scc-section .case-results { gap: calc(12 * var(--u)); }
 html .case-shell--editorial .scc-section .case-results > div { padding: calc(30 * var(--u)) calc(32 * var(--u)); border-radius: var(--r-l); background: var(--sc-card); }
-html .case-shell--editorial .scc-section .case-results dt { color: var(--sc-blue); font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: 500; }
+html .case-shell--editorial .scc-section .case-results dt { color: var(--sc-ink); font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: 500; }
 html .case-shell--editorial .scc-section .case-results dd { color: rgba(8, 8, 8, .62); font-size: var(--fs-caption); line-height: var(--lh-caption); }
-html .case-shell--editorial .scc-section .case-outcome-label { color: var(--sc-blue); }
+html .case-shell--editorial .scc-section .case-outcome-label { color: var(--sc-ink); }
 
 /* Carousel dots: inactive ones stay visible on the grey pill */
 html .case-inline-pagination button > span { background: rgba(8, 8, 8, .16); }
