@@ -22,13 +22,6 @@
   margin-top: calc(var(--space-text-visual) - var(--space-block));
 }
 .case-standalone-heading + .case-editorial-visual { margin-top: calc(var(--space-4) - var(--space-block)); }
-.case-layout--text-visual {
-  display: grid;
-  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
-  gap: var(--space-text-visual);
-  align-items: start;
-}
-.case-layout--text-visual > .case-editorial-text { max-width: none; }
 .case-shell--editorial .case-editorial-text p + p { margin-top: var(--space-text); }
 .case-shell--editorial .case-editorial-text li + li { margin-top: var(--space-3); }
 .case-shell--editorial .case-editorial-text p.case-narrative-lead {
@@ -48,26 +41,6 @@
   -webkit-mask: none;
   mask: none;
 }
-.case-shell--editorial .case-layout--statement > p:first-of-type {
-  color: var(--color-text);
-  font-size: var(--type-h3-size);
-  font-weight: var(--type-h3-weight);
-  line-height: var(--type-h3-leading);
-  letter-spacing: var(--type-h3-tracking);
-}
-.case-shell--editorial .case-overview { gap: var(--space-8); }
-.case-shell--editorial .visual-caption {
-  max-width: var(--case-reading-column);
-  font-size: var(--type-caption-size);
-  font-weight: var(--type-caption-weight);
-  line-height: var(--type-caption-leading);
-  margin-top: var(--space-4);
-}
-.case-shell--editorial .case-image-gallery { gap: var(--space-block); margin-top: 0; }
-.case-shell--editorial .case-image-frame { width: 100%; justify-self: start; }
-.case-shell--editorial .case-image-frame.case-layout--medium,
-.case-shell--editorial .case-image-frame.case-layout--wide { max-width: none; }
-.case-shell--editorial .case-image-frame.case-layout--full { max-width: none; }
 
 /* Editorial case visuals live beside their matching argument. Desktop keeps
    authored compositions; mobile turns only repeated groups into snap carousels. */
@@ -100,7 +73,7 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-radius: var(--radius-media);
+  border-radius: var(--r-l);
   background: transparent;
   cursor: zoom-in;
   line-height: 0;
@@ -122,7 +95,7 @@
   width: max-content;
   margin: var(--space-3) auto 0;
   padding: 7px 10px;
-  border-radius: 12px;
+  border-radius: var(--r-xs);
   background: var(--portfolio-surface);
 }
 .case-inline-pagination button {
@@ -143,7 +116,7 @@
   flex: none;
   width: 20px;
   height: 10px;
-  border-radius: 20px;
+  border-radius: var(--r-m);
   background: var(--portfolio-page);
 }
 .case-inline-pagination-active {
@@ -153,7 +126,7 @@
   left: 14px;
   width: 20px;
   height: 10px;
-  border-radius: 20px;
+  border-radius: var(--r-m);
   background: var(--portfolio-text);
   transform: translate3d(calc(var(--pagination-index, 0) * 28px), 0, 0);
   transition: transform var(--duration-feedback) var(--ease-standard);
@@ -166,7 +139,7 @@
   position: relative;
   aspect-ratio: 68 / 45;
   overflow: hidden;
-  border-radius: var(--radius-media);
+  border-radius: var(--r-l);
   background: var(--portfolio-page);
   cursor: ew-resize;
   touch-action: pan-y;
@@ -270,19 +243,12 @@
   max-height: 100%;
   margin: auto;
   object-fit: contain;
-  border-radius: var(--radius-media);
+  border-radius: var(--r-l);
 }
-@media (max-width: 1100px) {
-  .case-layout--text-visual { grid-template-columns: minmax(0, 1fr); gap: var(--space-text-visual); }
-  .case-layout--text-visual > .case-editorial-text { max-width: var(--case-reading-column); }
-}
-@media (max-width: 760px) {
+@media (max-width: 899px) {
   .case-shell--editorial .case-document-group { gap: var(--space-4); }
   .case-shell--editorial .case-document-section { gap: 24px; }
   .case-shell--editorial .case-editorial-text p.case-narrative-lead { font-size: 20px; }
-  .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: 25px; }
-  .case-shell--editorial .case-overview { gap: 28px; }
-  .case-shell--editorial .case-image-gallery { margin-top: 0; }
   .case-inline-media-track {
     display: flex;
     gap: 0;
@@ -303,7 +269,7 @@
     width: max-content;
     margin: var(--space-3) auto 0;
     padding: 7px 10px;
-    border-radius: 12px;
+    border-radius: var(--r-xs);
     background: var(--portfolio-surface);
   }
   .before-after-divider > span { width: 28px; height: 28px; }
@@ -315,5 +281,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .case-inline-pagination-active,
-  .before-after-divider > span { transition: none; }
+.before-after-divider > span { transition: none; }
 }

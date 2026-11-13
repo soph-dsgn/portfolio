@@ -55,7 +55,7 @@
   --radius-media: calc(36 * var(--u));
   --radius-card: calc(36 * var(--u));
 }
-body { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
+body { font-size: var(--fs-body); line-height: var(--lh-body); }
 
 /* ---------- Top bar and footer ---------- */
 .sc-topbar {
@@ -85,44 +85,17 @@ body { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 .sc-back:focus-visible { outline: 2px solid var(--sc-blue); outline-offset: 3px; }
 .sc-back svg { width: 20px; height: 20px; }
 
-
 /* ---------- Cases: every document section is a card ---------- */
 html .case-shell { margin-top: 0; }
 html .case-main { gap: calc(20 * var(--u)); }
-html .case-header {
-  margin-top: 0;
-  padding: calc(50 * var(--u)) calc(60 * var(--u)) calc(56 * var(--u));
-  border-radius: calc(84 * var(--u));
-  background: var(--sc-surface);
-}
-html .case-header h1 { max-width: calc(980 * var(--u)); text-wrap: balance; }
-html .case-header .case-deck,
-html .case-shell--editorial .case-deck { max-width: calc(820 * var(--u)); margin-top: calc(20 * var(--u)); color: var(--story-body); font-size: calc(20 * var(--u)); line-height: calc(34 * var(--u)); }
-html .case-header > .case-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(8 * var(--u));
-  margin-top: calc(40 * var(--u));
-  padding: 0;
-  border: 0;
-}
-html .case-header > .case-facts > div {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(10 * var(--u));
-  height: calc(62 * var(--u));
-  padding: 0 calc(24 * var(--u));
-  border-radius: calc(40 * var(--u));
-  background: var(--sc-pill);
-}
-html .case-facts dt { margin: 0; color: var(--story-muted); font-size: calc(20 * var(--u)); line-height: calc(24 * var(--u)); font-weight: 500; }
-html .case-facts dd { margin: 0; color: var(--sc-ink); font-size: calc(20 * var(--u)); line-height: calc(24 * var(--u)); font-weight: 500; }
+html .case-facts dt { margin: 0; color: var(--story-muted); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
+html .case-facts dd { margin: 0; color: var(--sc-ink); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
 html .case-content,
 html .case-shell--editorial .case-content { gap: calc(20 * var(--u)); }
 html .case-shell--editorial :is(.case-overview, .case-document-section) {
   padding: calc(50 * var(--u)) calc(60 * var(--u)) calc(60 * var(--u));
   border: 0;
-  border-radius: calc(84 * var(--u));
+  border-radius: var(--r-xl);
   background: var(--sc-surface);
 }
 html .case-shell--editorial .case-document-section { gap: calc(28 * var(--u)); }
@@ -136,21 +109,15 @@ html .case-shell--editorial .case-audience-intro > strong { color: var(--sc-ink)
 html .case-shell--editorial .case-audience-intro > strong { margin: calc(24 * var(--u)) 0 calc(8 * var(--u)); }
 html .case-shell--editorial .case-editorial-text p.case-narrative-lead:not(:first-child) { margin-top: calc(28 * var(--u)); }
 html .case-shell--editorial .case-editorial-text li + li { margin-top: calc(10 * var(--u)); }
-html .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: calc(24 * var(--u)); font-weight: 500; line-height: calc(36 * var(--u)); color: var(--sc-ink); }
-html .case-layout--text-visual { grid-template-columns: minmax(0, 1fr); gap: calc(32 * var(--u)); }
 
 /* Visuals sit on white inside the grey section card */
 html .case-shell--editorial .case-document-section :is(.case-visual, .case-results) { --case-v-surface: #fff; }
-html .case-diagram, html .case-insight-row, html .case-insight-notes, html .case-editorial-ledger, html .case-editorial-steps,
-html .case-change-chart, html .case-visual-plain, html .case-diagram-mobile-card, html .case-change-chart-track { background: #fff; }
-html .case-shell--editorial :is(.case-image-frame, .case-inline-media-item) :is(img, picture) { border-radius: calc(36 * var(--u)); }
-html .case-shell--editorial .visual-caption,
-html .visual-caption { color: var(--story-muted); font-size: calc(16 * var(--u)); line-height: calc(24 * var(--u)); }
+html .case-shell--editorial :is(.case-image-frame, .case-inline-media-item) :is(img, picture) { border-radius: var(--r-l); }
 
 html .case-shell--editorial .case-results { gap: calc(16 * var(--u)); }
-html .case-shell--editorial .case-results > div { min-height: 0; padding: calc(36 * var(--u)) calc(32 * var(--u)); border-radius: calc(48 * var(--u)); background: #fff; }
-html .case-shell--editorial .case-results dt { font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; letter-spacing: 0; }
-html .case-shell--editorial .case-results dd { margin-top: calc(10 * var(--u)); color: var(--sc-muted); font-size: calc(18 * var(--u)); line-height: calc(26 * var(--u)); font-weight: 500; }
+html .case-shell--editorial .case-results > div { min-height: 0; padding: calc(36 * var(--u)) calc(32 * var(--u)); border-radius: var(--r-l); background: #fff; }
+html .case-shell--editorial .case-results dt { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: 500; letter-spacing: 0; }
+html .case-shell--editorial .case-results dd { margin-top: calc(10 * var(--u)); color: var(--sc-muted); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
 /* Same step as between case sections: the last section ends, the footer row follows */
 html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
 
@@ -164,9 +131,9 @@ html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
   background: transparent;
 }
 .copyright-intro { display: grid; gap: calc(16 * var(--u)); }
-.copyright-document h1 { max-width: none; margin: 0; font-size: calc(44 * var(--u)); line-height: calc(54 * var(--u)); font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
-.copyright-document h2 { margin: 0 0 calc(22 * var(--u)); font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; }
-.copyright-document :is(p, li) { max-width: none; margin: 0; color: rgba(8, 8, 8, .64); font-size: max(16px, calc(20 * var(--u))); line-height: max(26px, calc(32 * var(--u))); }
+.copyright-document h1 { max-width: none; margin: 0; font-size: var(--fs-display); line-height: var(--lh-display); font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
+.copyright-document h2 { margin: 0 0 calc(22 * var(--u)); font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: 500; }
+.copyright-document :is(p, li) { max-width: none; margin: 0; color: rgba(8, 8, 8, .64); font-size: var(--fs-body); line-height: var(--lh-body); }
 html .copyright-document section > * + * { margin-top: calc(20 * var(--u)); }
 html .copyright-document section > h2 + * { margin-top: 0; }
 .copyright-document ul { display: grid; gap: calc(10 * var(--u)); padding-left: calc(24 * var(--u)); }
@@ -174,16 +141,16 @@ html .copyright-document section > h2 + * { margin-top: 0; }
 .copyright-document a:hover { text-decoration-color: currentColor; }
 .copyright-meta { display: grid; gap: calc(20 * var(--u)); padding-top: calc(40 * var(--u)); border-top: 1px solid rgba(8, 8, 8, .1); }
 .copyright-contact,
-.copyright-updated { margin: 0; font-style: normal; color: rgba(8, 8, 8, .64); font-size: max(16px, calc(20 * var(--u))); line-height: max(26px, calc(32 * var(--u))); }
-.copyright-intro .copyright-updated { color: var(--sc-muted); font-size: max(14px, calc(18 * var(--u))); }
+.copyright-updated { margin: 0; font-style: normal; color: rgba(8, 8, 8, .64); font-size: var(--fs-body); line-height: var(--lh-body); }
+.copyright-intro .copyright-updated { color: var(--sc-muted); font-size: var(--fs-caption); line-height: var(--lh-caption); }
 /* Older document rules still set list spacing and a caption-size date; the document rhythm above wins */
 .copyright-document li + li { margin-top: 0; }
-.copyright-document .copyright-meta .copyright-updated { margin: 0; color: var(--sc-muted); font-size: max(14px, calc(18 * var(--u))); line-height: max(20px, calc(26 * var(--u))); }
+.copyright-document .copyright-meta .copyright-updated { margin: 0; color: var(--sc-muted); font-size: var(--fs-caption); line-height: var(--lh-caption); }
 .copyright-document .copyright-intro .copyright-updated { margin: 0; }
-.privacy-settings { margin-top: calc(72 * var(--u)); padding: calc(50 * var(--u)) calc(60 * var(--u)); border-radius: calc(84 * var(--u)); background: var(--sc-surface); }
-.privacy-settings h2 { margin: 0 0 calc(12 * var(--u)); font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: 500; }
-.privacy-settings p { max-width: none; font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
-.privacy-actions button { min-height: calc(56 * var(--u)); padding-inline: calc(24 * var(--u)); border: 0; background: rgba(8, 8, 8, .06); font-size: calc(18 * var(--u)); font-weight: 500; }
+.privacy-settings { margin-top: calc(72 * var(--u)); padding: calc(50 * var(--u)) calc(60 * var(--u)); border-radius: var(--r-xl); background: var(--sc-surface); }
+.privacy-settings h2 { margin: 0 0 calc(12 * var(--u)); font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: 500; }
+.privacy-settings p { max-width: none; font-size: var(--fs-small); line-height: var(--lh-small); }
+.privacy-actions button { min-height: calc(56 * var(--u)); padding-inline: calc(24 * var(--u)); border: 0; background: rgba(8, 8, 8, .06); font-size: var(--fs-small); font-weight: 500; }
 .privacy-actions button:is(:hover, [aria-pressed="true"]) { background: var(--sc-ink); color: #fff; }
 
 .not-found {
@@ -191,10 +158,10 @@ html .copyright-document section > h2 + * { margin-top: 0; }
   max-width: none;
   margin: 0 auto;
   padding: calc(50 * var(--u)) calc(60 * var(--u)) calc(60 * var(--u));
-  border-radius: calc(84 * var(--u));
+  border-radius: var(--r-xl);
   background: var(--sc-surface);
 }
-.not-found h1 { font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; letter-spacing: 0; }
+.not-found h1 { font-size: var(--fs-display); line-height: var(--lh-display); font-weight: 500; letter-spacing: 0; }
 .not-found p { margin-top: calc(12 * var(--u)); color: var(--story-body); }
 .not-found .button {
   display: inline-flex;
@@ -225,7 +192,7 @@ html .copyright-document section > h2 + * { margin-top: 0; }
     --space-text: 14px; --space-text-visual: 20px; --space-block: 20px; --space-section: 48px; --space-layout: 12px;
     --radius-page: 32px; --radius-large: 24px; --radius-media: 20px; --radius-card: 20px;
   }
-  body { font-size: 15px; line-height: 24px; }
+  body { font-size: var(--fs-body); line-height: var(--lh-body); }
   .sc-topbar { padding: 16px 0 20px; }
   html .case-header h1,
   html .case-header .case-deck,
@@ -239,31 +206,30 @@ html .copyright-document section > h2 + * { margin-top: 0; }
   .sc-topbar .story-sound { padding-inline: 4px; white-space: nowrap; }
   .sc-back { flex: none; }
 
-
   html .case-main,
   html .case-content,
   html .case-shell--editorial .case-content { gap: 12px; }
   html .case-header,
   html .case-shell--editorial :is(.case-overview, .case-document-section),
   .privacy-settings,
-  .not-found { padding: 28px 24px; border-radius: 32px; }
+  .not-found { padding: 28px 24px; border-radius: var(--r-xl); }
   html .case-header .case-deck,
   html .case-shell--editorial .case-deck { margin-top: 12px; font-size: 15px; line-height: 24px; }
   html .case-header > .case-facts { gap: 8px; margin-top: 20px; }
-  html .case-header > .case-facts > div { height: auto; min-height: 40px; padding: 8px 14px; border-radius: 20px; gap: 6px; }
-  html .case-facts :is(dt, dd) { font-size: 14px; line-height: 18px; }
+  html .case-header > .case-facts > div { height: auto; min-height: 40px; padding: 8px 14px; border-radius: var(--r-m); gap: 6px; }
+  html .case-facts :is(dt, dd) { font-size: var(--fs-small); line-height: var(--lh-small); }
   html .case-shell--editorial .case-document-section { gap: 16px; }
   html .case-shell--editorial .case-editorial-flow { gap: 20px; }
-  html .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: 17px; line-height: 26px; }
-  html .case-shell--editorial :is(.case-image-frame, .case-inline-media-item) :is(img, picture) { border-radius: 18px; }
-  html .case-shell--editorial .case-results > div { padding: 18px; border-radius: 22px; }
-  html .case-shell--editorial .case-results dt { font-size: 20px; line-height: 26px; }
-  html .case-shell--editorial .case-results dd { font-size: 13px; line-height: 18px; }
+  html .case-shell--editorial .case-layout--statement > p:first-of-type { font-size: var(--fs-h3); line-height: var(--lh-h3); }
+  html .case-shell--editorial :is(.case-image-frame, .case-inline-media-item) :is(img, picture) { border-radius: var(--r-m); }
+  html .case-shell--editorial .case-results > div { padding: 18px; border-radius: var(--r-m); }
+  html .case-shell--editorial .case-results dt { font-size: var(--fs-h2); line-height: var(--lh-h2); }
+  html .case-shell--editorial .case-results dd { font-size: var(--fs-caption); line-height: var(--lh-caption); }
   html .case-shell > .sc-site-footer { margin-top: 44px; }
   .copyright-document { gap: 44px; padding-top: 24px; }
   .copyright-intro { gap: 10px; }
-  .copyright-document h1 { font-size: 26px; line-height: 32px; }
-  .copyright-document h2 { margin-bottom: 14px; font-size: 22px; line-height: 28px; }
+  .copyright-document h1 { font-size: var(--fs-display); line-height: var(--lh-display); }
+  .copyright-document h2 { margin-bottom: 14px; font-size: var(--fs-h2); line-height: var(--lh-h2); }
   html .copyright-document section > * + * { margin-top: 14px; }
   html .copyright-document section > h2 + * { margin-top: 0; }
   .copyright-document ul { gap: 8px; padding-left: 20px; }
@@ -271,11 +237,11 @@ html .copyright-document section > h2 + * { margin-top: 0; }
   .privacy-settings { margin-top: 44px; }
   .copyright-document :is(p, li),
   .copyright-contact,
-  .copyright-updated { font-size: 16px; line-height: 26px; }
-  .copyright-intro .copyright-updated { font-size: 14px; line-height: 20px; }
-  .privacy-settings p { font-size: 15px; line-height: 24px; }
-  .privacy-settings h2 { font-size: 17px; line-height: 24px; }
-  .privacy-actions button { min-height: 40px; font-size: 14px; }
-  .not-found h1 { font-size: 22px; line-height: 28px; }
+  .copyright-updated { font-size: var(--fs-body); line-height: var(--lh-body); }
+  .copyright-intro .copyright-updated { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+  .privacy-settings p { font-size: var(--fs-small); line-height: var(--lh-small); }
+  .privacy-settings h2 { font-size: var(--fs-h3); line-height: var(--lh-h3); }
+  .privacy-actions button { min-height: 40px; font-size: var(--fs-small); }
+  .not-found h1 { font-size: var(--fs-display); line-height: var(--lh-display); }
   .not-found .button { height: 44px; font-size: 15px; }
 }

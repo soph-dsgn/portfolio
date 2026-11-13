@@ -174,7 +174,7 @@
   --action-padding-x: 14px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
   :root {
     --header-height: 68px;
     --radius-page: 32px;
@@ -183,7 +183,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 899px) {
   :root {
     --page-gutter: 12px;
     --radius-page: 28px;
