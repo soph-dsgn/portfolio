@@ -21,7 +21,9 @@ const DROP = 12
 /** Displayed width (zone units) of a sticker whose artwork is `width` units wide. */
 const outerWidth = (width: number) => width + PAD * 2 + DROP
 
-const ink = '#080808', blue = '#2973ff', pink = '#ff8fc7', yellow = '#ffd02f', green = '#2fc27a', orange = '#ff7a3d', violet = '#8a6cff'
+const ink = '#080808', blue = '#2973ff', yellow = '#ffd02f', orange = '#ff7a3d', coral = '#ff5c7a'
+/** Every sticker shares one drawing rule: flat fills from this palette, a 5-unit ink outline, round joins. */
+const line = { stroke: ink, strokeWidth: 5, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const }
 const font = "'Manrope Variable', Manrope, sans-serif"
 
 /** `round`: corner radius at the peel corner, so the fold starts where the sticker does.
@@ -91,79 +93,74 @@ function Art({ box: [width, height], edge, peel = 'br', peelSize = 0.26, round =
 
 /** UX in one line: the name tag. */
 const NameTag = () => <Art box={[200, 124]} round={18} edge={<rect width="200" height="124" rx="18" />}>
-  <rect width="200" height="124" rx="18" fill={blue} />
-  <rect x="10" y="42" width="180" height="72" rx="10" fill="#fff" />
-  <text x="16" y="30" fill="#fff" fontFamily={font} fontWeight="800" fontSize="18" letterSpacing=".6">HELLO, I’M</text>
-  <text x="100" y="87" textAnchor="middle" fill={ink} fontFamily={font} fontWeight="700" fontSize="23">User Friendly</text>
+  <rect x="2.5" y="2.5" width="195" height="119" rx="16" fill={blue} {...line} />
+  <rect x="12" y="42" width="176" height="70" rx="9" fill="#fff" {...line} />
+  <text x="18" y="31" fill="#fff" fontFamily={font} fontWeight="800" fontSize="18" letterSpacing=".6">HELLO, I’M</text>
+  <text x="100" y="86" textAnchor="middle" fill={ink} fontFamily={font} fontWeight="700" fontSize="23">User Friendly</text>
 </Art>
 
-/** Figma mark (public/icons/tools/figma.svg), authored at 288 × 432 and drawn at 64 × 96. */
-const figmaParts = [
-  ['M144 216C144 176.641 175.907 144.733 215.267 144.733C254.626 144.733 286.534 176.641 286.534 216C286.534 255.36 254.626 287.267 215.267 287.267C175.907 287.267 144 255.36 144 216Z', '#1ABCFE'],
-  ['M1.466 358.534C1.466 319.175 33.373 287.267 72.733 287.267H144V358.534C144 397.894 112.093 429.801 72.733 429.801C33.373 429.801 1.466 397.894 1.466 358.534Z', '#0ACF83'],
-  ['M144 2.199V144.733H215.267C254.627 144.733 286.534 112.826 286.534 73.466C286.534 34.107 254.627 2.199 215.267 2.199L144 2.199Z', '#FF7262'],
-  ['M1.466 73.466C1.466 112.826 33.373 144.733 72.733 144.733L144 144.733L144 2.199L72.733 2.199C33.373 2.199 1.466 34.107 1.466 73.466Z', '#F24E1E'],
-  ['M1.466 216C1.466 255.36 33.373 287.267 72.733 287.267H144L144 144.733L72.733 144.733C33.373 144.733 1.466 176.641 1.466 216Z', '#A259FF'],
-] as const
-const FigmaMark = () => <Art box={[64, 96]} scale={64 / 288} peel="tr" peelSize={0.3} round={14} edge={figmaParts.map(([d]) => <path key={d} d={d} />)}>
-  {figmaParts.map(([d, fill]) => <path key={d} d={d} fill={fill} />)}
+/** The word on every team board: heavy slanted letters with an ink extrusion. */
+const sprintText = (props: Record<string, unknown>) => <text x="10" y="64" fontFamily={font} fontWeight="800" fontSize="58"
+  textLength="196" lengthAdjust="spacingAndGlyphs" transform="skewX(-12) translate(14 0)" {...props}>SPRINT</text>
+const Sprint = () => <Art box={[222, 84]} peelSize={0.3} edge={<g>{[0, 4, 8].map(d => <g key={d} transform={`translate(${d} ${d})`}>{sprintText({})}</g>)}</g>}>
+  {[8, 6, 4, 2].map(d => <g key={d} transform={`translate(${d} ${d})`}>{sprintText({ fill: ink, stroke: ink, strokeWidth: 5, strokeLinejoin: 'round' })}</g>)}
+  {sprintText({ fill: orange, stroke: ink, strokeWidth: 3.5, strokeLinejoin: 'round', paintOrder: 'stroke' })}
 </Art>
 
-/** Checkbox, checked. */
-const Checkbox = () => <Art box={[88, 88]} round={24} edge={<rect width="88" height="88" rx="24" />}>
-  <rect width="88" height="88" rx="24" fill={green} />
-  <path d="M25 45.5 38.5 58.5 63.5 31" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+/** Command key in a heart: the shortcut that runs the whole working day. */
+const heart = 'M52 93C22 73 3 55 3 32 3 15 15 3 30 3c10 0 18 5 22 13C56 8 64 3 74 3c15 0 27 12 27 29 0 23-19 41-49 61Z'
+const CommandHeart = () => <Art box={[104, 96]} peel="bl" round={24} peelSize={0.22} edge={<path d={heart} />}>
+  <path d={heart} fill={coral} {...line} />
+  <path transform="translate(31 22) scale(1.75)" d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"
+    fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
 </Art>
 
-/** Toggle switched on. */
-const Toggle = () => <Art box={[120, 64]} round={32} edge={<rect width="120" height="64" rx="32" />}>
-  <rect width="120" height="64" rx="32" fill={pink} />
-  <circle cx="88" cy="32" r="24" fill="#fff" />
-  <circle cx="88" cy="32" r="24" fill="none" stroke="rgba(8, 8, 8, .08)" strokeWidth="1.5" />
+/** A pair of eyes watching the cursor. */
+const Eyes = () => <Art box={[124, 80]} round={30} peelSize={0.3} edge={<><rect width="60" height="80" rx="30" /><rect x="64" width="60" height="80" rx="30" /></>}>
+  <rect x="2.5" y="2.5" width="55" height="75" rx="27.5" fill="#fff" {...line} />
+  <rect x="66.5" y="2.5" width="55" height="75" rx="27.5" fill="#fff" {...line} />
+  <circle cx="38" cy="44" r="13" fill={ink} />
+  <circle cx="102" cy="44" r="13" fill={ink} />
+  <circle cx="42" cy="39" r="3.5" fill="#fff" />
+  <circle cx="106" cy="39" r="3.5" fill="#fff" />
 </Art>
 
 /** Multiplayer cursor with a name tag, as in a shared Figma file. */
-const arrow = 'M6 4v60l15-13 11 25 12-5-11-24h22Z'
+const arrow = 'M8 6 60 26 36 34 27 60Z'
 function Cursor() {
   const { t } = useLocale()
-  return <Art box={[120, 96]} round={18} edge={<><path d={arrow} /><rect x="40" y="58" width="80" height="36" rx="18" /></>}>
-    <path d={arrow} fill={orange} stroke="#fff" strokeWidth="3" strokeLinejoin="round" />
-    <rect x="40" y="58" width="80" height="36" rx="18" fill={ink} />
-    <text x="80" y="82" textAnchor="middle" fill="#fff" fontFamily={font} fontWeight="700" fontSize="17">{t('Софа')}</text>
+  return <Art box={[124, 98]} round={18} edge={<><path d={arrow} strokeLinejoin="round" /><rect x="44" y="60" width="80" height="38" rx="19" /></>}>
+    <path d={arrow} fill={ink} {...line} />
+    <rect x="46.5" y="62.5" width="75" height="33" rx="16.5" fill={blue} {...line} />
+    <text x="84" y="85" textAnchor="middle" fill="#fff" fontFamily={font} fontWeight="700" fontSize="17">{t('Софа')}</text>
   </Art>
 }
 
-/** Range slider: a filled track and a handle. */
-const Slider = () => <Art box={[156, 56]} peel="bl" round={28} edge={<rect width="156" height="56" rx="28" />}>
-  <rect x="2.5" y="2.5" width="151" height="51" rx="25.5" fill="#fff" stroke={ink} strokeWidth="5" />
-  <path d="M26 28h104" stroke="rgba(8, 8, 8, .14)" strokeWidth="8" strokeLinecap="round" />
-  <path d="M26 28h68" stroke={violet} strokeWidth="8" strokeLinecap="round" />
-  <circle cx="96" cy="28" r="13" fill="#fff" stroke={ink} strokeWidth="5" />
+/** Mouse: two buttons and the scroll wheel. */
+const Mouse = () => <Art box={[72, 108]} round={34} peelSize={0.3} edge={<rect width="72" height="108" rx="34" />}>
+  <rect x="2.5" y="2.5" width="67" height="103" rx="31.5" fill={yellow} {...line} />
+  <path d="M36 4v34M4 40h64" fill="none" {...line} />
+  <rect x="30" y="14" width="12" height="20" rx="6" fill={ink} />
 </Art>
 
-/** Search field with a blinking-caret moment frozen in. */
-function Search() {
-  const { t } = useLocale()
-  return <Art box={[168, 58]} round={29} edge={<rect width="168" height="58" rx="29" />}>
-    <rect width="168" height="58" rx="29" fill={yellow} />
-    <circle cx="33" cy="27" r="9" fill="none" stroke={ink} strokeWidth="4.5" />
-    <path d="m40 34 7 7" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
-    <text x="60" y="36" fill={ink} fontFamily={font} fontWeight="700" fontSize="21">{t('Поиск')}</text>
-    <path d="M144 17v24" stroke={ink} strokeWidth="3" strokeLinecap="round" />
-  </Art>
-}
+/** Laptop lid, closed over a sticker of its own. */
+const Laptop = () => <Art box={[164, 108]} peel="tr" round={14} peelSize={0.22} edge={<><rect x="12" width="152" height="94" rx="14" /><rect y="86" width="164" height="22" rx="11" /></>}>
+  <rect x="2.5" y="88.5" width="159" height="17" rx="8.5" fill="#fff" {...line} />
+  <rect x="14.5" y="2.5" width="147" height="89" rx="12" fill={ink} {...line} />
+  <path transform="translate(88 47)" d="M0-17 4.5-4.5 17 0 4.5 4.5 0 17-4.5 4.5-17 0-4.5-4.5Z" fill="#fff" />
+</Art>
 
 /** `box`: desktop [left, top] and artwork width on the 1360 × 833 zone; `mobile`: [left %, top % of the portrait height]. */
 type StickerSpec = { id: string; label: string; art: ReactNode; width: number; box: [number, number]; mobile: [number, number]; rotate: number }
 
 const stickers: StickerSpec[] = [
   { id: 'name', label: 'Hello, I’m User Friendly', art: <NameTag />, width: 200, box: [104, 140], mobile: [3, 38], rotate: -8 },
-  { id: 'checkbox', label: 'Checkbox', art: <Checkbox />, width: 88, box: [342, 46], mobile: [20, 3], rotate: 9 },
-  { id: 'figma', label: 'Figma', art: <FigmaMark />, width: 64, box: [396, 332], mobile: [24, 72], rotate: -12 },
-  { id: 'toggle', label: 'Toggle', art: <Toggle />, width: 120, box: [176, 410], mobile: [4, 82], rotate: 8 },
-  { id: 'cursor', label: 'Cursor', art: <Cursor />, width: 120, box: [934, 60], mobile: [72, 10], rotate: 8 },
-  { id: 'slider', label: 'Slider', art: <Slider />, width: 156, box: [960, 300], mobile: [70, 50], rotate: -8 },
-  { id: 'search', label: 'Search', art: <Search />, width: 168, box: [1090, 430], mobile: [68, 84], rotate: 5 },
+  { id: 'eyes', label: 'Eyes', art: <Eyes />, width: 124, box: [326, 40], mobile: [18, 2], rotate: 8 },
+  { id: 'command', label: '⌘', art: <CommandHeart />, width: 104, box: [372, 330], mobile: [22, 70], rotate: -10 },
+  { id: 'sprint', label: 'Sprint', art: <Sprint />, width: 222, box: [136, 410], mobile: [2, 84], rotate: -6 },
+  { id: 'cursor', label: 'Cursor', art: <Cursor />, width: 124, box: [934, 60], mobile: [72, 8], rotate: 8 },
+  { id: 'mouse', label: 'Mouse', art: <Mouse />, width: 72, box: [1000, 262], mobile: [80, 44], rotate: 12 },
+  { id: 'laptop', label: 'Laptop', art: <Laptop />, width: 164, box: [1060, 420], mobile: [70, 82], rotate: -8 },
 ]
 
 function Sticker({ spec, zone, index, onLift, z }: {
