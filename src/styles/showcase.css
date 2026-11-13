@@ -241,7 +241,7 @@ html:has(.sc) body { background: var(--sc-bg, #fff); }
   color: var(--sc-muted);
 }
 
-.sc-pills { display: flex; flex-direction: column; gap: calc(8 * var(--u)); margin-top: auto; padding-top: calc(24 * var(--u)); }
+.sc-pills { display: flex; flex-direction: column; gap: calc(8 * var(--u)); margin-top: calc(28 * var(--u)); padding-top: 0; }
 .sc-pill-row { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); }
 .sc-pill {
   display: inline-flex;
@@ -294,7 +294,7 @@ html:has(.sc) body { background: var(--sc-bg, #fff); }
 .sc-case-art:hover img { transform: translateY(calc(-8 * var(--u))); }
 .sc-case--wide-art .sc-case-body { width: calc(700 * var(--u)); }
 /* Wide art: the same side gaps, the phone stays whole, the browser runs past the bottom edge */
-.sc-case--wide-art .sc-case-art { top: auto; bottom: calc(-24 * var(--u)); left: calc(678 * var(--u)); width: calc(640 * var(--u)); }
+.sc-case--wide-art .sc-case-art { top: auto; bottom: calc(-24 * var(--u)); left: calc(616 * var(--u)); width: calc(710 * var(--u)); }
 /* Copy keeps to a 580-unit column so the art always has equal air on both sides */
 @media (min-width: 900px) { .sc-case:not(.sc-case--page) .sc-case-body > :is(.sc-case-title, .sc-list) { max-width: calc(580 * var(--u)); } }
 

@@ -317,16 +317,20 @@ function ExperienceGrid() {
   const [yukki, makeDifference, sky] = experience
   const [formFactor, contented] = education
   // Every job card reads the same: what the work was about, then one headline result per project.
-  // `perProject` sets how many real results each card lists, so the three columns fill evenly.
-  const job = (item: Experience, perProject: number[]) => <ExperienceCard item={item}>
+  // `perProject` picks which real results each project shows (a count, or exact indices),
+  // so the three columns fill evenly and no two neighbouring lines repeat the same metric.
+  const job = (item: Experience, perProject: (number | number[])[]) => <ExperienceCard item={item}>
     {item.summary && <p>{t(item.summary)}</p>}
-    {item.projects && <ul>{item.projects.flatMap(project => project.results.slice(0, perProject[item.projects!.indexOf(project)] ?? 1)).map(result => <li key={result}>{t(result)}</li>)}</ul>}
+    {item.projects && <ul>{item.projects.flatMap((project, index) => {
+      const pick = perProject[index] ?? 1
+      return Array.isArray(pick) ? pick.map(i => project.results[i]).filter(Boolean) : project.results.slice(0, pick)
+    }).map(result => <li key={result}>{t(result)}</li>)}</ul>}
   </ExperienceCard>
   return <section className="sc-experience" aria-labelledby="sc-experience">
     <h2 className="sc-section-title" id="sc-experience">{t('Мой рабочий лор')}</h2>
     <div className="sc-columns">
       <div className="sc-column">{job(yukki, [2, 1])}<ExperienceCard item={contented} study /></div>
-      <div className="sc-column">{job(makeDifference, [2, 2, 2])}</div>
+      <div className="sc-column">{job(makeDifference, [[0, 1, 3], 3, 3])}</div>
       <div className="sc-column">{job(sky, [1, 1, 1])}<ExperienceCard item={formFactor} study /></div>
     </div>
   </section>
