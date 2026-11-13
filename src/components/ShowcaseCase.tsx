@@ -31,8 +31,8 @@ export function CaseCard({ item, page = false }: { item: ShowcaseCase; page?: bo
   const Root = page ? 'header' : 'section'
   return <Root className={`sc-case${item.art.wide ? ' sc-case--wide-art' : ''}${page ? ' sc-case--page' : ''}`} aria-labelledby={`sc-${item.id}`}>
     <div className="sc-case-body">
-      <Heading className="sc-case-title" id={`sc-${item.id}`}>{page ? t(item.title) : <Link to={to} onClick={open}>{t(item.title)}</Link>}</Heading>
-      <ul className="sc-list">{item.points.map(point => <li key={point}><Check />{t(point)}</li>)}</ul>
+      <Heading className="sc-case-title" id={`sc-${item.id}`}>{page ? t(item.title) : <Link to={to} onClick={open}>{t(item.homeTitle ?? item.title)}</Link>}</Heading>
+      <ul className="sc-list">{(page ? item.points : item.homePoints ?? item.points).map(point => <li key={point}><Check />{t(point)}</li>)}</ul>
       {/* Metrics stay on the home card; inside the case the header lists role, platform and niche instead. */}
       {!page && <Pills rows={item.pills.map(row => row.map(pill => typeof pill === 'string'
         ? t(pill)

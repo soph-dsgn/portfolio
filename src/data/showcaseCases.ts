@@ -4,6 +4,9 @@ export type Pill = string | { text: string; note: string }
 export type ShowcaseCase = {
   id: string
   title: string
+  /** Livelier title and points for the home card; the case header keeps `title` and `points`. */
+  homeTitle?: string
+  homePoints?: string[]
   points: string[]
   pills: Pill[][]
   art: { stem: string; width: number; height: number; wide?: boolean }
@@ -12,6 +15,8 @@ export type ShowcaseCase = {
 export const showcaseCases: Record<'skywallet' | 'partner-portal', ShowcaseCase> = {
   skywallet: {
     id: 'skywallet',
+    homeTitle: 'Кошелёк и биржа в одном приложении — но без путаницы, где чьи деньги',
+    homePoints: ['Разобрала четыре кошелька и нашла, где они подставляют пользователя', 'Порезала перевод на шаги, где можно остановиться и всё проверить', 'Сеть и баланс всегда перед глазами — никаких сюрпризов в конце'],
     title: 'Спроектировала SkyWallet: разделила личный кошелёк и биржевой счёт, упростила переводы и снизила риск ошибок',
     points: ['Сравнила четыре криптокошелька по зонам риска', 'Разбила перевод на контрольные точки', 'Оставила сеть и баланс на виду во всём сценарии'],
     pills: [[{ text: 'Ошибки при отправке −20–30%', note: 'после редизайна' }], ['Время перевода −15–25%', 'Первая транзакция +10–15%']],
@@ -19,6 +24,7 @@ export const showcaseCases: Record<'skywallet' | 'partner-portal', ShowcaseCase>
   },
   'partner-portal': {
     id: 'partner-portal',
+    homeTitle: 'Кабинет для партнёров, где дашборд, ордера и вебхуки наконец говорят на одном языке',
     title: 'Собрала Partner Portal с дашбордом, поиском по ордерам и диагностикой вебхуков, чтобы ускорить проверку операций',
     points: ['Дашборд за период: обороты, комиссии, статусы', 'Поиск и проверка ордера в web и mobile', 'Диагностика вебхуков без переписки с поддержкой'],
     pills: [['Проверка ордера −20–30%'], ['Обращения в поддержку −15–25%']],

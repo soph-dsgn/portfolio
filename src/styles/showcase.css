@@ -282,18 +282,21 @@ html:has(.sc) body { background: var(--sc-bg, #fff); }
   line-height: calc(34 * var(--u));
   color: var(--sc-muted);
 }
-/* Art sits centred between the text and the card's right edge (equal gaps) and runs past the bottom edge */
+/* Art sits centred between the text and the card's right edge (equal gaps) and is anchored to the bottom, so it always runs past it */
 .sc-case-art {
   position: absolute;
-  top: calc(110 * var(--u));
-  left: calc(719 * var(--u));
+  top: auto;
+  bottom: calc(-90 * var(--u));
+  left: calc(691 * var(--u));
   width: calc(580 * var(--u));
 }
 .sc-case-art img { width: 100%; height: auto; transition: transform .6s var(--sc-ease); }
 .sc-case-art:hover img { transform: translateY(calc(-8 * var(--u))); }
 .sc-case--wide-art .sc-case-body { width: calc(700 * var(--u)); }
 /* Wide art: the same side gaps, the phone stays whole, the browser runs past the bottom edge */
-.sc-case--wide-art .sc-case-art { top: calc(190 * var(--u)); left: calc(660 * var(--u)); width: calc(640 * var(--u)); }
+.sc-case--wide-art .sc-case-art { top: auto; bottom: calc(-24 * var(--u)); left: calc(678 * var(--u)); width: calc(640 * var(--u)); }
+/* Copy keeps to a 580-unit column so the art always has equal air on both sides */
+@media (min-width: 900px) { .sc-case:not(.sc-case--page) .sc-case-body > :is(.sc-case-title, .sc-list) { max-width: calc(580 * var(--u)); } }
 
 /* ---------- Drag slider ---------- */
 .sc-slider { width: 100vw; margin-left: calc(50% - 50vw); }
@@ -522,7 +525,6 @@ html:has(.sc-preview[open]) { overflow: hidden; }
   border-radius: 28%;
   object-fit: cover;
   background: #fff;
-  box-shadow: 0 0 0 1px rgba(8, 8, 8, .06);
 }
 .sc-card-head h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: 500; }
 .sc-card-head p { font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; color: var(--sc-muted); }
