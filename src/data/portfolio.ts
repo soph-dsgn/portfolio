@@ -47,7 +47,7 @@ export const experience: Experience[] = [
     company: 'Make Difference',
     role: 'UX/UI-дизайнер',
     period: '10.2025 — 07.2026',
-    logo: '/icons/job/Make_Difference.jpg',
+    logo: '/icons/job/Make_Difference.webp',
     summary: 'Экосистема женского здоровья, Atlyx и Астория: архитектура и ключевые сценарии',
     projects: [
       { title: '01. Экосистема женского здоровья', results: ['Рост активации новых пользователей (Activation Rate) на +12%', 'Рост CR в запись на консультацию на +10%', 'Рост D30 Retention на +8%', 'Сокращение времени до первого целевого действия на −15%'], problem: 'У врача уже были продукты, контент и консультации, но идея платформы оставалась слишком широкой. Нужно было собрать понятный MVP, а остальное оставить на следующие этапы', solution: 'Определила, что войдёт в MVP, связала модули и разобрала ключевые пути: обучение, консультации, покупки и работу с личными данными' },
@@ -70,12 +70,12 @@ export const experience: Experience[] = [
 ].map((item) => ({ ...item, logo: item.logo ? publicAsset(item.logo) : undefined }))
 
 export const education: Experience[] = [
-  { company: 'FormFactor', role: 'Продуктовый дизайн', period: '2026', logo: '/icons/job/Изображение ChatGPT 1 окт. 2026 г., 01_11_09.png' },
+  { company: 'FormFactor', role: 'Продуктовый дизайн', period: '2026', logo: '/icons/job/FormFactor.webp' },
   {
     company: 'Contented',
     role: 'UX/UI-дизайнер с нуля до PRO',
     period: '2024 — 2025',
-    logo: '/icons/job/Contented.png',
+    logo: '/icons/job/Contented.webp',
     certificateUrl: 'https://cloud.mail.ru/public/8w32/g9yfb6Yg2',
   },
 ].map((item) => ({ ...item, logo: item.logo ? publicAsset(item.logo) : undefined }))

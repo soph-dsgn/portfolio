@@ -11,7 +11,7 @@ type SourceImage = {
   height: number
 }
 
-const skywalletMediaRevision = '20261108b'
+const skywalletMediaRevision = '20261113a'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
   // macOS stores the generated Cyrillic filenames in decomposed Unicode.
@@ -21,9 +21,12 @@ function image({ file, caption, width, height }: SourceImage): CaseImage {
   const srcSet = [960, 1600]
     .map(size => `${encodeURI(publicAsset(`optimized/cases/skywallet/${stem}-${size}.jpg`))}?v=${skywalletMediaRevision} ${Math.min(size, width)}w`)
     .join(', ')
+  const webp = (size: number) => `${encodeURI(publicAsset(`optimized/cases/skywallet/${stem}-${size}.webp`))}?v=${skywalletMediaRevision}`
   return {
-    src: `${publicAsset(`cases/skywallet/${file}`)}?v=${skywalletMediaRevision}`,
+    // The full-screen viewer opens the 2400px WebP instead of the multi-megabyte source PNG.
+    src: webp(2400),
     srcSet,
+    webpSrcSet: [960, 1600, 2400].map(size => `${webp(size)} ${Math.min(size, width)}w`).join(', '),
     alt: caption,
     caption,
     width,

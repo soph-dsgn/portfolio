@@ -9,16 +9,19 @@ type SourceImage = {
   height: number
 }
 
-const partnerPortalMediaRevision = '20261109a'
+const partnerPortalMediaRevision = '20261113a'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
   const stem = file.replace(/\.[^.]+$/, '').normalize('NFD')
   const srcSet = [960, 1600]
     .map(size => `${publicAsset(`optimized/cases/partner-portal/${stem}-${size}.jpg`)}?v=${partnerPortalMediaRevision} ${size}w`)
     .join(', ')
+  const webp = (size: number) => `${publicAsset(`optimized/cases/partner-portal/${stem}-${size}.webp`)}?v=${partnerPortalMediaRevision}`
   return {
-    src: `${publicAsset(`cases/partner-portal/${file}`)}?v=${partnerPortalMediaRevision}`,
+    // The full-screen viewer opens the 2400px WebP instead of the multi-megabyte source PNG.
+    src: webp(2400),
     srcSet,
+    webpSrcSet: [960, 1600, 2400].map(size => `${webp(size)} ${Math.min(size, width)}w`).join(', '),
     alt: caption,
     caption,
     width,

@@ -41,8 +41,9 @@ export function ImageLightbox({ image, onClose }: { image: CaseImage | null; onC
           aria-label="Закрыть изображение"><Icon name="close" /></button>
       </div>
       <div className="image-lightbox-viewport">
+        {/* At 100% the whole image fits the screen with its own proportions; zooming grows its height, the width follows. */}
         <SceneImage src={image.src} sizes="100vw" alt={image.alt} width={image.width} height={image.height}
-          decoding="async" style={{ width: `${zoom * 100}%`, maxWidth: zoom === 1 ? '100%' : 'none' }} />
+          decoding="async" style={zoom === 1 ? undefined : { height: `${zoom * 100}%`, maxWidth: 'none', maxHeight: 'none' }} />
       </div>
     </div>,
     document.body,
