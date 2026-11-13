@@ -33,9 +33,10 @@ export function CaseCard({ item, page = false }: { item: ShowcaseCase; page?: bo
     <div className="sc-case-body">
       <Heading className="sc-case-title" id={`sc-${item.id}`}>{page ? t(item.title) : <Link to={to} onClick={open}>{t(item.title)}</Link>}</Heading>
       <ul className="sc-list">{item.points.map(point => <li key={point}><Check />{t(point)}</li>)}</ul>
-      <Pills rows={item.pills.map(row => row.map(pill => typeof pill === 'string'
+      {/* Metrics stay on the home card; inside the case the header lists role, platform and niche instead. */}
+      {!page && <Pills rows={item.pills.map(row => row.map(pill => typeof pill === 'string'
         ? t(pill)
-        : <>{t(pill.text)} <span>{t(pill.note)}</span></>))} />
+        : <>{t(pill.text)} <span>{t(pill.note)}</span></>))} />}
     </div>
     {page
       ? <div className="sc-case-art" aria-hidden="true"><img src={art(1280)} srcSet={`${art(640)} 640w, ${art(1280)} 1280w`}

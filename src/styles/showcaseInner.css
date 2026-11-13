@@ -71,23 +71,19 @@ body { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 }
 .sc-topbar .sc-settings { position: static; }
 .sc-back {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(10 * var(--u));
-  height: calc(56 * var(--u));
-  padding: 0 calc(24 * var(--u)) 0 calc(18 * var(--u));
-  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   background: rgba(8, 8, 8, .05);
   color: var(--sc-ink);
-  font-size: calc(18 * var(--u));
-  font-weight: 500;
-  white-space: nowrap;
   text-decoration: none;
   transition: background-color .25s var(--sc-ease);
 }
 .sc-back:hover { background: rgba(8, 8, 8, .09); }
 .sc-back:focus-visible { outline: 2px solid var(--sc-blue); outline-offset: 3px; }
-.sc-back svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.sc-back svg { width: 20px; height: 20px; }
 
 
 /* ---------- Cases: every document section is a card ---------- */
@@ -155,7 +151,8 @@ html .case-shell--editorial .case-results { gap: calc(16 * var(--u)); }
 html .case-shell--editorial .case-results > div { min-height: 0; padding: calc(36 * var(--u)) calc(32 * var(--u)); border-radius: calc(48 * var(--u)); background: #fff; }
 html .case-shell--editorial .case-results dt { font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; letter-spacing: 0; }
 html .case-shell--editorial .case-results dd { margin-top: calc(10 * var(--u)); color: var(--sc-muted); font-size: calc(18 * var(--u)); line-height: calc(26 * var(--u)); font-weight: 500; }
-html .case-shell > .sc-site-footer { margin-top: calc(140 * var(--u)); }
+/* Same step as between case sections: the last section ends, the footer row follows */
+html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
 
 /* ---------- Copyright, privacy, 404 ---------- */
 .copyright-page { width: var(--W); padding-top: 0; }
@@ -169,12 +166,13 @@ html .case-shell > .sc-site-footer { margin-top: calc(140 * var(--u)); }
 .copyright-document h2 { margin-bottom: calc(12 * var(--u)); font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: 500; }
 .copyright-document :is(p, li) { max-width: none; color: var(--story-body); font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 .copyright-document ul { padding-left: calc(24 * var(--u)); }
+.copyright-document ul + p { margin-top: calc(16 * var(--u)); }
 .copyright-meta { padding-top: calc(32 * var(--u)); border-top: 1px solid var(--story-rule); }
 .copyright-contact,
 .copyright-updated { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 .privacy-settings { margin-top: calc(20 * var(--u)); padding: calc(50 * var(--u)) calc(60 * var(--u)); border-radius: calc(84 * var(--u)); background: var(--sc-surface); }
 .privacy-settings h2 { margin: 0 0 calc(12 * var(--u)); font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: 500; }
-.privacy-settings p { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
+.privacy-settings p { max-width: none; font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 .privacy-actions button { min-height: calc(56 * var(--u)); padding-inline: calc(24 * var(--u)); border: 0; background: rgba(8, 8, 8, .06); font-size: calc(18 * var(--u)); font-weight: 500; }
 .privacy-actions button:is(:hover, [aria-pressed="true"]) { background: var(--sc-ink); color: #fff; }
 
@@ -229,8 +227,7 @@ html .case-shell > .sc-site-footer { margin-top: calc(140 * var(--u)); }
   .sc-topbar .sc-settings { gap: 4px; min-width: 0; }
   .sc-topbar .language-selector { padding-inline: 6px; }
   .sc-topbar .story-sound { padding-inline: 4px; white-space: nowrap; }
-  .sc-back { flex: none; height: 38px; gap: 5px; padding: 0 12px 0 10px; font-size: 13px; }
-  .sc-back svg { width: 16px; height: 16px; }
+  .sc-back { flex: none; }
 
 
   html .case-main,
@@ -253,10 +250,10 @@ html .case-shell > .sc-site-footer { margin-top: calc(140 * var(--u)); }
   html .case-shell--editorial .case-results > div { padding: 18px; border-radius: 22px; }
   html .case-shell--editorial .case-results dt { font-size: 20px; line-height: 26px; }
   html .case-shell--editorial .case-results dd { font-size: 13px; line-height: 18px; }
-  html .case-shell > .sc-site-footer { margin-top: 64px; }
+  html .case-shell > .sc-site-footer { margin-top: 44px; }
   .copyright-document { gap: 24px; }
   .copyright-document h1 { font-size: 22px; line-height: 28px; }
-  .copyright-document h2 { font-size: 17px; line-height: 24px; }
+  .copyright-document h2 { margin-bottom: 8px; font-size: 17px; line-height: 24px; }
   .copyright-document :is(p, li),
   .copyright-contact,
   .copyright-updated,

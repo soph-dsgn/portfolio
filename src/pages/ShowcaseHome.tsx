@@ -24,7 +24,7 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
 /* ---------- Hero ---------- */
 
 /** Waist-up photo with the background removed (cut out of the studio shot). */
-const portrait = { src: '/optimized/home/avatar-photo-760.png', srcSet: '/optimized/home/avatar-photo-380.png 380w, /optimized/home/avatar-photo-760.png 760w', width: 760, height: 813 }
+const portrait = { src: '/optimized/home/avatar-photo-760.webp', srcSet: '/optimized/home/avatar-photo-380.webp 380w, /optimized/home/avatar-photo-760.webp 760w', width: 760, height: 813 }
 
 function Hero() {
   const { t } = useLocale()
@@ -36,7 +36,7 @@ function Hero() {
       <span className="sc-portrait-hit" aria-hidden="true" onClick={() => setBounce(value => value + 1)} />
       <img key={bounce} className={`sc-portrait${bounce ? ' is-bouncing' : ''}`} src={asset(portrait.src)}
         srcSet={portrait.srcSet.split(', ').map(item => { const [path, width] = item.split(' '); return `${asset(path)} ${width}` }).join(', ')}
-        sizes="(max-width: 899px) 60vw, 300px" width={portrait.width} height={portrait.height} alt={t('Фото Софьи Стрельченко')} draggable={false} />
+        sizes="(max-width: 899px) 60vw, 300px" width={portrait.width} height={portrait.height} alt={t('Фото Софьи Стрельченко')} draggable={false} fetchPriority="high" decoding="async" />
       {/* Full name rises, gets struck through, then the short name and the role follow. */}
       <h1 className="sc-title" id="sc-title">
         <span className="sr-only">{t(profile.name)} — UX/UI & Product Designer</span>
@@ -305,8 +305,8 @@ function ExperienceCard({ item, children, study = false }: { item: Experience; c
   return <article className={`sc-card${study ? ' sc-card--study' : ''}`}>
     {study && <p className="sc-card-badge">{t('Обучение')}</p>}
     <header className="sc-card-head">
-      {item.logo ? <img src={item.logo} alt="" width="60" height="60" loading="lazy" decoding="async" /> : <span className="sc-card-logo" aria-hidden="true" />}
-      <div><h3>{t(item.company)}</h3><p>{t(item.role)} · {t(item.period)}</p></div>
+      {item.logo ? <img src={asset(item.logo)} alt="" width="60" height="60" decoding="async" /> : <span className="sc-card-logo" aria-hidden="true" />}
+      <div><h3>{t(item.company)}</h3><p>{t(item.role)}</p><p className="sc-card-period">{t(item.period)}</p></div>
     </header>
     {children && <div className="sc-card-text">{children}</div>}
   </article>

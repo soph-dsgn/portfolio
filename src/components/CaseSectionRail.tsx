@@ -24,7 +24,11 @@ export function CaseSectionRail({ sections }: { sections: RailSection[] }) {
       frame = 0
       const nodes = sections.map(section => document.getElementById(section.id))
       if (nodes.some(node => !node)) return
-      const anchor = window.innerHeight * 0.4
+      // The reading line sits at 40% of the screen and slides to the bottom over the last screenful,
+      // so the final section fills completely once the page is scrolled to the end.
+      const remaining = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight)
+      const end = Math.min(1, Math.max(0, 1 - remaining / (window.innerHeight * 0.6)))
+      const anchor = window.innerHeight * (0.4 + 0.6 * end)
       const boxes = nodes.map(node => node!.getBoundingClientRect())
       let active = ''
       boxes.forEach((box, index) => {
@@ -34,6 +38,7 @@ export function CaseSectionRail({ sections }: { sections: RailSection[] }) {
         link?.style.setProperty('flex-grow', String(Math.round(box.height)))
         link?.style.setProperty('--fill', fill.toFixed(4))
         if (box.top <= anchor && box.bottom > anchor) active = sections[index].id
+        if (end >= 1 && index === boxes.length - 1 && box.bottom <= anchor) active = sections[index].id
       })
       const visible = boxes[0].top < window.innerHeight * 0.75 && boxes[boxes.length - 1].bottom > window.innerHeight * 0.25
       // Labels show only when their widest line clears the text column with a 24px gap.

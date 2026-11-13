@@ -3,7 +3,6 @@ import { profile } from '../data/portfolio'
 import { useLocale } from '../i18n/locale'
 import { trackEvent } from '../lib/analytics'
 import { Icon } from './Icon'
-import { SoundControl } from '../lib/uiSound'
 
 /** Shared chrome of the showcase layout: settings, inner-page top bar, top fade and contact dock. */
 /** One pill showing the current language; a press switches to the other one. */
@@ -17,14 +16,14 @@ function LanguageToggle() {
 }
 
 export function ShowcaseSettings() {
-  return <div className="sc-settings"><SoundControl /><LanguageToggle /></div>
+  return <div className="sc-settings"><LanguageToggle /></div>
 }
 
 /** Inner pages: one way back on the left, settings on the right — the home page has no navigation either. */
 export function ShowcaseTopBar({ to = '/', label = 'На главную' }: { to?: string; label?: string }) {
   const { t } = useLocale()
   return <header className="sc-topbar">
-    <Link className="sc-back" to={to}><Icon name="arrow-left" /> {t(label)}</Link>
+    <Link className="sc-back" to={to} aria-label={t(label)} title={t(label)}><Icon name="arrow-left" /></Link>
     <ShowcaseSettings />
   </header>
 }
@@ -73,8 +72,11 @@ export function ShowcaseFooter({ id }: { location?: string; id?: string }) {
   }
   return <footer className="sc-site-footer" id={id}>
     <div className="sc-footer-note">
-      <p>© 2026,<br />{t('Дизайнила Софья Стрельченко')}</p>
-      <Link className="sc-footer-legal" to="/copyright">{t('Авторские права')}</Link>
+      <p>© 2026, {t('Дизайнила Софья Стрельченко')}</p>
+      <p className="sc-footer-links">
+        <Link className="sc-footer-legal" to="/copyright">{t('Авторские права')}</Link>
+        <Link className="sc-footer-legal" to="/privacy">{t('Политика конфиденциальности')}</Link>
+      </p>
     </div>
     <button type="button" className="sc-footer-top" onClick={top}>
       {t('Только наверх')}
