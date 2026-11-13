@@ -156,21 +156,31 @@ html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
 
 /* ---------- Copyright, privacy, 404 ---------- */
 .copyright-page { width: var(--W); padding-top: 0; }
+/* Documents read like case pages: no card under the text, the case title and section sizes, the same body copy */
 .copyright-document {
-  gap: calc(40 * var(--u));
-  padding: calc(50 * var(--u)) calc(60 * var(--u)) calc(60 * var(--u));
-  border-radius: calc(84 * var(--u));
-  background: var(--sc-surface);
+  gap: calc(72 * var(--u));
+  padding: calc(40 * var(--u)) 0 0;
+  border-radius: 0;
+  background: transparent;
 }
-.copyright-document h1 { max-width: none; font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; letter-spacing: 0; text-wrap: balance; }
-.copyright-document h2 { margin-bottom: calc(12 * var(--u)); font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: 500; }
-.copyright-document :is(p, li) { max-width: none; color: var(--story-body); font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
-.copyright-document ul { padding-left: calc(24 * var(--u)); }
-.copyright-document ul + p { margin-top: calc(16 * var(--u)); }
-.copyright-meta { padding-top: calc(32 * var(--u)); border-top: 1px solid var(--story-rule); }
+.copyright-intro { display: grid; gap: calc(16 * var(--u)); }
+.copyright-document h1 { max-width: none; margin: 0; font-size: calc(44 * var(--u)); line-height: calc(54 * var(--u)); font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
+.copyright-document h2 { margin: 0 0 calc(22 * var(--u)); font-size: calc(32 * var(--u)); line-height: calc(40 * var(--u)); font-weight: 500; }
+.copyright-document :is(p, li) { max-width: none; margin: 0; color: rgba(8, 8, 8, .64); font-size: max(16px, calc(20 * var(--u))); line-height: max(26px, calc(32 * var(--u))); }
+html .copyright-document section > * + * { margin-top: calc(20 * var(--u)); }
+html .copyright-document section > h2 + * { margin-top: 0; }
+.copyright-document ul { display: grid; gap: calc(10 * var(--u)); padding-left: calc(24 * var(--u)); }
+.copyright-document a { color: var(--sc-ink); text-decoration: underline; text-decoration-color: rgba(8, 8, 8, .25); text-underline-offset: 3px; }
+.copyright-document a:hover { text-decoration-color: currentColor; }
+.copyright-meta { display: grid; gap: calc(20 * var(--u)); padding-top: calc(40 * var(--u)); border-top: 1px solid rgba(8, 8, 8, .1); }
 .copyright-contact,
-.copyright-updated { font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
-.privacy-settings { margin-top: calc(20 * var(--u)); padding: calc(50 * var(--u)) calc(60 * var(--u)); border-radius: calc(84 * var(--u)); background: var(--sc-surface); }
+.copyright-updated { margin: 0; font-style: normal; color: rgba(8, 8, 8, .64); font-size: max(16px, calc(20 * var(--u))); line-height: max(26px, calc(32 * var(--u))); }
+.copyright-intro .copyright-updated { color: var(--sc-muted); font-size: max(14px, calc(18 * var(--u))); }
+/* Older document rules still set list spacing and a caption-size date; the document rhythm above wins */
+.copyright-document li + li { margin-top: 0; }
+.copyright-document .copyright-meta .copyright-updated { margin: 0; color: var(--sc-muted); font-size: max(14px, calc(18 * var(--u))); line-height: max(20px, calc(26 * var(--u))); }
+.copyright-document .copyright-intro .copyright-updated { margin: 0; }
+.privacy-settings { margin-top: calc(72 * var(--u)); padding: calc(50 * var(--u)) calc(60 * var(--u)); border-radius: calc(84 * var(--u)); background: var(--sc-surface); }
 .privacy-settings h2 { margin: 0 0 calc(12 * var(--u)); font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: 500; }
 .privacy-settings p { max-width: none; font-size: calc(20 * var(--u)); line-height: calc(32 * var(--u)); }
 .privacy-actions button { min-height: calc(56 * var(--u)); padding-inline: calc(24 * var(--u)); border: 0; background: rgba(8, 8, 8, .06); font-size: calc(18 * var(--u)); font-weight: 500; }
@@ -235,7 +245,6 @@ html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
   html .case-shell--editorial .case-content { gap: 12px; }
   html .case-header,
   html .case-shell--editorial :is(.case-overview, .case-document-section),
-  .copyright-document,
   .privacy-settings,
   .not-found { padding: 28px 24px; border-radius: 32px; }
   html .case-header .case-deck,
@@ -251,12 +260,19 @@ html .case-shell > .sc-site-footer { margin-top: calc(97 * var(--u)); }
   html .case-shell--editorial .case-results dt { font-size: 20px; line-height: 26px; }
   html .case-shell--editorial .case-results dd { font-size: 13px; line-height: 18px; }
   html .case-shell > .sc-site-footer { margin-top: 44px; }
-  .copyright-document { gap: 24px; }
-  .copyright-document h1 { font-size: 22px; line-height: 28px; }
-  .copyright-document h2 { margin-bottom: 8px; font-size: 17px; line-height: 24px; }
+  .copyright-document { gap: 44px; padding-top: 24px; }
+  .copyright-intro { gap: 10px; }
+  .copyright-document h1 { font-size: 26px; line-height: 32px; }
+  .copyright-document h2 { margin-bottom: 14px; font-size: 22px; line-height: 28px; }
+  html .copyright-document section > * + * { margin-top: 14px; }
+  html .copyright-document section > h2 + * { margin-top: 0; }
+  .copyright-document ul { gap: 8px; padding-left: 20px; }
+  .copyright-meta { padding-top: 24px; gap: 14px; }
+  .privacy-settings { margin-top: 44px; }
   .copyright-document :is(p, li),
   .copyright-contact,
-  .copyright-updated,
+  .copyright-updated { font-size: 16px; line-height: 26px; }
+  .copyright-intro .copyright-updated { font-size: 14px; line-height: 20px; }
   .privacy-settings p { font-size: 15px; line-height: 24px; }
   .privacy-settings h2 { font-size: 17px; line-height: 24px; }
   .privacy-actions button { min-height: 40px; font-size: 14px; }
