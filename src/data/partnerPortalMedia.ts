@@ -9,10 +9,10 @@ type SourceImage = {
   height: number
 }
 
-const partnerPortalMediaRevision = '20261113a'
+const partnerPortalMediaRevision = '20261114a'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
-  const stem = file.replace(/\.[^.]+$/, '').normalize('NFD')
+  const stem = file.replace(/\.[^.]+$/, '').normalize('NFC')
   const srcSet = [960, 1600]
     .map(size => `${publicAsset(`optimized/cases/partner-portal/${stem}-${size}.jpg`)}?v=${partnerPortalMediaRevision} ${size}w`)
     .join(', ')

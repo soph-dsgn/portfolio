@@ -305,7 +305,7 @@ function ExperienceCard({ item, children, study = false }: { item: Experience; c
   return <article className={`sc-card${study ? ' sc-card--study' : ''}`}>
     {study && <p className="sc-card-badge">{t('Обучение')}</p>}
     <header className="sc-card-head">
-      {item.logo ? <img src={asset(item.logo)} alt="" width="60" height="60" decoding="async" /> : <span className="sc-card-logo" aria-hidden="true" />}
+      {item.logo ? <img src={item.logo} alt="" width="60" height="60" decoding="async" /> : <span className="sc-card-logo" aria-hidden="true" />}
       <div><h3>{t(item.company)}</h3><p>{t(item.role)}</p><p className="sc-card-period">{t(item.period)}</p></div>
     </header>
     {children && <div className="sc-card-text">{children}</div>}

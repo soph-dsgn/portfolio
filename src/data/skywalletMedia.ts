@@ -11,13 +11,12 @@ type SourceImage = {
   height: number
 }
 
-const skywalletMediaRevision = '20261113a'
+const skywalletMediaRevision = '20261114a'
 
 function image({ file, caption, width, height }: SourceImage): CaseImage {
-  // macOS stores the generated Cyrillic filenames in decomposed Unicode.
-  // Keep the request path in that same normalization form so responsive
-  // candidates do not 404 while the original PNG still exists.
-  const stem = file.replace(/\.[^.]+$/, '').normalize('NFD')
+  // Git (core.precomposeunicode) stores the Cyrillic filenames precomposed (NFC), and GitHub Pages
+  // matches paths byte for byte, so requests must use NFC too; decomposed paths 404 there.
+  const stem = file.replace(/\.[^.]+$/, '').normalize('NFC')
   const srcSet = [960, 1600]
     .map(size => `${encodeURI(publicAsset(`optimized/cases/skywallet/${stem}-${size}.jpg`))}?v=${skywalletMediaRevision} ${Math.min(size, width)}w`)
     .join(', ')

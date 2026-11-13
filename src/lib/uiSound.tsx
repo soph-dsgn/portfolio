@@ -44,9 +44,8 @@ function hiss({ audio, out, noise }: Voice, at: number, { filter = 'bandpass', f
 
 const recipes: Record<SoundKind, (voice: Voice, at: number) => void> = {
   hover: (v, at) => {
-    const p = jitter(0.08)
-    tone(v, at, { from: 1900 * p, to: 1700 * p, length: 0.035, volume: 0.022 })
-    hiss(v, at, { filter: 'highpass', from: 5000, length: 0.012, volume: 0.012 })
+    const p = jitter(0.06)
+    tone(v, at, { from: 1100 * p, to: 950 * p, length: 0.03, volume: 0.016 })
   },
   click: (v, at) => {
     const p = jitter(0.04)
@@ -98,6 +97,7 @@ export function SoundControl() {
 export function UISoundProvider({ children }: { children: ReactNode }) {
   const voice = useRef<Voice | null>(null)
   const last = useRef<Partial<Record<SoundKind, number>>>({})
+  const lastAny = useRef(-Infinity)
   const [enabled, setEnabled] = useState(() => {
     try { return localStorage.getItem(soundKey) !== 'off' } catch { return true }
   })
@@ -106,7 +106,13 @@ export function UISoundProvider({ children }: { children: ReactNode }) {
     try {
       if (!voice.current) {
         const audio = new AudioContext({ latencyHint: 'interactive' })
-        const out = audio.createGain(); out.gain.value = 0.9; out.connect(audio.destination)
+        // Output chain: a gentle low-pass removes the hiss above ~7 kHz and a compressor keeps
+        // overlapping sounds from summing into clipping (heard as a harsh, high whine).
+        const out = audio.createGain(), tame = audio.createBiquadFilter(), limit = audio.createDynamicsCompressor()
+        out.gain.value = 0.8
+        tame.type = 'lowpass'; tame.frequency.value = 7000
+        limit.threshold.value = -18; limit.knee.value = 12; limit.ratio.value = 8; limit.attack.value = 0.002; limit.release.value = 0.12
+        out.connect(tame).connect(limit).connect(audio.destination)
         const noise = audio.createBuffer(1, audio.sampleRate, audio.sampleRate)
         const data = noise.getChannelData(0)
         for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1
@@ -118,12 +124,13 @@ export function UISoundProvider({ children }: { children: ReactNode }) {
 
   const play = useCallback((kind: SoundKind) => {
     const current = voice.current
-    if (!enabled || current?.audio.state !== 'running') return
-    // Each kind has its own short cooldown so fast pointer sweeps don't turn into a buzz.
-    const now = performance.now(), gap = kind === 'hover' ? 55 : 70
-    if (now - (last.current[kind] ?? -Infinity) < gap) return
-    last.current[kind] = now
-    recipes[kind](current, current.audio.currentTime + 0.005)
+    if (!enabled || current?.audio.state !== 'running' || document.hidden) return
+    // Each kind has its own cooldown, and any sound waits a little after the previous one,
+    // so fast pointer sweeps and drags never stack into a buzz.
+    const now = performance.now(), gap = kind === 'hover' ? 110 : 70
+    if (now - (last.current[kind] ?? -Infinity) < gap || now - lastAny.current < 35) return
+    last.current[kind] = now; lastAny.current = now
+    recipes[kind](current, current.audio.currentTime + 0.01)
   }, [enabled])
 
   const toggle = () => {
@@ -147,12 +154,20 @@ export function UISoundProvider({ children }: { children: ReactNode }) {
       play(element.matches('[aria-pressed], [role="switch"], [data-sound-switch], .language-selector button') ? 'switch' : 'click')
     }
     const onPointerOver = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse') return
+      if (event.pointerType !== 'mouse' || event.buttons) return
       const element = control(event.target)
       if (!element || element.matches(':disabled')) return
       if (event.relatedTarget instanceof Node && element.contains(event.relatedTarget)) return
       play('hover')
     }
+    // A context left running in a background tab can glitch when the tab returns; pause it while hidden.
+    const visibility = () => {
+      const audio = voice.current?.audio
+      if (!audio) return
+      if (document.hidden) { if (audio.state === 'running') void audio.suspend().catch(() => {}) }
+      else if (audio.state === 'suspended') void audio.resume().catch(() => {})
+    }
+    document.addEventListener('visibilitychange', visibility)
     document.addEventListener('pointerdown', gesture, true)
     document.addEventListener('keydown', gesture, true)
     document.addEventListener('click', onClick, true)
@@ -162,6 +177,7 @@ export function UISoundProvider({ children }: { children: ReactNode }) {
       document.removeEventListener('keydown', gesture, true)
       document.removeEventListener('click', onClick, true)
       document.removeEventListener('pointerover', onPointerOver)
+      document.removeEventListener('visibilitychange', visibility)
     }
   }, [enabled, play, unlock])
 
