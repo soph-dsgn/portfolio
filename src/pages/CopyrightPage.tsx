@@ -4,7 +4,6 @@ import { profile } from '../data/portfolio'
 import { trackEvent } from '../lib/analytics'
 import { Typography } from '../components/Typography'
 import { Footer } from '../components/Footer'
-import { PrivacySettings } from '../components/PrivacySettings'
 
 export function CopyrightPage() {
   const { t } = useLocale()
@@ -68,7 +67,6 @@ export function CopyrightPage() {
           <p className="copyright-updated">Дата последнего обновления документа: 01.10.2026.</p>
         </footer>
         </article>
-        <PrivacySettings />
       </main>
       <Footer />
     </div></Typography>

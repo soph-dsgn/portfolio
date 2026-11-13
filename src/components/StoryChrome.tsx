@@ -62,7 +62,7 @@ export function StoryFooterRow({ location }: { location: string }) {
   return <div className="story-finale-top">
     <div>
       <p>© 2026 {t(profile.name)}</p>
-      <p><MoscowTime /> · <Link to="/copyright">{t('Авторские права')}</Link> · <Link to="/copyright#privacy">{locale === 'en' ? 'Privacy' : 'Конфиденциальность'}</Link></p>
+      <p><MoscowTime /> · <Link to="/copyright">{t('Авторские права')}</Link> · <Link to="/privacy">{locale === 'en' ? 'Privacy' : 'Конфиденциальность'}</Link></p>
     </div>
     <StorySocial location={location} />
   </div>

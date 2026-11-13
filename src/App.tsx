@@ -14,6 +14,7 @@ import { ScrollReveals } from './components/ScrollReveals'
 import { ShowcaseDock, ShowcaseTopBar, ShowcaseTopFade } from './components/ShowcaseChrome'
 import { CaseHeader } from './components/CaseHeader'
 import { CopyrightPage } from './pages/CopyrightPage'
+import { PrivacyPage } from './pages/PrivacyPage'
 import { useCaseScrollTracking, usePageTracking } from './hooks/useAnalyticsTracking'
 import { UISoundProvider } from './lib/uiSound'
 import { PrivacySettings } from './components/PrivacySettings'
@@ -72,6 +73,7 @@ function App() {
         <Route path="/" element={<ShowcaseHome />} />
         <Route path="/projects/:slug" element={<ProjectPage />} />
         <Route path="/copyright" element={<CopyrightPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route
           path="*"
           element={

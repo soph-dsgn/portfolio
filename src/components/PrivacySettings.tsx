@@ -21,13 +21,17 @@ export function PrivacySettings({ banner = false }: { banner?: boolean }) {
     <button type="button" aria-pressed={consent === 'deny'} onClick={() => {
       setAnalyticsConsent('deny')
       if (consent === 'allow' && import.meta.env.PROD) window.location.reload()
-    }}>{english ? 'Decline' : 'Отклонить'}</button>
-    <button type="button" aria-pressed={consent === 'allow'} onClick={() => setAnalyticsConsent('allow')}>
-      {english ? 'Allow analytics' : 'Разрешить аналитику'}
+    }} title={english ? 'No trackers' : 'Без трекеров'}>{english ? 'Decline' : 'Отклонить'}</button>
+    <button type="button" aria-pressed={consent === 'allow'} onClick={() => setAnalyticsConsent('allow')} title={english ? 'Turn analytics on' : 'Включить аналитику'}>
+      {english ? 'Accept' : 'Принять'}
     </button>
   </div>
-  return banner ? <aside className="privacy-banner" aria-label={title}>
-    <p>{english ? 'May I use analytics to understand how you use this portfolio?' : 'Разрешите аналитику, чтобы я могла понять, как вы пользуетесь портфолио?'} <Link to="/copyright#privacy">{title}</Link></p>
+  // Banner copy is the author's: a joke headline, the reason in one line, the policy linked from «слежки».
+  return banner ? <aside className="privacy-banner" aria-label={title} aria-describedby="privacy-banner-text">
+    <p className="privacy-banner-title">{english
+      ? <>A little <Link to="/privacy" title="Privacy and cookie policy">tracking</Link>, but only for UX 👀</>
+      : <>Немного <Link to="/privacy" title="Политика конфиденциальности и использования файлов cookie">слежки</Link>, но только ради UX 👀</>}</p>
+    <p id="privacy-banner-text">{english ? 'Metrica and Clarity show me where the site works and where it needs fixing' : 'Метрика и Clarity помогают понять, где сайт ок, а где надо чинить'}</p>
     {controls}
   </aside> : <section className="privacy-settings" id="privacy" aria-labelledby="privacy-title">
     <h2 id="privacy-title">{title}</h2><p>{description}</p>{controls}
