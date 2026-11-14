@@ -11,7 +11,7 @@ import { ShowcaseHome } from './pages/ShowcaseHome'
 import { savedPageScroll, savePageScroll } from './lib/pageScroll'
 import { cancelSectionNavigation, navigateToSection } from './lib/canvasNavigation'
 import { ScrollReveals } from './components/ScrollReveals'
-import { ShowcaseDock, ShowcaseTopBar, ShowcaseTopFade } from './components/ShowcaseChrome'
+import { ShowcaseDock, ShowcaseTopBar, ShowcaseBottomFade } from './components/ShowcaseChrome'
 import { CaseHeader } from './components/CaseHeader'
 import { CopyrightPage } from './pages/CopyrightPage'
 import { PrivacyPage } from './pages/PrivacyPage'
@@ -67,7 +67,7 @@ function App() {
       <ScrollToPage />
       <AnalyticsTracking />
       <ScrollReveals />
-      <ShowcaseTopFade />
+      <ShowcaseBottomFade />
       <SiteHeader />
       <Suspense fallback={null}><Routes>
         <Route path="/" element={<ShowcaseHome />} />

@@ -4,7 +4,7 @@ import { useLocale } from '../i18n/locale'
 import { trackEvent } from '../lib/analytics'
 import { Icon } from './Icon'
 
-/** Shared chrome of the showcase layout: settings, inner-page top bar, top fade and contact dock. */
+/** Shared chrome of the showcase layout: settings, inner-page top bar, bottom fade and contact dock. */
 /** One pill showing the current language; a press switches to the other one. */
 function LanguageToggle() {
   const { locale, setLocale } = useLocale()
@@ -28,8 +28,8 @@ export function ShowcaseTopBar({ to = '/', label = 'На главную' }: { to
   </header>
 }
 
-export function ShowcaseTopFade() {
-  return <div className="sc-top-fade" aria-hidden="true" />
+export function ShowcaseBottomFade() {
+  return <div className="sc-bottom-fade" aria-hidden="true" />
 }
 
 /* Filled glyphs with very soft corners for the dock; cut-outs use even-odd paths, so they work on any background. */
