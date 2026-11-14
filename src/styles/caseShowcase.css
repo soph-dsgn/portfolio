@@ -130,10 +130,10 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   border-radius: 50%;
   background: rgba(8, 8, 8, .06);
   color: var(--sc-ink);
-  font-size: calc(14 * var(--u));
+  font-size: var(--fs-caption);
   font-weight: 600;
 }
-.scv-card[data-tone='problem'] .scv-card-index { background: rgba(255, 77, 26, .12); color: #e5481b; font-size: calc(17 * var(--u)); }
+.scv-card[data-tone='problem'] .scv-card-index { background: rgba(255, 77, 26, .12); color: #e5481b; font-size: var(--fs-small); font-weight: 700; line-height: 1; }
 
 .scv-pill { font-size: var(--fs-caption); }
 .scv-card[data-tone='problem'] .scv-pill { background: rgba(255, 77, 26, .1); color: #c93d12; }
@@ -433,7 +433,7 @@ html .case-shell--editorial .scc-section .case-editorial-text > p.case-narrative
   .scv-card p { font-size: var(--fs-small); line-height: var(--lh-small); }
   .scv-card strong { font-size: var(--fs-small); line-height: var(--lh-small); }
   .scv-pill { padding: 6px 12px; font-size: var(--fs-caption); line-height: 18px; }
-  .scv-card-index { width: 28px; height: 28px; font-size: 12px; }
+  .scv-card-index { width: 28px; height: 28px; }
   .scv-grid--three { grid-template-columns: minmax(0, 1fr); }
   .scv-hub { font-size: var(--fs-caption); line-height: var(--lh-caption); padding: 4px 10px; }
   .scv-pipe { flex-direction: column; gap: 24px; }

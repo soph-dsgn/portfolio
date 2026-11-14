@@ -172,7 +172,7 @@ html .copyright-document section > h2 + * { margin-top: 0; }
   border-radius: 999px;
   background: var(--sc-ink);
   color: #fff;
-  font-size: calc(18 * var(--u));
+  font-size: var(--fs-small);
   font-weight: 500;
   text-decoration: none;
 }
