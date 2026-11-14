@@ -71,6 +71,12 @@ html .case-shell--editorial .scc-section .case-editorial-text :is(ul, ol) > li::
   background: none;
   -webkit-mask: none;
   mask: none;
+  /* Older step and star list rules set a 14px font and line-height 1 here, which lifted the dash above the text */
+  display: block;
+  margin: 0;
+  border-radius: 0;
+  font: inherit;
+  line-height: inherit;
   color: rgba(8, 8, 8, .35);
 }
 html .case-shell--editorial .scc-section .case-editorial-text > :is(p, ul, ol, .case-audience-intro) { max-width: none; }
@@ -113,8 +119,9 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   line-height: calc(22 * var(--u));
   font-weight: 500;
 }
-.scv-check { display: flex; gap: calc(10 * var(--u)); color: var(--sc-ink) !important; }
-.scv-check .sc-check { margin-top: calc(6 * var(--u)); opacity: .5; }
+.scv-check { display: flex; align-items: flex-start; gap: calc(10 * var(--u)); color: var(--sc-ink) !important; }
+/* The check sits on the middle of the first line, however many lines follow */
+.scv-check .sc-check { margin-top: calc((1lh - 16 * var(--u)) / 2); opacity: .5; }
 .scv-card-index {
   display: grid;
   place-items: center;
@@ -146,7 +153,7 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 
 /* ---------- Schemes: pipeline, node flow, hub tree, status board ---------- */
 /* Schemes are neutral: white, grey and ink. Colour carries meaning only — green for good, red for a problem */
-.scv { --scv-green: #1f9d55; --scv-red: #e5481b; --scv-line: rgba(8, 8, 8, .22); }
+.scv { --scv-wire: rgba(8, 8, 8, .3); --scv-green: #1f9d55; --scv-red: #e5481b; --scv-line: rgba(8, 8, 8, .22); }
 
 /* Pipeline: coloured nodes in one row, white ports on the joins */
 .scv-pipe { display: flex; gap: calc(36 * var(--u)); margin: 0; padding: 0; list-style: none; }
@@ -200,8 +207,8 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-nodes { display: grid; justify-items: center; margin: 0; padding: calc(8 * var(--u)) 0; list-style: none; }
 .scv-node { --tag: rgba(8, 8, 8, .07); --tag-ink: var(--sc-ink); display: grid; justify-items: center; width: min(100%, calc(760 * var(--u))); }
 .scv-node[data-tint='check'] { --tag: rgba(8, 8, 8, .86); --tag-ink: #fff; }
-.scv-link { width: calc(12 * var(--u)); height: calc(48 * var(--u)); margin: calc(4 * var(--u)) 0; fill: none; stroke: rgba(8, 8, 8, .35); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.scv-link circle { fill: rgba(8, 8, 8, .35); stroke: none; }
+.scv-link { width: calc(12 * var(--u)); height: calc(48 * var(--u)); margin: calc(4 * var(--u)) 0; fill: none; stroke: var(--scv-wire); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.scv-link circle { fill: var(--scv-wire); stroke: none; }
 .scv-node-tag {
   display: inline-flex;
   align-items: center;
@@ -247,9 +254,10 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
 .scv-node-card .scv-term,
 .scv-pipe-node .scv-term { background: rgba(8, 8, 8, .04); }
 /* decision: two outcomes leave the card side by side */
-.scv-fork { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: calc(12 * var(--u)); width: 100%; margin-top: calc(44 * var(--u)); }
-.scv-fork::after { content: ''; position: absolute; top: calc(-44 * var(--u)); left: 50%; height: calc(16 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
-.scv-fork::before { content: ''; position: absolute; top: calc(-28 * var(--u)); left: 25%; right: 25%; height: calc(14 * var(--u)); border: 1.6px solid rgba(8, 8, 8, .3); border-bottom: 0; border-radius: var(--r-xs) var(--r-xs) 0 0; }
+.scv-fork { --gap: calc(12 * var(--u)); --rise: calc(40 * var(--u)); position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); width: 100%; margin-top: var(--rise); }
+/* Connector: a stem from the question card, then one bracket whose legs land on the centres of the two outcomes */
+.scv-fork::after { content: ''; position: absolute; top: calc(var(--rise) * -1); left: 50%; width: 0; height: calc(var(--rise) / 2); border-left: 1.6px solid var(--scv-wire); transform: translateX(-50%); }
+.scv-fork::before { content: ''; position: absolute; top: calc(var(--rise) / -2); left: calc((100% - var(--gap)) / 4); right: calc((100% - var(--gap)) / 4); height: calc(var(--rise) / 2); border: 1.6px solid var(--scv-wire); border-bottom: 0; border-radius: var(--r-xs) var(--r-xs) 0 0; }
 .scv-fork-way {
   position: relative;
   display: flex;
@@ -263,19 +271,18 @@ html .case-shell--editorial .scc-section .case-inline-media-item :is(img, pictur
   line-height: var(--lh-caption);
   color: rgba(8, 8, 8, .7);
 }
-.scv-fork-way::before { content: ''; position: absolute; top: calc(-14 * var(--u)); left: 50%; height: calc(14 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
 .scv-fork-way b { font-weight: 600; color: var(--scv-green); }
 .scv-fork-way[data-branch='no'] b { color: var(--sc-ink); }
 
 /* Hub tree: a dark hub, an elbow line, one card per branch */
 .scv-tree { display: grid; justify-items: center; }
 .scv-tree-hub { position: relative; padding: calc(12 * var(--u)) calc(24 * var(--u)); border-radius: 999px; background: var(--sc-ink); color: #fff; font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 500; }
-.scv-tree-hub::after { content: ''; position: absolute; top: 100%; left: 50%; height: calc(26 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
-.scv-tree-branches { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: calc(12 * var(--u)); width: 100%; margin: calc(52 * var(--u)) 0 0; padding: 0; list-style: none; }
-.scv-tree-branches::before { content: ''; position: absolute; top: calc(-26 * var(--u)); left: calc(50% / var(--n)); right: calc(50% / var(--n)); height: calc(26 * var(--u)); border: 1.6px solid rgba(8, 8, 8, .3); border-bottom: 0; border-radius: var(--r-xs) var(--r-xs) 0 0; }
+.scv-tree-hub::after { content: ''; position: absolute; top: 100%; left: 50%; width: 0; height: calc(26 * var(--u)); border-left: 1.6px solid var(--scv-wire); transform: translateX(-50%); }
+.scv-tree-branches { --gap: calc(12 * var(--u)); position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: var(--gap); width: 100%; margin: calc(52 * var(--u)) 0 0; padding: 0; list-style: none; }
+.scv-tree-branches::before { content: ''; position: absolute; top: calc(-26 * var(--u)); left: calc((100% - (var(--n) - 1) * var(--gap)) / (2 * var(--n))); right: calc((100% - (var(--n) - 1) * var(--gap)) / (2 * var(--n))); height: calc(26 * var(--u)); border: 1.6px solid var(--scv-wire); border-bottom: 0; border-radius: var(--r-xs) var(--r-xs) 0 0; }
 .scv-tree-leaf { position: relative; }
-.scv-tree-leaf::before { content: ''; position: absolute; top: calc(-6 * var(--u)); left: 50%; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.6px rgba(8, 8, 8, .3); transform: translateX(-50%); }
-.scv-tree-branches > li:nth-child(n + 2):nth-last-child(n + 2)::after { content: ''; position: absolute; top: calc(-26 * var(--u)); left: 50%; height: calc(20 * var(--u)); border-left: 1.6px solid rgba(8, 8, 8, .3); }
+.scv-tree-leaf::before { content: ''; position: absolute; top: calc(-6 * var(--u)); left: 50%; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.6px var(--scv-wire); transform: translateX(-50%); }
+.scv-tree-branches > li:nth-child(n + 2):nth-last-child(n + 2)::after { content: ''; position: absolute; top: calc(-26 * var(--u)); left: 50%; width: 0; height: calc(26 * var(--u)); border-left: 1.6px solid var(--scv-wire); transform: translateX(-50%); }
 .scv-tree-label { align-self: flex-start; padding: calc(6 * var(--u)) calc(14 * var(--u)); border-radius: 999px; background: rgba(8, 8, 8, .06); color: var(--sc-ink); font-size: var(--fs-caption); line-height: var(--lh-caption); font-weight: 500; }
 
 /* Stepper: dots on one track, names and notes under them */
@@ -441,17 +448,14 @@ html .case-shell--editorial .scc-section .case-editorial-text > p.case-narrative
   .scv-link { width: 10px; height: 40px; margin: 2px 0; }
   .scv-node-tag { gap: 6px; padding: 5px 12px; font-size: var(--fs-caption); line-height: var(--lh-caption); }
   .scv-node-card { padding: 14px 16px; border-radius: var(--r-s); font-size: var(--fs-small); line-height: var(--lh-small); }
-  .scv-fork { gap: 8px; margin-top: 32px; }
-  .scv-fork::after { top: -32px; height: 12px; }
-  .scv-fork::before { top: -20px; height: 10px; border-radius: var(--r-xs) var(--r-xs) 0 0; }
+  .scv-fork { --gap: 8px; --rise: 32px; }
   .scv-fork-way { padding: 12px; border-radius: var(--r-s); font-size: var(--fs-caption); line-height: var(--lh-caption); }
-  .scv-fork-way::before { top: -10px; height: 10px; }
   .scv-tree-hub { padding: 9px 18px; font-size: var(--fs-small); line-height: var(--lh-small); }
-  .scv-tree-hub::after { height: 20px; }
+  .scv-tree-hub::after { height: 26px; }
   .scv-tree-branches { grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 26px; }
   .scv-tree-branches::before { display: none; }
   .scv-tree-branches > li::after,
-  .scv-tree-branches > li:nth-child(n + 2):nth-last-child(n + 2)::after { content: ''; position: absolute; top: -20px; left: 50%; height: 14px; border-left: 1.6px solid rgba(8, 8, 8, .3); }
+  .scv-tree-branches > li:nth-child(n + 2):nth-last-child(n + 2)::after { content: ''; position: absolute; top: -20px; left: 50%; width: 0; height: 20px; border-left: 1.6px solid var(--scv-wire); transform: translateX(-50%); }
   .scv-tree-branches > li:first-child::after { display: none; }
   .scv-tree-leaf::before { top: -5px; width: 10px; height: 10px; }
   .scv-tree-label { padding: 5px 12px; font-size: var(--fs-caption); line-height: var(--lh-caption); }
@@ -492,4 +496,5 @@ html .case-shell--editorial .scc-section .case-editorial-text > p.case-narrative
   .scv-track li { grid-column: 1; margin-left: calc(var(--i) * 14px); padding: 12px 14px 14px; border-radius: var(--r-s); }
   .scv-track strong { font-size: var(--fs-small); line-height: var(--lh-small); }
   .scv-track span { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+  .scv-check .sc-check { margin-top: calc((1lh - 14px) / 2); }
 }

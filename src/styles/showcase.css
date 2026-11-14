@@ -219,6 +219,7 @@ html:has(.sc) body { background: var(--sc-bg, #fff); }
 .sc-gap--wide { margin-top: calc(80 * var(--u)); }
 
 .sc-check { flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); opacity: .4; }
+.sc-list li .sc-check { margin-top: calc((1lh - 16 * var(--u)) / 2); }
 
 .sc-case-title {
   font-size: var(--fs-h2);
@@ -233,7 +234,7 @@ html:has(.sc) body { background: var(--sc-bg, #fff); }
 .sc-list { display: grid; gap: calc(16 * var(--u)); margin-top: calc(40 * var(--u)) !important; }
 .sc-list li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(12 * var(--u));
   font-size: var(--fs-small);
   line-height: var(--lh-small);
@@ -712,7 +713,8 @@ html .privacy-banner :is(a, button):focus-visible { outline: 2px solid var(--sc-
   .sc-section-title { font-size: var(--fs-h2); line-height: var(--lh-h2); }
   .sc-list { gap: 12px; margin-top: 20px !important; }
   .sc-list li { align-items: flex-start; gap: 10px; font-size: var(--fs-small); line-height: var(--lh-small); }
-  .sc-list li .sc-check { margin-top: 3px; }
+  .sc-list li .sc-check,
+  .scv-check .sc-check { margin-top: calc((1lh - 14px) / 2); }
   .sc-pills { gap: 8px; margin-top: 24px; padding-top: 0; }
   .sc-pill-row { gap: 8px; }
   .sc-pill { height: auto; min-height: 40px; padding: 10px 16px; border-radius: var(--r-m); font-size: var(--fs-small); line-height: 18px; white-space: normal; }
