@@ -383,6 +383,26 @@ html .case-main > .scc-rail { width: max-content; max-width: none; margin: 0; }
 .scc-rail a:focus-visible { outline: none; }
 .scc-rail a:focus-visible .scc-rail-label { color: var(--sc-ink); text-decoration: underline; text-underline-offset: 3px; }
 .scc-rail a:focus-visible .scc-rail-bar { box-shadow: 0 0 0 2px var(--sc-blue); }
+/* Phones: the same segments as a reading-progress bar along the top edge, display only */
+.scc-rail[data-room='top'] {
+  top: 0;
+  right: 0;
+  left: 0;
+  flex-direction: row;
+  gap: 3px;
+  height: auto;
+  padding: 10px 16px 14px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, .95), rgba(255, 255, 255, .8) 60%, rgba(255, 255, 255, 0));
+  transform: none;
+  pointer-events: none;
+}
+.scc-rail[data-room='top'][data-visible='true'] { opacity: 1; visibility: visible; transition-delay: 0s; }
+html .case-main > .scc-rail[data-room='top'] { width: auto; }
+.scc-rail[data-room='top'] a { display: block; min-height: 0; min-width: 6px; }
+.scc-rail[data-room='top'] .scc-rail-bar { display: block; width: 100%; height: 3px; }
+.scc-rail[data-room='top'] .scc-rail-bar::after { transform-origin: left center; transform: scaleX(var(--fill, 0)); }
+.scc-rail[data-room='top'] .scc-rail-label { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .scc-rail,
 .scc-rail-label { transition: none; }

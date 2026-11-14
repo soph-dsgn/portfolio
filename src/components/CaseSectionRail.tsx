@@ -2,14 +2,15 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { useLocale } from '../i18n/locale'
 
 type RailSection = { id: string; title: string }
-type Room = 'full' | 'bars' | 'none'
+type Room = 'full' | 'bars' | 'top' | 'none'
 
 /** Room for the rail in the left gutter: labels need their own width plus a gap, bars alone ~32px. */
-const roomFor = (gutter: number, labels: number): Room => gutter >= labels ? 'full' : gutter >= 36 ? 'bars' : 'none'
+const roomFor = (gutter: number, labels: number): Room => window.innerWidth < 900 ? 'top' : gutter >= labels ? 'full' : gutter >= 36 ? 'bars' : 'none'
 
 /**
  * Fixed segmented rail of case sections. Each segment is as tall as its section and fills while it is read.
  * Labels hide while the page scrolls and fade back once it stops; with little room only the bars stay.
+ * On phones it turns into a segmented reading-progress bar along the top edge.
  */
 export function CaseSectionRail({ sections }: { sections: RailSection[] }) {
   const { t } = useLocale()
